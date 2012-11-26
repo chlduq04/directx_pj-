@@ -21,6 +21,12 @@
 #include "Moving.h"
 #include "Items.h"
 #include "ItemsList.h"
+#include "Ui.h"
+//-----------------------------------------------------------------------------
+// Drow Billboard
+//-----------------------------------------------------------------------------
+LPDIRECT3DTEXTURE9		speed_bar[3] = { NULL, NULL, NULL };// 빌보드로 사용할 텍스처
+D3DXMATRIXA16			matBillboard;
 //-----------------------------------------------------------------------------
 // Items Setting
 //-----------------------------------------------------------------------------
@@ -29,6 +35,7 @@ float					m_fStartTime;
 ItemsList*				itemList;		
 Items*					item1;
 Items*					item2;
+Ui*						m_Ui;
 D3DXMATRIXA16			iWorld;
 static int				itemSerialNum = 0;
 //-----------------------------------------------------------------------------
@@ -174,10 +181,22 @@ void ProcessInputs( void )
 	Mouse_X += -dx*0.001;
 	Mouse_Y += dy*0.05;
 
-	g_pCamera->RotateLocalX( dy * MOUSE_SENSITIVE );	// 마우스의 Y축 회전값은 3D world의  X축 회전값
-	g_pCamera->RotateLocalY( dx * MOUSE_SENSITIVE );	// 마우스의 X축 회전값은 3D world의  Y축 회전값
-	D3DXMATRIXA16*	pmatView = g_pCamera->GetViewMatrix();		// 카메라 행렬을 얻는다.
-	g_pd3dDevice->SetTransform( D3DTS_VIEW, pmatView );			// 카메라 행렬 셋팅
+
+	if(cameraCase == 1){
+	if( GetAsyncKeyState( 'W' )||GetAsyncKeyState( 'w' ) ) g_pCamera->MoveLocalZ( 0.5f );	// 카메라 전진!
+	if( GetAsyncKeyState( 'S' )||GetAsyncKeyState( 's' ) ) g_pCamera->MoveLocalZ( -0.5f );	// 카메라 후진!
+	if( GetAsyncKeyState( 'A' )||GetAsyncKeyState( 'a' ) ) g_pCamera->MoveLocalX( -0.5f );	// 카메라 후진!
+	if( GetAsyncKeyState( 'D' )||GetAsyncKeyState( 'd' ) ) g_pCamera->MoveLocalX( 0.5f );	// 카메라 후진!
+	if( GetAsyncKeyState( VK_ESCAPE ) ) PostMessage( g_hwnd, WM_DESTROY, 0, 0L );
+	//if( GetAsyncKeyState( VK_LBUTTON ) ) g_pd3dDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_WIREFRAME );
+	//if( GetAsyncKeyState( VK_RBUTTON ) ) g_pd3dDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
+	}
+	else if(cameraCase == 2){
+		g_pCamera->RotateLocalX( dy * MOUSE_SENSITIVE );	// 마우스의 Y축 회전값은 3D world의  X축 회전값
+		g_pCamera->RotateLocalY( dx * MOUSE_SENSITIVE );	// 마우스의 X축 회전값은 3D world의  Y축 회전값
+		D3DXMATRIXA16*	pmatView = g_pCamera->GetViewMatrix();		// 카메라 행렬을 얻는다.
+		g_pd3dDevice->SetTransform( D3DTS_VIEW, pmatView );			// 카메라 행렬 셋팅
+	}
 
 	// 마우스를 윈도우의 중앙으로 초기화
 	 SetCursor( NULL );	// 마우스를 나타나지 않게 않다.
@@ -190,17 +209,7 @@ void ProcessInputs( void )
 	g_dwMouseX = pt.x;
 	g_dwMouseY = pt.y;
 
-	if(cameraCase == 1){
-	if( GetAsyncKeyState( 'W' )||GetAsyncKeyState( 'w' ) ) g_pCamera->MoveLocalZ( 0.5f );	// 카메라 전진!
-	if( GetAsyncKeyState( 'S' )||GetAsyncKeyState( 's' ) ) g_pCamera->MoveLocalZ( -0.5f );	// 카메라 후진!
-	if( GetAsyncKeyState( 'A' )||GetAsyncKeyState( 'a' ) ) g_pCamera->MoveLocalX( -0.5f );	// 카메라 후진!
-	if( GetAsyncKeyState( 'D' )||GetAsyncKeyState( 'd' ) ) g_pCamera->MoveLocalX( 0.5f );	// 카메라 후진!
-	if( GetAsyncKeyState( VK_ESCAPE ) ) PostMessage( g_hwnd, WM_DESTROY, 0, 0L );
-	//if( GetAsyncKeyState( VK_LBUTTON ) ) g_pd3dDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_WIREFRAME );
-	//if( GetAsyncKeyState( VK_RBUTTON ) ) g_pd3dDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-	}
-	else if(cameraCase == 2){
-	}
+
 }
 VOID SetupLight()
 {
@@ -244,6 +253,16 @@ VOID Cleanup()
 {
 	if( g_pMeshMaterials != NULL )
 		delete[] g_pMeshMaterials;
+
+	if(speed_bar){
+		for(int i=0;i<3;i++){
+			if(speed_bar[i]){
+				speed_bar[i]->Release(); 
+				speed_bar[i] = NULL;
+				delete speed_bar[i];
+			}
+		}
+	}
 
 	if( g_pMeshTextures )
 	{
@@ -314,6 +333,58 @@ VOID itemListDraw(){
 		}
 	}
 }
+
+VOID DrawBillboard()
+{
+		g_pd3dDevice->SetRenderState( D3DRS_ALPHABLENDENABLE,   TRUE );
+		g_pd3dDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+		g_pd3dDevice->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
+		g_pd3dDevice->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
+		g_pd3dDevice->SetRenderState( D3DRS_ALPHAREF,        0x08 );
+		g_pd3dDevice->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
+
+		struct MYVERTEX
+		{
+			enum { FVF = D3DFVF_XYZ | D3DFVF_TEX1 };
+			float px, py, pz;
+			float tu, tv;
+		};
+
+		// 빌보드 정점
+		MYVERTEX vtx[4] = 
+		{ 
+			{ WINDOW_WIDTH/2-WINDOW_WIDTH/20, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/60, 0, 0, 1 },
+			{ WINDOW_WIDTH/2-WINDOW_WIDTH/20, -WINDOW_HEIGHT/2, 0, 0, 0 },
+			{ WINDOW_WIDTH/2, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/60, 0, 1, 1 },
+			{ WINDOW_WIDTH/2, -WINDOW_HEIGHT/2, 0, 1, 0 }
+		};
+
+
+		D3DXMatrixIdentity( &matBillboard );
+		D3DXMATRIXA16	matbill_tran;
+		// 0번 텍스처에 빌보드 텍스처를 올린다
+		g_pd3dDevice->SetTexture( 1, NULL );
+		g_pd3dDevice->SetFVF( MYVERTEX::FVF );
+
+		g_pd3dDevice->SetTexture( 0, speed_bar[0] );
+		D3DXMatrixTranslation(&matbill_tran,-10.5f,0.5f,0.0f);
+		matBillboard *= matbill_tran;
+		g_pd3dDevice->SetTransform( D3DTS_WORLD, &matBillboard );
+		g_pd3dDevice->DrawPrimitiveUP( D3DPT_TRIANGLESTRIP, 2, vtx, sizeof(MYVERTEX) );
+//		g_pd3dDevice->SetRenderState( D3DRS_ALPHATESTENABLE, FALSE );
+}
+
+VOID UI()
+{
+	D3DXMATRIX mat_Ortho;
+	D3DXMatrixIdentity(&mat_Ortho);
+	g_pd3dDevice->SetTransform(D3DTS_VIEW, &mat_Ortho);	
+	D3DXMatrixOrthoLH (&mat_Ortho,WINDOW_WIDTH,WINDOW_HEIGHT,0,1);
+	g_pd3dDevice->SetTransform(D3DTS_PROJECTION, &mat_Ortho);
+	DrawBillboard();
+	g_pd3dDevice->SetTransform( D3DTS_WORLD, &matWorld );
+}
+
 VOID Render()
 {
 	g_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB( 0, 0, 0 ), 1.0f, 0 );
@@ -360,6 +431,8 @@ VOID Render()
 		setItemList();
 		itemListDraw();
 		mMoving->getItem(myCharacter,itemList,BALL_REAL_SIZE,ITEM_REAL_SIZE);
+
+		UI();
 		g_pd3dDevice->EndScene();
 	}
 	g_pd3dDevice->Present( NULL, NULL, NULL, NULL );
@@ -374,6 +447,7 @@ VOID beforeInitD3D(){
 	myCharacter = new Ball(START_LIFE,START_MANA,0,CHARACTER_MAX_LEVEL,( D3DXVECTOR3 )Pos,( D3DXVECTOR3 )Vel,( D3DXVECTOR3 )Vel);	
 	mMoving = new Moving(GRAVITY,REVERSE_GRAVITY,GROUND,MYSIZE,CEILING,THRESHOLD,BALLSPEED,GAMESPEED,ABSORBANCE,MINBOUNDX,MINBOUNDY,MINBOUNDZ,MAXBOUNDX,MAXBOUNDX,MAXBOUNDX);
 	itemList = new ItemsList();
+	m_Ui = new Ui();
 }
 
 VOID afterRender(){
@@ -383,15 +457,24 @@ VOID afterRender(){
 	delete myCharacter;
 	delete mMoving;
 	delete itemList;
+	delete m_Ui;
 }
 
 VOID beforeRender(){
 	InitGeometry();
 	drawXfile->set_viewprojtexture(matProj,gLightColor);
 	mapBox->set_viewprojtexture(matProj,gLightColor);
-
+	
 }
-
+HRESULT initLoad(){
+	if(!SUCCEEDED(initCharacter())){
+		return E_FAIL;
+	}
+	if(!SUCCEEDED(m_Ui->initBillboard(g_pd3dDevice,"normal_speed.png",&speed_bar[0]))){
+		return E_FAIL;
+	}
+	return S_OK;
+}
 //-----------------------------------------------------------------------------
 // Name: MsgProc()
 // Desc: The window's message handler
@@ -476,7 +559,7 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 
 	// Create the application's window
 	HWND hWnd = CreateWindow( "D3D Tutorial", "D3D Tutorial 06: Meshes",
-		WS_OVERLAPPEDWINDOW, 100, 100, 500, 500,
+		WS_OVERLAPPEDWINDOW, 100, 100, WINDOW_WIDTH, WINDOW_HEIGHT,
 		NULL, NULL, wc.hInstance, NULL );
 	g_hwnd = hWnd;
 	beforeInitD3D();
@@ -484,7 +567,7 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 	if( SUCCEEDED( InitD3D( hWnd ) ) )
 	{
 		// Create the scene geometry
-		if(SUCCEEDED( initCharacter() ) )
+		if(SUCCEEDED( initLoad()))
 		{
 			// Show the window
 			ShowWindow( hWnd, SW_SHOWDEFAULT );

@@ -376,6 +376,7 @@
     <ClCompile Include="ItemsList.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Moving.cpp" />
+    <ClCompile Include="Ui.cpp" />
     <ClCompile Include="Xfile.cpp" />
     <ClCompile Include="ZCamera.cpp" />
   </ItemGroup>
@@ -390,6 +391,7 @@
     <ClInclude Include="Moving.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="Ui.h" />
     <ClInclude Include="Variable.h" />
     <ClInclude Include="Xfile.h" />
     <ClInclude Include="ZCamera.h" />

@@ -42,6 +42,8 @@
 
 #define MOUSE_SENSITIVE 0.001f
 
-float GSpeed = GAMESPEED;
+#define WINDOW_WIDTH 600
+#define WINDOW_HEIGHT 600
 
+float GSpeed = GAMESPEED;
 #endif 

@@ -51,6 +51,9 @@
     <ClCompile Include="ItemsList.cpp">
       <Filter>project</Filter>
     </ClCompile>
+    <ClCompile Include="Ui.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
@@ -87,6 +90,9 @@
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="ItemsList.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="Ui.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>
