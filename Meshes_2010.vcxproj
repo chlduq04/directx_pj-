@@ -391,6 +391,7 @@
     <ClInclude Include="Moving.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="Struct.h" />
     <ClInclude Include="Ui.h" />
     <ClInclude Include="Variable.h" />
     <ClInclude Include="Xfile.h" />

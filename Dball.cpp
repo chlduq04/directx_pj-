@@ -22,11 +22,31 @@
 #include "Items.h"
 #include "ItemsList.h"
 #include "Ui.h"
+#include "Struct.h"
 //-----------------------------------------------------------------------------
 // Drow Billboard
 //-----------------------------------------------------------------------------
-LPDIRECT3DTEXTURE9		speed_bar[3] = { NULL, NULL, NULL };// 빌보드로 사용할 텍스처
-D3DXMATRIXA16			matBillboard;
+MYVERTEX vtx[4] = {
+	{WINDOW_WIDTH/2-WINDOW_WIDTH/20, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/120, 0, 0, 1},
+	{WINDOW_WIDTH/2-WINDOW_WIDTH/20, -WINDOW_HEIGHT/2, 0, 0, 0 },
+	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/120, 0, 1, 1},
+	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2, 0, 1, 0}
+};
+
+MYVERTEX hpVtx[4] = {
+	{WINDOW_WIDTH/2-WINDOW_WIDTH/20, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/50, 0, 0, 1},
+	{WINDOW_WIDTH/2-WINDOW_WIDTH/20, -WINDOW_HEIGHT/2, 0, 0, 0 },
+	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/50, 0, 1, 1},
+	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2, 0, 1, 0}
+};
+MYVERTEX mapVtx[4] = {
+	{WINDOW_WIDTH/2-WINDOW_WIDTH/5, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/5, 0, 0, 1},
+	{WINDOW_WIDTH/2-WINDOW_WIDTH/5, -WINDOW_HEIGHT/2, 0, 0, 0 },
+	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/5, 0, 1, 1},
+	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2, 0, 1, 0}
+};
+LPDIRECT3DTEXTURE9		speed_bar[10] = { NULL, NULL, NULL };// 빌보드로 사용할 텍스처
+D3DXMATRIX				matBillboard;
 //-----------------------------------------------------------------------------
 // Items Setting
 //-----------------------------------------------------------------------------
@@ -255,7 +275,7 @@ VOID Cleanup()
 		delete[] g_pMeshMaterials;
 
 	if(speed_bar){
-		for(int i=0;i<3;i++){
+		for(int i=0;i<10;i++){
 			if(speed_bar[i]){
 				speed_bar[i]->Release(); 
 				speed_bar[i] = NULL;
@@ -282,7 +302,6 @@ VOID Cleanup()
 	if( g_pD3D != NULL )
 		g_pD3D->Release();
 }
-
 
 //-----------------------------------------------------------------------------
 // Name: Render()
@@ -334,55 +353,53 @@ VOID itemListDraw(){
 	}
 }
 
-VOID DrawBillboard()
-{
-		g_pd3dDevice->SetRenderState( D3DRS_ALPHABLENDENABLE,   TRUE );
-		g_pd3dDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-		g_pd3dDevice->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
-		g_pd3dDevice->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
-		g_pd3dDevice->SetRenderState( D3DRS_ALPHAREF,        0x08 );
-		g_pd3dDevice->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
+VOID DrawUi(){
+	m_Ui->setUI(g_pd3dDevice);
+	int velocity = abs((int)D3DXVec3Length(&myCharacter->getVelocity()));
+	if(velocity>50){
+		velocity = 50;
+	}
+	switch(velocity){
+		case 50 : case 49 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[1],&matBillboard,-10.5f,120.0f,0.0f,vtx);
+		case 48 : case 47 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[1],&matBillboard,-10.5f,115.0f,0.0f,vtx);
+		case 46 : case 45 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[1],&matBillboard,-10.5f,110.0f,0.0f,vtx);
+		case 44 : case 43 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[1],&matBillboard,-10.5f,105.0f,0.0f,vtx);
+		case 42 : case 41 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,100.0f,0.0f,vtx);
+		case 40 : case 39 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,95.0f,0.0f,vtx);
+		case 38 : case 37 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,90.0f,0.0f,vtx);
+		case 36 : case 35 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,85.0f,0.0f,vtx);
+		case 34 : case 33 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,80.0f,0.0f,vtx);
+		case 32 : case 31 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,75.0f,0.0f,vtx);
+		case 30 : case 29 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,70.0f,0.0f,vtx);
+		case 28 : case 27 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,65.0f,0.0f,vtx);
+		case 26 : case 25 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,60.0f,0.0f,vtx);
+		case 24 : case 23 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,55.0f,0.0f,vtx);
+		case 22 : case 21 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,50.0f,0.0f,vtx);
+		case 20 : case 19 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,45.0f,0.0f,vtx);
+		case 18 : case 17 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,40.0f,0.0f,vtx);
+		case 16 : case 15 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,35.0f,0.0f,vtx);
+		case 14 : case 13 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,30.0f,0.0f,vtx);
+		case 12 : case 11 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,25.0f,0.0f,vtx);
+		case 10 : case 9 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,20.0f,0.0f,vtx);
+		case 8 : case 7 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,15.0f,0.0f,vtx);
+		case 6 : case 5 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,10.0f,0.0f,vtx);
+		case 4 : case 3 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,5.0f,0.0f,vtx);
+		case 2 : case 1: m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,0.0f,0.0f,vtx);
+		break;
+	}
+	m_Ui->drawBillboard(g_pd3dDevice,speed_bar[6],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/5,0,0,mapVtx);
+	
+	for(int i=0;i<myCharacter->hisLife()/10;i++){
+		m_Ui->drawBillboard(g_pd3dDevice,speed_bar[3],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/20,12.0f*i,0.0f,hpVtx);
+	}
+	for(int i=0;i<myCharacter->hisMana()/10;i++){
+		m_Ui->drawBillboard(g_pd3dDevice,speed_bar[4],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/20*2,12.0f*i,0.0f,hpVtx);
+	}
+	for(int i=0;i<myCharacter->hisDef()/10;i++){
+		m_Ui->drawBillboard(g_pd3dDevice,speed_bar[5],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/20*3,12.0f*i,0.0f,hpVtx);
+	}
 
-		struct MYVERTEX
-		{
-			enum { FVF = D3DFVF_XYZ | D3DFVF_TEX1 };
-			float px, py, pz;
-			float tu, tv;
-		};
 
-		// 빌보드 정점
-		MYVERTEX vtx[4] = 
-		{ 
-			{ WINDOW_WIDTH/2-WINDOW_WIDTH/20, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/60, 0, 0, 1 },
-			{ WINDOW_WIDTH/2-WINDOW_WIDTH/20, -WINDOW_HEIGHT/2, 0, 0, 0 },
-			{ WINDOW_WIDTH/2, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/60, 0, 1, 1 },
-			{ WINDOW_WIDTH/2, -WINDOW_HEIGHT/2, 0, 1, 0 }
-		};
-
-
-		D3DXMatrixIdentity( &matBillboard );
-		D3DXMATRIXA16	matbill_tran;
-		// 0번 텍스처에 빌보드 텍스처를 올린다
-		g_pd3dDevice->SetTexture( 1, NULL );
-		g_pd3dDevice->SetFVF( MYVERTEX::FVF );
-
-		g_pd3dDevice->SetTexture( 0, speed_bar[0] );
-		D3DXMatrixTranslation(&matbill_tran,-10.5f,0.5f,0.0f);
-		matBillboard *= matbill_tran;
-		g_pd3dDevice->SetTransform( D3DTS_WORLD, &matBillboard );
-		g_pd3dDevice->DrawPrimitiveUP( D3DPT_TRIANGLESTRIP, 2, vtx, sizeof(MYVERTEX) );
-//		g_pd3dDevice->SetRenderState( D3DRS_ALPHATESTENABLE, FALSE );
-}
-
-VOID UI()
-{
-	D3DXMATRIX mat_Ortho;
-	D3DXMatrixIdentity(&mat_Ortho);
-	g_pd3dDevice->SetTransform(D3DTS_VIEW, &mat_Ortho);	
-	D3DXMatrixOrthoLH (&mat_Ortho,WINDOW_WIDTH,WINDOW_HEIGHT,0,1);
-	g_pd3dDevice->SetTransform(D3DTS_PROJECTION, &mat_Ortho);
-	DrawBillboard();
-	g_pd3dDevice->SetTransform( D3DTS_WORLD, &matWorld );
 }
 
 VOID Render()
@@ -432,7 +449,7 @@ VOID Render()
 		itemListDraw();
 		mMoving->getItem(myCharacter,itemList,BALL_REAL_SIZE,ITEM_REAL_SIZE);
 
-		UI();
+		DrawUi();
 		g_pd3dDevice->EndScene();
 	}
 	g_pd3dDevice->Present( NULL, NULL, NULL, NULL );
@@ -447,7 +464,7 @@ VOID beforeInitD3D(){
 	myCharacter = new Ball(START_LIFE,START_MANA,0,CHARACTER_MAX_LEVEL,( D3DXVECTOR3 )Pos,( D3DXVECTOR3 )Vel,( D3DXVECTOR3 )Vel);	
 	mMoving = new Moving(GRAVITY,REVERSE_GRAVITY,GROUND,MYSIZE,CEILING,THRESHOLD,BALLSPEED,GAMESPEED,ABSORBANCE,MINBOUNDX,MINBOUNDY,MINBOUNDZ,MAXBOUNDX,MAXBOUNDX,MAXBOUNDX);
 	itemList = new ItemsList();
-	m_Ui = new Ui();
+	m_Ui = new Ui(WINDOW_WIDTH,WINDOW_HEIGHT);
 }
 
 VOID afterRender(){
@@ -473,6 +490,24 @@ HRESULT initLoad(){
 	if(!SUCCEEDED(m_Ui->initBillboard(g_pd3dDevice,"normal_speed.png",&speed_bar[0]))){
 		return E_FAIL;
 	}
+	if(!SUCCEEDED(m_Ui->initBillboard(g_pd3dDevice,"red_speed.png",&speed_bar[1]))){
+		return E_FAIL;
+	}
+	if(!SUCCEEDED(m_Ui->initBillboard(g_pd3dDevice,"yellow_speed.png",&speed_bar[2]))){
+		return E_FAIL;
+	}
+	if(!SUCCEEDED(m_Ui->initBillboard(g_pd3dDevice,"hp.png",&speed_bar[3]))){
+		return E_FAIL;
+	}
+	if(!SUCCEEDED(m_Ui->initBillboard(g_pd3dDevice,"mp.png",&speed_bar[4]))){
+		return E_FAIL;
+	}
+	if(!SUCCEEDED(m_Ui->initBillboard(g_pd3dDevice,"def.png",&speed_bar[5]))){
+		return E_FAIL;
+	}
+	if(!SUCCEEDED(m_Ui->initBillboard(g_pd3dDevice,"black_rec.png",&speed_bar[6]))){
+		return E_FAIL;
+	}
 	return S_OK;
 }
 //-----------------------------------------------------------------------------
@@ -486,12 +521,19 @@ LRESULT WINAPI MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 	case WM_KEYDOWN:
 		switch( wParam )
 		{
+		case VK_SPACE:
+			if(myCharacter->spendMana(-10)){
+			myCharacter->setGround(false);
+			myCharacter->setVelocity(zero);
+			myCharacter->setVelocity(myCharacter->getVelocity()+ mEye*2.5f*GAMESPEED);
+			}
+			break;
 		case 'E':
 			break;
 		case 'Q':
 			if(cameraCase == 2){
 			myCharacter->setGround(false);
-			myCharacter->setVelocityY(myCharacter->getVelocity().y+0.3f);
+			myCharacter->setVelocityY(myCharacter->getVelocity().y+0.005f);
 			myCharacter->setPosition(myCharacter->getPosition()+myCharacter->getVelocity());
 			}
 			break;
@@ -528,7 +570,7 @@ LRESULT WINAPI MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 	case WM_LBUTTONDOWN:
 		myCharacter->setGround(false);
 		myCharacter->setVelocity(zero);
-		myCharacter->setVelocity(myCharacter->getVelocity()+ mEye*1.0f*GAMESPEED);
+		myCharacter->setVelocity(myCharacter->getVelocity()+ mEye*1.5f*GAMESPEED);
 		break;
 	case WM_DESTROY:
 		Cleanup();

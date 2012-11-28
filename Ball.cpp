@@ -7,12 +7,16 @@ Ball::Ball(int setLife,int setMana,int setWeight,int setMaxLevel,D3DXVECTOR3 set
 	level = 1;
 	maxLevel = setMaxLevel;
 	alive = true;
-	
+
 	life = setLife;
 	maxLife = setLife;
-	def = 0;
+
+	def = 20;
+	maxDef = 20;
+
 	mana = setMana;
 	maxMana = setMana;
+
 	weight = setWeight;
 	maxWeight = setWeight;
 
@@ -35,6 +39,9 @@ int Ball::hisMana(){
 }
 int Ball::hisWeight(){
 	return weight;
+}
+int Ball::hisDef(){
+	return def;
 }
 
 void Ball::setPosition(D3DXVECTOR3 xyz){
@@ -68,6 +75,18 @@ void Ball::setLife(int argu){
 		}
 	}
 }
+bool Ball::spendLife(int argu){
+	if(life+argu<0){
+		life = 0;
+		setAlive(false);
+		return false;
+	}
+	else{
+		life = life + argu;
+		return true;
+	}
+	return false;
+}
 void Ball::setMana(int argu){
 	if(argu>=0){
 		if(mana+argu>maxMana){
@@ -86,6 +105,16 @@ void Ball::setMana(int argu){
 		}
 	}
 }
+bool Ball::spendMana(int argu){
+	if(mana+argu<0){
+		return false;
+	}
+	else{
+		mana = mana + argu;
+		return true;
+	}
+	return false;
+}
 void Ball::setWeight(int argu){
 	if(argu>=0){
 		if(weight+argu>maxWeight){
@@ -96,7 +125,7 @@ void Ball::setWeight(int argu){
 		}
 	}
 	else{
-		if(weight+argu<0){
+		if(weight+argu<1){
 			weight = 1;
 		}
 		else{
@@ -104,7 +133,17 @@ void Ball::setWeight(int argu){
 		}
 	}
 }
-
+bool Ball::spendWeight(int argu){
+	if(weight+argu<1){
+		weight = 1;
+		return false;
+	}
+	else{
+		weight = weight + argu;
+		return true;
+	}
+	return true;
+}
 void Ball::upLevel(){
 	level++;
 	if(level>maxLevel){
@@ -117,6 +156,7 @@ void Ball::upLevel(){
 	mana = maxMana;
 	weight = maxWeight;
 }
+
 void Ball::downLevel(){
 	level--;
 	if(level<=0){
@@ -181,8 +221,18 @@ D3DXVECTOR3 Ball::getGoal(){
 	return ptGoal;
 }
 void Ball::setDefence(int argu){
-	if(def+argu > maxDef)
-		def = maxDef;
-	else
-		def += argu;
+	if(argu>0){
+		if(def+argu > maxDef)
+			def = maxDef;
+		else
+			def += argu;
+	}
+	else{
+		if(def+argu < 0){
+			life -= def + argu;
+		}
+		else{
+			def += argu;
+		}
+	}
 }

@@ -34,6 +34,7 @@ public:
 	int hisLife();
 	int hisMana();
 	int hisWeight();
+	int hisDef();
 	
 	D3DXVECTOR3 getPosition();
 	D3DXVECTOR3 getVelocity();
@@ -45,10 +46,17 @@ public:
 	void setMaxLife(int argu);
 	void setMaxMana(int argu);
 	void setMaxWeight(int argu);
+	void setMaxDef(int argu);
 
 	void setLife(int argu);
 	void setMana(int argu);
 	void setWeight(int argu);
+	void setDef(int argu);
+
+	bool spendLife(int argu);
+	bool spendMana(int argu);
+	bool spendWeight(int argu);
+	bool spendDef(int argu);
 
 	void setPosition(D3DXVECTOR3 xyz);
 	void setVelocity(D3DXVECTOR3 xyz);

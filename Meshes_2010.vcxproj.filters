@@ -95,6 +95,9 @@
     <ClInclude Include="Ui.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="Struct.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
