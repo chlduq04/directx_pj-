@@ -17,10 +17,16 @@
     <Filter Include="media">
       <UniqueIdentifier>{0396cf01-98a1-48ab-8ca4-1f4c00ddd668}</UniqueIdentifier>
     </Filter>
+    <Filter Include="xfileLoader">
+      <UniqueIdentifier>{4af5e77d-ec06-4d7e-be96-daee83138e3e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXUT\Optional\directx.ico">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sample.txt">
+      <Filter>header</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -52,6 +58,18 @@
       <Filter>project</Filter>
     </ClCompile>
     <ClCompile Include="Ui.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="CModel.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectInput.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="CAllocateHierarchy.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="Monai.cpp">
       <Filter>project</Filter>
     </ClCompile>
   </ItemGroup>
@@ -96,6 +114,24 @@
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="Struct.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="CAllocateHierarchy.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="CModel.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="DerivedStructs.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectInput.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="Macros.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="Monai.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>

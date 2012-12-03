@@ -36,6 +36,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|X64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -367,13 +368,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="DXUT\Optional\directx.ico" />
+    <None Include="sample.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="CAllocateHierarchy.cpp" />
     <ClCompile Include="CameraSetting.cpp" />
+    <ClCompile Include="CModel.cpp" />
     <ClCompile Include="Dball.cpp" />
+    <ClCompile Include="DirectInput.cpp" />
     <ClCompile Include="Items.cpp" />
     <ClCompile Include="ItemsList.cpp" />
+    <ClCompile Include="Monai.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Moving.cpp" />
     <ClCompile Include="Ui.cpp" />
@@ -384,9 +390,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ball.h" />
+    <ClInclude Include="CAllocateHierarchy.h" />
     <ClInclude Include="CameraSetting.h" />
+    <ClInclude Include="CModel.h" />
+    <ClInclude Include="DerivedStructs.h" />
+    <ClInclude Include="DirectInput.h" />
     <ClInclude Include="Items.h" />
     <ClInclude Include="ItemsList.h" />
+    <ClInclude Include="Macros.h" />
+    <ClInclude Include="Monai.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Moving.h" />
     <CLInclude Include="resource.h" />

@@ -25,7 +25,6 @@ private:
 	D3DXVECTOR3 ptVelocity;
 	D3DXVECTOR3 ptGoal;
 	
-
 public:
 	Ball();
 	Ball(int life,int mana,int weight,int setMaxLevel,D3DXVECTOR3 position,D3DXVECTOR3 velocity,D3DXVECTOR3 goal);

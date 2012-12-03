@@ -1,0 +1,16 @@
+getPositionMon()
+//		if(rand()%10 == 1&&!mon->isJump()){
+//			mon->setVelocity((mon->getGoal()-mon->getPosition())/250*speed);
+//			mon->setVelocityY(0.5f);
+//			mon->setJump(true);
+//		}
+//		else{
+//			mon->setVelocity((mon->getGoal()-mon->getPosition())/250*speed);
+//		}
+
+		//if( mon->getVelocity().y>0.2f ){
+		//	mon->setVelocityY(mon->getVelocity().y-(vGravity+rGravity)*bSpeed*4.0*speed);
+		//}
+		//else{
+		//	mon->setJump(false);
+		//}

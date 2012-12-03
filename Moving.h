@@ -3,6 +3,8 @@
 
 #include <d3dx9.h>
 #include <d3d9.h>
+#include <stdio.h>
+#include "Monster.h"
 #include "Ball.h"
 #include "ItemsList.h"
 
@@ -27,8 +29,21 @@ private:
 	float maxBoundy;
 	float maxBoundz;
 	float rCeiling;
+
+	bool wallxl;
+	bool wallxr;
+	bool wallyl;
+	bool wallyr;
+	bool wallzl;
+	bool wallzr;
+	float wall_position;
+	float wall_bounce;
+
+	float ActionStart;
+
 public:
 	Moving(float gravity,float reversegravity,float ground,float mysize,float ceiling,float threshold,float ballspeed,float gamespeed,float absorbance,float minboundx,float minboundy,float minboundz,float maxboundx,float maxboundy,float maxboundz);
+	void getPositionWall(Ball* cha,float speed,D3DXVECTOR3 wall);
 	void getPosition(Ball* cha,float speed);
 	void getItem(Ball* cha,ItemsList* itList,int mySize,int itemSize);
 	void crashMon(Ball* cha);

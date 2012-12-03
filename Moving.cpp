@@ -11,19 +11,29 @@ Moving::Moving(float gravity,float reversegravity,float ground,float mysize,floa
 	bSpeed = ballspeed;//공 속도
 	gSpeed = gamespeed;//게임속도
 	gAbsorbance = absorbance;
-
 	minBoundx = minboundx;
 	minBoundy = minboundy;
 	minBoundz = minboundz;
 	maxBoundx = maxboundx;
 	maxBoundy = maxboundy;
 	maxBoundz = maxboundz;
+
+	wallxr = false;
+	wallyr = false;
+	wallzr = false;
+	wallxl = false;
+	wallyl = false;
+	wallzl = false;
+	wall_position = 0.0f;
+	wall_bounce = 0;
+
+	ActionStart = -1.0f;
 }
 
 void Moving::getItem(Ball* cha,ItemsList* itList,int mySize,int itemSize){
 
 	Items* nowNode = itList->getStart(); 
-	
+
 	while(nowNode->getNext()!=itList->getEnd()){
 		nowNode=nowNode->getNext();
 
@@ -114,5 +124,70 @@ void Moving::getPosition(Ball* cha,float speed){
 	{
 		cha->setPositionX(maxBoundx - ( mySize * 0.5f ));
 		cha->setVelocityX(-(cha->getVelocity().x) * ( 1 - gAbsorbance )*speed);
+	}
+
+	if(wallxr){
+		if( cha->getPosition().x > wall_position - ( mySize * 0.5f ) )
+		{
+			cha->setPositionX(wall_position - ( mySize * 0.5f ));
+			cha->setVelocityX(-(cha->getVelocity().x) * ( 1 - gAbsorbance )*speed);
+		}
+	}
+	if(wallxl){
+		if( cha->getPosition().x < wall_position + ( mySize * 0.5f ) )
+		{
+			cha->setPositionX(wall_position + ( mySize * 0.5f ));
+			cha->setVelocityX(-(cha->getVelocity().x) * ( 1 - gAbsorbance )*speed);
+		}
+	}
+	if(wallyr){
+	}
+	if(wallyl){
+	}
+	if(wallzr){
+		if( cha->getPosition().z > minBoundz - ( mySize * 0.5f ) )
+		{
+			cha->setPositionZ(minBoundz - ( mySize * 0.5f ));
+			cha->setVelocityZ(-(cha->getVelocity().z) * ( 1 - gAbsorbance )*speed);
+		}
+	}
+	if(wallzl){
+		if( cha->getPosition().z < minBoundz + ( mySize * 0.5f ) )
+		{
+			cha->setPositionZ(minBoundz + ( mySize * 0.5f ));
+			cha->setVelocityZ(-(cha->getVelocity().z) * ( 1 - gAbsorbance )*speed);
+		}
+
+	}
+}
+
+void Moving::getPositionWall(Ball* cha,float speed,D3DXVECTOR3 wall){
+	wallxl = false;
+	wallxr = false;
+	wallyl = false;
+	wallyr = false;
+	wallzl = false;
+	wallzr = false;
+
+	if(wall.x!=0){
+		wall_position = wall.x;
+		if(cha->getPosition().x>wall_position)
+			wallxr = true;
+		else
+			wallxl = true;
+	}
+	else if(wall.y!=0){
+		wall_position = wall.y;
+		if(cha->getPosition().y>wall_position)
+			wallyr = true;
+		else
+			wallyl = true;
+	}
+	else if(wall.z!=0){
+		wall_position = wall.z;
+		if(cha->getPosition().z>wall_position)
+			wallzr = true;
+		else
+			wallzl = true;
 	}
 }

@@ -8,12 +8,5 @@
 //-----------------------------------------------------------------------------
 // Camera
 //-----------------------------------------------------------------------------
-HWND					g_hwnd = NULL;
 
-
-ZCamera*				g_pCamera = NULL;
-DWORD					g_cxHeight = 0;
-DWORD					g_czHeight = 0;
-DWORD					g_dwMouseX = 0;
-DWORD					g_dwMouseY = 0;
 #endif 

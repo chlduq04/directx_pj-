@@ -9,6 +9,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+
 //-----------------------------------------------------------------------------
 // Header Files
 //-----------------------------------------------------------------------------
@@ -17,12 +18,29 @@
 #include "Settings.h"
 #include "Xfile.h"
 #include "Ball.h"
-#include "Monster.h"
 #include "Moving.h"
 #include "Items.h"
 #include "ItemsList.h"
 #include "Ui.h"
 #include "Struct.h"
+#include "CModel.h"
+#include "Macros.h"
+#include "DirectInput.h"
+#include "Monster.h"
+#include "Monai.h"
+
+HWND					g_hwnd = NULL;
+
+ZCamera*				g_pCamera = NULL;
+DWORD					g_cxHeight = 0;
+DWORD					g_czHeight = 0;
+DWORD					g_dwMouseX = 0;
+DWORD					g_dwMouseY = 0;
+//-----------------------------------------------------------------------------
+// Drow Animation
+//-----------------------------------------------------------------------------
+CModel*					g_pModel		 = NULL; // A model object to work with
+DirectInput*			g_pDI			 = NULL; // DirectInput instance
 //-----------------------------------------------------------------------------
 // Drow Billboard
 //-----------------------------------------------------------------------------
@@ -32,7 +50,6 @@ MYVERTEX vtx[4] = {
 	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/120, 0, 1, 1},
 	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2, 0, 1, 0}
 };
-
 MYVERTEX hpVtx[4] = {
 	{WINDOW_WIDTH/2-WINDOW_WIDTH/20, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/50, 0, 0, 1},
 	{WINDOW_WIDTH/2-WINDOW_WIDTH/20, -WINDOW_HEIGHT/2, 0, 0, 0 },
@@ -51,7 +68,6 @@ D3DXMATRIX				matBillboard;
 // Items Setting
 //-----------------------------------------------------------------------------
 float					m_fStartTime; 
-
 ItemsList*				itemList;		
 Items*					item1;
 Items*					item2;
@@ -75,7 +91,6 @@ D3DXVECTOR4             gLightColor(1.0f, 1.0f, 1.0f, 1.0f);//빛의 색
 D3DXVECTOR3				zero(0.0f,0.0f,0.0f);
 
 Ball*					myCharacter;
-Monster*				mMonster1;
 
 Moving*					mMoving;
 
@@ -87,6 +102,8 @@ D3DXVECTOR3				mEye;
 
 D3DXVECTOR4 Pos( START_POSITIONX, START_POSITIONY, START_POSITIONZ, 1.0f );
 D3DXVECTOR4 Vel( START_VELOCITYX, START_VELOCITYY, START_VELOCITYZ, 0.0f );
+D3DXVECTOR4 MonPos( START_MON_POSITIONX, START_MON_POSITIONY, START_MON_POSITIONZ, 1.0f );
+D3DXVECTOR4 MonVel( START_VELOCITYX, START_VELOCITYY, START_VELOCITYZ, 0.0f );
 
 //-----------------------------------------------------------------------------
 // World Matrix
@@ -109,10 +126,16 @@ DWORD					g_dwNumMaterials = 0L;   // Number of mesh materials
 //-----------------------------------------------------------------------------
 Xfile* drawXfile;
 Xfile* mapBox;
+
+//-----------------------------------------------------------------------------
+// Monster
+//-----------------------------------------------------------------------------
+Monster* first_mon;
+Monai* m_Ai;
 //-----------------------------------------------------------------------------
 // InitD3D
 //-----------------------------------------------------------------------------
-HRESULT InitD3D( HWND hWnd )
+inline HRESULT InitD3D( HWND hWnd )
 {
 	// Create the D3D object.
 	if( NULL == ( g_pD3D = Direct3DCreate9( D3D_SDK_VERSION ) ) )
@@ -141,22 +164,11 @@ HRESULT InitD3D( HWND hWnd )
 	g_pd3dDevice->SetRenderState( D3DRS_ZENABLE, TRUE );
 	return S_OK;
 }
-
-
-HRESULT initCharacter(){
-	if(FAILED(drawXfile->InitballMesh(g_pd3dDevice,"FireBase.tga","Flame.tga","FireBall.fx","FireBall.x"))){
-		return E_FAIL;
-	}
-	if(FAILED(mapBox->InitballMesh(g_pd3dDevice,"FieldstoneNoisy.tga","FieldstoneBumpDOT3.tga","Monster.fx","Monster.x"))){
-		return E_FAIL;
-	}
-	return S_OK;
-}
 //-----------------------------------------------------------------------------
 // 각 행렬 제어, 카메라 세팅
 //-----------------------------------------------------------------------------
 
-VOID SetupCamera()
+inline VOID SetupCamera()
 {
 	/// 월드 행렬 설정
 	D3DXMatrixIdentity( &matWorld );
@@ -178,7 +190,7 @@ VOID SetupCamera()
 * 마우스 처리
 *------------------------------------------------------------------------------
 */
-VOID InitGeometry()
+inline VOID InitGeometry()
 {
 	SetupCamera();
 	POINT	pt;
@@ -191,7 +203,7 @@ VOID InitGeometry()
 * 입력 처리
 *------------------------------------------------------------------------------
 */
-void ProcessInputs( void )
+inline void ProcessInputs( void )
 {
 	POINT	pt;
 	GetCursorPos( &pt );
@@ -231,7 +243,7 @@ void ProcessInputs( void )
 
 
 }
-VOID SetupLight()
+inline VOID SetupLight()
 {
 	D3DMATERIAL9 mtrl;
 	ZeroMemory( &mtrl, sizeof(D3DMATERIAL9) );
@@ -269,7 +281,7 @@ VOID SetupLight()
 // Name: Cleanup()
 // Desc: Releases all previously initialized objects
 //-----------------------------------------------------------------------------
-VOID Cleanup()
+inline VOID Cleanup()
 {
 	if( g_pMeshMaterials != NULL )
 		delete[] g_pMeshMaterials;
@@ -307,7 +319,7 @@ VOID Cleanup()
 // Name: Render()
 // Desc: Draws the scene
 //-----------------------------------------------------------------------------
-VOID setItemList(){
+inline VOID setItemList(){
 	float NowTime = (float)timeGetTime() * 0.001f;
 	if( NowTime-m_fStartTime >=  1.0f){
 		if((rand()%10==5)&&(itemList->getCount()<10)){
@@ -333,7 +345,7 @@ VOID setItemList(){
 	}
 }
 
-VOID itemListDraw(){
+inline VOID itemListDraw(){
 	float NowTime = (float)timeGetTime() * 0.001f;
 	Items* nowNode = itemList->getStart(); 
 	while(nowNode->getNext()!=itemList->getEnd()){
@@ -353,7 +365,7 @@ VOID itemListDraw(){
 	}
 }
 
-VOID DrawUi(){
+inline VOID DrawUi(){
 	m_Ui->setUI(g_pd3dDevice);
 	int velocity = abs((int)D3DXVec3Length(&myCharacter->getVelocity()));
 	if(velocity>50){
@@ -402,12 +414,17 @@ VOID DrawUi(){
 
 }
 
-VOID Render()
+inline VOID Render()
 {
 	g_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB( 0, 0, 0 ), 1.0f, 0 );
 	SetupLight();
 	if( SUCCEEDED( g_pd3dDevice->BeginScene() ) )
 	{
+
+		//-----------------------------------------------------------------------------
+		// Camera Setting
+		//-----------------------------------------------------------------------------
+
 		if(cameraCase == 1){
 			D3DXVECTOR3 vLookatPt(myWorld._41,myWorld._42, myWorld._43);
 			D3DXMatrixLookAtLH(&mView,g_pCamera->GetEye(),&vLookatPt,g_pCamera->GetUp());
@@ -425,9 +442,15 @@ VOID Render()
 			mEye = vLookatPt - vEyePt;
 		}
 
+		//-----------------------------------------------------------------------------
+		// View Setting
+		//-----------------------------------------------------------------------------
 		drawXfile->set_view(mView);
 		mapBox->set_view(mView);
 
+		//-----------------------------------------------------------------------------
+		// Character Setting
+		//-----------------------------------------------------------------------------
 		mMoving->getPosition(myCharacter,GSpeed);	
 		D3DXMatrixIdentity(&myWorld);
 		D3DXMatrixScaling(&myScale,BALL_SIZE,BALL_SIZE,BALL_SIZE);
@@ -438,6 +461,21 @@ VOID Render()
 		myWorld *= myTrans;
 		drawXfile->DrawMyballShader(myWorld);	
 
+		//-----------------------------------------------------------------------------
+		// Monster Setting
+		//-----------------------------------------------------------------------------
+		
+		m_Ai->getPositionMon();
+		D3DXMatrixIdentity(&mBox);
+		D3DXMatrixScaling(&myScale,MON_SIZE,MON_SIZE,MON_SIZE);
+		D3DXMatrixTranslation(&myTrans,first_mon->getPosition().x,first_mon->getPosition().y,first_mon->getPosition().z);
+		mBox *= myScale;
+		mBox *= myTrans;
+		mapBox->DrawMyballShader(mBox);	
+
+		//-----------------------------------------------------------------------------
+		// Room Setting
+		//-----------------------------------------------------------------------------
 		D3DXMatrixIdentity(&mBox);
 		D3DXMatrixScaling(&myScale,3.2f,0.15f,3.2f);
 		D3DXMatrixTranslation(&myTrans,80.0f,-5.2f,80.0f);
@@ -455,38 +493,50 @@ VOID Render()
 	g_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 }
 
-VOID beforeInitD3D(){
+inline VOID afterInitD3D(){
 	m_fStartTime = (float)timeGetTime() * 0.001f;
 	srand((unsigned)GetTickCount());
 	g_pCamera = new ZCamera;
 	drawXfile = new Xfile();
 	mapBox = new Xfile();
 	myCharacter = new Ball(START_LIFE,START_MANA,0,CHARACTER_MAX_LEVEL,( D3DXVECTOR3 )Pos,( D3DXVECTOR3 )Vel,( D3DXVECTOR3 )Vel);	
-	mMoving = new Moving(GRAVITY,REVERSE_GRAVITY,GROUND,MYSIZE,CEILING,THRESHOLD,BALLSPEED,GAMESPEED,ABSORBANCE,MINBOUNDX,MINBOUNDY,MINBOUNDZ,MAXBOUNDX,MAXBOUNDX,MAXBOUNDX);
+	mMoving = new Moving(GRAVITY,REVERSE_GRAVITY,GROUND,MYSIZE,CEILING,THRESHOLD,BALLSPEED,GAMESPEED,ABSORBANCE,MINBOUNDX,MINBOUNDY,MINBOUNDZ,MAXBOUNDX,MAXBOUNDY,MAXBOUNDZ);
 	itemList = new ItemsList();
+	g_pModel = new CModel(g_pd3dDevice);
+	first_mon = new Monster(MON_HEALTH,10,(D3DXVECTOR3)MonPos,(D3DXVECTOR3)MonVel,(D3DXVECTOR3)MonVel);
+	m_Ai = new Monai(first_mon,myCharacter,MAXBOUNDX,MAXBOUNDZ,MINBOUNDX,MINBOUNDZ,GAMESPEED,MON_REAL_SIZE);
 	m_Ui = new Ui(WINDOW_WIDTH,WINDOW_HEIGHT);
 }
 
-VOID afterRender(){
+inline VOID afterRender(){
 	delete g_pCamera;
 	delete drawXfile;
 	delete mapBox;
 	delete myCharacter;
 	delete mMoving;
 	delete itemList;
+	delete g_pModel;
+	delete first_mon;
+	delete m_Ai;
 	delete m_Ui;
 }
 
-VOID beforeRender(){
+inline VOID beforeRender(){
 	InitGeometry();
 	drawXfile->set_viewprojtexture(matProj,gLightColor);
 	mapBox->set_viewprojtexture(matProj,gLightColor);
 	
 }
-HRESULT initLoad(){
-	if(!SUCCEEDED(initCharacter())){
+inline HRESULT initLoad(){
+	/*---------init character---------*/
+	if(FAILED(drawXfile->InitballMesh(g_pd3dDevice,"FireBase.tga","Flame.tga","FireBall.fx","FireBall.x"))){
 		return E_FAIL;
 	}
+	if(FAILED(mapBox->InitballMesh(g_pd3dDevice,"FieldstoneNoisy.tga","FieldstoneBumpDOT3.tga","Monster.fx","Monster.x"))){
+		return E_FAIL;
+	}
+
+	/*---------init billboard---------*/
 	if(!SUCCEEDED(m_Ui->initBillboard(g_pd3dDevice,"normal_speed.png",&speed_bar[0]))){
 		return E_FAIL;
 	}
@@ -514,7 +564,7 @@ HRESULT initLoad(){
 // Name: MsgProc()
 // Desc: The window's message handler
 //-----------------------------------------------------------------------------
-LRESULT WINAPI MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+inline LRESULT WINAPI MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
 	switch( msg )
 	{
@@ -603,11 +653,17 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 	HWND hWnd = CreateWindow( "D3D Tutorial", "D3D Tutorial 06: Meshes",
 		WS_OVERLAPPEDWINDOW, 100, 100, WINDOW_WIDTH, WINDOW_HEIGHT,
 		NULL, NULL, wc.hInstance, NULL );
+	
 	g_hwnd = hWnd;
-	beforeInitD3D();
+
 	// Initialize Direct3D
 	if( SUCCEEDED( InitD3D( hWnd ) ) )
 	{
+	afterInitD3D();
+	//  g_pDI = DirectInput::GetInstance();
+	//	g_pDI->InitDirectInput(hInst,hWnd);
+	//	g_pDI->CreateKeyboardDevice(DISCL_BACKGROUND|DISCL_NONEXCLUSIVE);
+
 		// Create the scene geometry
 		if(SUCCEEDED( initLoad()))
 		{
