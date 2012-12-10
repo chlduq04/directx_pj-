@@ -37,7 +37,6 @@ CModel::~CModel()
 {
 	//Delete Animation Controller
 	SAFE_RELEASE(m_pAnimController)
-	
 	//if there is a frame hierarchyo
 	if(m_pFrameRoot)
 	{
@@ -46,10 +45,9 @@ CModel::~CModel()
 		D3DXFrameDestroy(m_pFrameRoot, &Alloc);
 		m_pFrameRoot = NULL;
 	}
-
 	//Delete the bones
 	SAFE_DELETE_ARRAY(m_pBoneMatrices)
-
+	SAFE_DELETE_ARRAY(m_pFrameRoot)
 	//Make the Device not point to the other device
 	m_pd3dDevice = NULL;
 }
@@ -58,7 +56,7 @@ CModel::~CModel()
 // Setup Functions
 //////////////////////////////////////////////////////////////////////////
 
-void CModel::LoadXFile(char* strFileName)
+HRESULT CModel::LoadXFile(char* strFileName)
 {
 	//Allocation class
 	CAllocateHierarchy Alloc;
@@ -72,7 +70,7 @@ void CModel::LoadXFile(char* strFileName)
 										&m_pFrameRoot,		// Frame hierarchy
 										&m_pAnimController)))// Animation Controller
 	{
-		MessageBox(NULL, strFileName, "Model Load Error", MB_OK);
+		return E_FAIL;
 	}
 
 	if(m_pAnimController)
@@ -88,9 +86,9 @@ void CModel::LoadXFile(char* strFileName)
 		ZeroMemory(m_pBoneMatrices, sizeof(D3DXMATRIX)*m_uMaxBones);
 
 		//Calculate the Bounding Sphere
-		D3DXFrameCalculateBoundingSphere(m_pFrameRoot, 
-			&m_vecCenter, &m_fRadius);
+		D3DXFrameCalculateBoundingSphere(m_pFrameRoot, &m_vecCenter, &m_fRadius);
 	}
+	return S_OK;
 }
 
 void CModel::SetupBoneMatrices(LPFRAME pFrame, LPD3DXMATRIX pParentMatrix)

@@ -35,9 +35,9 @@
 //-----------------------------------------------------------------------------
 // Mon
 //-----------------------------------------------------------------------------
-#define START_MON_POSITIONX 130.0f
-#define START_MON_POSITIONY 0.0f
-#define START_MON_POSITIONZ 130.0f
+#define START_MON_POSITIONX 160.0f
+#define START_MON_POSITIONY 30.0f
+#define START_MON_POSITIONZ 160.0f
 
 #define START_MON_VELOCITYX 0.0f
 #define START_MON_VELOCITYY 0.0f
@@ -70,6 +70,8 @@
 
 #define WINDOW_WIDTH 600
 #define WINDOW_HEIGHT 600
+#define BOUNCE_LOST 0.1f
+#define BOUNCE_TRANSFER 0.05f
 
 float GSpeed = GAMESPEED;
 

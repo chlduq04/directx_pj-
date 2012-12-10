@@ -29,7 +29,10 @@ private:
 	float maxBoundy;
 	float maxBoundz;
 	float rCeiling;
-
+	float monSize;
+	float bounceLost;
+	float bounceTrans;
+	
 	bool wallxl;
 	bool wallxr;
 	bool wallyl;
@@ -42,11 +45,11 @@ private:
 	float ActionStart;
 
 public:
-	Moving(float gravity,float reversegravity,float ground,float mysize,float ceiling,float threshold,float ballspeed,float gamespeed,float absorbance,float minboundx,float minboundy,float minboundz,float maxboundx,float maxboundy,float maxboundz);
+	Moving(float gravity,float bouncelost,float bouncetrans,float reversegravity,float ground,float mysize,float monsize,float ceiling,float threshold,float ballspeed,float gamespeed,float absorbance,float minboundx,float minboundy,float minboundz,float maxboundx,float maxboundy,float maxboundz);
 	void getPositionWall(Ball* cha,float speed,D3DXVECTOR3 wall);
 	void getPosition(Ball* cha,float speed);
 	void getItem(Ball* cha,ItemsList* itList,int mySize,int itemSize);
-	void crashMon(Ball* cha);
+	void crashMon(Ball* cha, Monster* mon);
 };
 
 #endif

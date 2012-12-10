@@ -1,11 +1,12 @@
 #include "Moving.h"
 
-Moving::Moving(float gravity,float reversegravity,float ground,float mysize,float ceiling,float threshold,float ballspeed,float gamespeed,float absorbance,float minboundx,float minboundy,float minboundz,float maxboundx,float maxboundy,float maxboundz){
+Moving::Moving(float gravity,float bouncelost,float bouncetrans,float reversegravity,float ground,float mysize,float monsize,float ceiling,float threshold,float ballspeed,float gamespeed,float absorbance,float minboundx,float minboundy,float minboundz,float maxboundx,float maxboundy,float maxboundz){
 	bCount = 0;
 	vGravity = gravity;
 	rGravity = reversegravity;
 	yGround = ground;
 	mySize = mysize;
+	monSize = monsize;
 	rCeiling = ceiling;
 	rThreshold = threshold;
 	bSpeed = ballspeed;//°ø ¼Óµµ
@@ -17,7 +18,8 @@ Moving::Moving(float gravity,float reversegravity,float ground,float mysize,floa
 	maxBoundx = maxboundx;
 	maxBoundy = maxboundy;
 	maxBoundz = maxboundz;
-
+	bounceLost = bouncelost;
+	bounceTrans = bouncetrans;
 	wallxr = false;
 	wallyr = false;
 	wallzr = false;
@@ -189,5 +191,37 @@ void Moving::getPositionWall(Ball* cha,float speed,D3DXVECTOR3 wall){
 			wallzr = true;
 		else
 			wallzl = true;
+	}
+}
+void Moving::crashMon(Ball* cha, Monster* mon){
+	if(mon->isAlive()==true)//is alive?
+	{
+		D3DXVECTOR3 vOneToTwo = cha->getPosition() - mon->getPosition();
+		float DistSq = D3DXVec3LengthSq( &vOneToTwo );
+
+		if( DistSq < (monSize+mySize) * (monSize+mySize) )
+		{
+			D3DXVec3Normalize( &vOneToTwo, &vOneToTwo );
+			float fImpact = D3DXVec3Dot( &vOneToTwo, &mon->getVelocity() ) - D3DXVec3Dot( &vOneToTwo, &cha->getVelocity());	
+			
+			if( fImpact > 0.0f )
+			{
+				D3DXVECTOR3 vVelocityOneN = ( 1 - bounceLost ) * D3DXVec3Dot( &vOneToTwo, &mon->getVelocity() ) * vOneToTwo;
+				D3DXVECTOR3 vVelocityOneT = ( 1 - bounceLost ) * mon->getVelocity() - vVelocityOneN;
+
+				D3DXVECTOR3 vVelocityTwoN = ( 1 - bounceLost ) * D3DXVec3Dot( &vOneToTwo, &cha->getVelocity()) * vOneToTwo;
+				D3DXVECTOR3 vVelocityTwoT = ( 1 - bounceLost ) * cha->getVelocity() - vVelocityTwoN;
+
+				mon->setVelocity(vVelocityOneT - vVelocityOneN * ( 1 - bounceTrans ) + vVelocityTwoN * bounceTrans);
+				cha->setVelocity(vVelocityTwoT - vVelocityTwoN * ( 1 - bounceTrans ) + vVelocityOneN * bounceTrans);
+
+				float fDistanceToMove = ( monSize - sqrtf( DistSq ) ) * 0.5f;
+				mon->setPostion(mon->getPosition()-vOneToTwo * fDistanceToMove);
+				cha->setPosition(cha->getPosition()+vOneToTwo * fDistanceToMove);
+				if(D3DXVec3LengthSq(&cha->getVelocity())>5.0f)
+				{
+				}
+			}
+		}
 	}
 }

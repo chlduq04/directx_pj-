@@ -25,14 +25,13 @@
 #include "Struct.h"
 #include "CModel.h"
 #include "Macros.h"
-#include "DirectInput.h"
 #include "Monster.h"
 #include "Monai.h"
 
 HWND					g_hwnd = NULL;
 
 ZCamera*				g_pCamera = NULL;
-DWORD					g_cxHeight = 0;
+DWORD					g_cxHeight = 0;	
 DWORD					g_czHeight = 0;
 DWORD					g_dwMouseX = 0;
 DWORD					g_dwMouseY = 0;
@@ -40,7 +39,6 @@ DWORD					g_dwMouseY = 0;
 // Drow Animation
 //-----------------------------------------------------------------------------
 CModel*					g_pModel		 = NULL; // A model object to work with
-DirectInput*			g_pDI			 = NULL; // DirectInput instance
 //-----------------------------------------------------------------------------
 // Drow Billboard
 //-----------------------------------------------------------------------------
@@ -149,7 +147,7 @@ inline HRESULT InitD3D( HWND hWnd )
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
 	d3dpp.EnableAutoDepthStencil = TRUE;
-	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
 
 	// Create the D3DDevice
 	if( FAILED( g_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
@@ -159,9 +157,13 @@ inline HRESULT InitD3D( HWND hWnd )
 		return E_FAIL;
 	}
 
-	g_pd3dDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
+	g_pd3dDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE);
 	g_pd3dDevice->SetRenderState( D3DRS_LIGHTING,TRUE );
 	g_pd3dDevice->SetRenderState( D3DRS_ZENABLE, TRUE );
+	g_pd3dDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+	g_pd3dDevice->SetRenderState( D3DRS_SRCBLEND,   D3DBLEND_SRCALPHA );
+	g_pd3dDevice->SetRenderState( D3DRS_DESTBLEND,  D3DBLEND_INVSRCALPHA );
+
 	return S_OK;
 }
 //-----------------------------------------------------------------------------
@@ -319,9 +321,8 @@ inline VOID Cleanup()
 // Name: Render()
 // Desc: Draws the scene
 //-----------------------------------------------------------------------------
-inline VOID setItemList(){
-	float NowTime = (float)timeGetTime() * 0.001f;
-	if( NowTime-m_fStartTime >=  1.0f){
+inline VOID setItemList(double time){
+	if( time-m_fStartTime >=  1.0f){
 		if((rand()%10==5)&&(itemList->getCount()<10)){
 			D3DXVECTOR3 iPosition(rand()%100,rand()%100,rand()%100);
 			char* item;
@@ -339,23 +340,22 @@ inline VOID setItemList(){
 				item = "hp";
 				break;
 			}
-			itemList->setNode(new Items(item,1,iPosition,itemSerialNum++,NowTime));
+			itemList->setNode(new Items(item,1,iPosition,itemSerialNum++,time));
 		}
-		m_fStartTime = NowTime; 
+		m_fStartTime = time; 
 	}
 }
 
-inline VOID itemListDraw(){
-	float NowTime = (float)timeGetTime() * 0.001f;
+inline VOID itemListDraw(double time){
 	Items* nowNode = itemList->getStart(); 
 	while(nowNode->getNext()!=itemList->getEnd()){
 		nowNode=nowNode->getNext();
-		if(NowTime-(nowNode->getTime())>20){
+		if(time-(nowNode->getTime())>20){
 			itemList->delNode(nowNode->getNumber());
 		}else{
 			D3DXMatrixIdentity(&iWorld);
 			D3DXMatrixScaling(&myScale,0.1f,0.1f,0.1f);
-			D3DXMatrixRotationY(&myRotate, timeGetTime() / 1000.0f );
+			D3DXMatrixRotationY(&myRotate, time);
 			D3DXMatrixTranslation(&myTrans,nowNode->getPosition().x,nowNode->getPosition().y,nowNode->getPosition().z);
 			iWorld *= myScale;
 			iWorld *= myRotate;
@@ -414,7 +414,14 @@ inline VOID DrawUi(){
 
 }
 
-inline VOID Render()
+inline void modelLeader(float time){
+	if(g_pModel){
+		g_pModel->Update(time);
+		g_pModel->Draw();
+	}
+}
+
+inline VOID Render(double time)
 {
 	g_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB( 0, 0, 0 ), 1.0f, 0 );
 	SetupLight();
@@ -465,7 +472,7 @@ inline VOID Render()
 		// Monster Setting
 		//-----------------------------------------------------------------------------
 		
-		m_Ai->getPositionMon();
+		m_Ai->getPositionMon(time);
 		D3DXMatrixIdentity(&mBox);
 		D3DXMatrixScaling(&myScale,MON_SIZE,MON_SIZE,MON_SIZE);
 		D3DXMatrixTranslation(&myTrans,first_mon->getPosition().x,first_mon->getPosition().y,first_mon->getPosition().z);
@@ -482,11 +489,14 @@ inline VOID Render()
 		mBox *= myScale;
 		mBox *= myTrans;
 		mapBox->DrawMyballShader(mBox);
-		
-		setItemList();
-		itemListDraw();
-		mMoving->getItem(myCharacter,itemList,BALL_REAL_SIZE,ITEM_REAL_SIZE);
+		g_pModel->setBoundingSphereCenter(D3DXVECTOR3(0.0f,0.0f,0.0f));
+		modelLeader(time);
 
+		
+		setItemList(time);
+		itemListDraw(time);
+		mMoving->getItem(myCharacter,itemList,BALL_REAL_SIZE,ITEM_REAL_SIZE);
+		mMoving->crashMon(myCharacter,first_mon);
 		DrawUi();
 		g_pd3dDevice->EndScene();
 	}
@@ -500,11 +510,11 @@ inline VOID afterInitD3D(){
 	drawXfile = new Xfile();
 	mapBox = new Xfile();
 	myCharacter = new Ball(START_LIFE,START_MANA,0,CHARACTER_MAX_LEVEL,( D3DXVECTOR3 )Pos,( D3DXVECTOR3 )Vel,( D3DXVECTOR3 )Vel);	
-	mMoving = new Moving(GRAVITY,REVERSE_GRAVITY,GROUND,MYSIZE,CEILING,THRESHOLD,BALLSPEED,GAMESPEED,ABSORBANCE,MINBOUNDX,MINBOUNDY,MINBOUNDZ,MAXBOUNDX,MAXBOUNDY,MAXBOUNDZ);
+	mMoving = new Moving(GRAVITY,BOUNCE_LOST,BOUNCE_TRANSFER,REVERSE_GRAVITY,GROUND,MYSIZE,MON_REAL_SIZE,CEILING,THRESHOLD,BALLSPEED,GAMESPEED,ABSORBANCE,MINBOUNDX,MINBOUNDY,MINBOUNDZ,MAXBOUNDX,MAXBOUNDY,MAXBOUNDZ);
 	itemList = new ItemsList();
 	g_pModel = new CModel(g_pd3dDevice);
 	first_mon = new Monster(MON_HEALTH,10,(D3DXVECTOR3)MonPos,(D3DXVECTOR3)MonVel,(D3DXVECTOR3)MonVel);
-	m_Ai = new Monai(first_mon,myCharacter,MAXBOUNDX,MAXBOUNDZ,MINBOUNDX,MINBOUNDZ,GAMESPEED,MON_REAL_SIZE);
+	m_Ai = new Monai(first_mon,myCharacter,MAXBOUNDX,MAXBOUNDY,MAXBOUNDZ,MINBOUNDX,MINBOUNDY,MINBOUNDZ,GAMESPEED,MON_REAL_SIZE);
 	m_Ui = new Ui(WINDOW_WIDTH,WINDOW_HEIGHT);
 }
 
@@ -558,6 +568,10 @@ inline HRESULT initLoad(){
 	if(!SUCCEEDED(m_Ui->initBillboard(g_pd3dDevice,"black_rec.png",&speed_bar[6]))){
 		return E_FAIL;
 	}
+	/*---------init monster.x---------*/
+	//if(!SUCCEEDED(g_pModel->LoadXFile("boxmodel.X"))){
+	//	return E_FAIL;
+	//}
 	return S_OK;
 }
 //-----------------------------------------------------------------------------
@@ -608,7 +622,12 @@ inline LRESULT WINAPI MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 			else if(cameraCase == 2)
 				cameraCase =1;
 			break;
-
+		case 'K':
+			g_pModel->SetCurrentAnimation(g_pModel->GetCurrentAnimation()+1);
+			break;
+		case 'L':
+			g_pModel->SetCurrentAnimation(g_pModel->GetCurrentAnimation()-1);
+			break;
 		}
 		break;
 	case WM_RBUTTONDOWN :
@@ -660,9 +679,6 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 	if( SUCCEEDED( InitD3D( hWnd ) ) )
 	{
 	afterInitD3D();
-	//  g_pDI = DirectInput::GetInstance();
-	//	g_pDI->InitDirectInput(hInst,hWnd);
-	//	g_pDI->CreateKeyboardDevice(DISCL_BACKGROUND|DISCL_NONEXCLUSIVE);
 
 		// Create the scene geometry
 		if(SUCCEEDED( initLoad()))
@@ -683,7 +699,7 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 					DispatchMessage( &msg );
 				}
 				else{
-					Render();
+					Render((float)timeGetTime() * 0.001f);
 					ProcessInputs();
 				}
 			}

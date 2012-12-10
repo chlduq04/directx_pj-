@@ -15,7 +15,7 @@ VOID Ui::setUI(LPDIRECT3DDEVICE9 device)
 	D3DXMATRIX mat_Ortho;
 	D3DXMatrixIdentity(&mat_Ortho);
 	device->SetTransform(D3DTS_VIEW, &mat_Ortho);	
-	D3DXMatrixOrthoLH (&mat_Ortho,win_width,win_height,0,1);
+	D3DXMatrixOrthoLH (&mat_Ortho,win_width,win_height,0,10);
 	device->SetTransform(D3DTS_PROJECTION, &mat_Ortho);
 
 	device->SetRenderState( D3DRS_ALPHABLENDENABLE,   TRUE );
