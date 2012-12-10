@@ -1,25 +1,26 @@
-﻿빌드 시작: 2012-12-10 오후 4:47:52
+﻿빌드 시작: 2012-12-11 오전 1:14:01
      1>2 노드의 "C:\Users\ouchoi\Documents\Visual Studio 2010\Projects\DirectXSamples\Meshes\Meshes_2010.vcxproj" 프로젝트(build 대상)입니다.
      1>InitializeBuildStatus:
          "AlwaysCreate"이(가) 지정되었기 때문에 "Debug\Meshes.unsuccessfulbuild"을(를) 만들고 있습니다.
        ClCompile:
-         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IDXUT\Core /IDXUT\Optional /ZI /nologo /W4 /WX- /Od /Oi /Oy- /D WIN32 /D _DEBUG /D DEBUG /D PROFILE /D _WINDOWS /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Dball.cpp  
-         Dball.cpp
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\zcamera.h(21): warning C4324: 'ZCamera' : __declspec(align()) 때문에 구조체가 채워졌습니다.
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IDXUT\Core /IDXUT\Optional /ZI /nologo /W4 /WX- /Od /Oi /Oy- /D WIN32 /D _DEBUG /D DEBUG /D PROFILE /D _WINDOWS /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Missile.cpp  
+         Missile.cpp
      1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monster.h(44): warning C4244: 'return' : 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(220): warning C4244: '+=' : 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(221): warning C4244: '+=' : 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(332): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(332): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(332): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(348): warning C4244: '인수' : 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(350): warning C4244: '=' : 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(363): warning C4244: '인수' : 'double'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(375): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(498): warning C4244: '인수' : 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(503): warning C4244: '인수' : 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(503): warning C4244: '인수' : 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(348): warning C4701: 초기화되지 않았을 수 있는 'item' 지역 변수를 사용했습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(8): warning C4244: '=' : 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(9): warning C4244: '=' : 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(10): warning C4244: '=' : 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(12): warning C4244: '=' : 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(13): warning C4244: '=' : 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(14): warning C4244: '=' : 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(21): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(21): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(21): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(24): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(24): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(24): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(27): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(27): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(27): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
        ResourceCompile:
          모든 출력이 최신 상태입니다.
        ManifestResourceCompile:
@@ -35,6 +36,7 @@
          Debug\DirectInput.obj
          Debug\Items.obj
          Debug\ItemsList.obj
+         Debug\Missile.obj
          Debug\Monai.obj
          Debug\Monster.obj
          Debug\Moving.obj
@@ -54,4 +56,4 @@
 
 빌드했습니다.
 
-경과 시간: 00:00:01.99
+경과 시간: 00:00:01.85

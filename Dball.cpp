@@ -27,6 +27,7 @@
 #include "Macros.h"
 #include "Monster.h"
 #include "Monai.h"
+#include "Missile.h"
 
 #ifdef _DEBUG       
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__) 
@@ -89,6 +90,7 @@ float					Mouse_Y;
 D3DXMATRIX				mView;
 D3DXMATRIXA16			mWorld;
 D3DXMATRIXA16			mBox;
+D3DXMATRIXA16			mMis;
 D3DXVECTOR4             gLightColor(1.0f, 1.0f, 1.0f, 1.0f);//ºûÀÇ »ö
 D3DXVECTOR3				zero(0.0f,0.0f,0.0f);
 
@@ -122,6 +124,8 @@ LPD3DXMESH				g_pMesh = NULL; // Our mesh object in sysmem
 D3DMATERIAL9*			g_pMeshMaterials = NULL; // Materials for our mesh
 LPDIRECT3DTEXTURE9*		g_pMeshTextures = NULL; // Textures for our mesh
 DWORD					g_dwNumMaterials = 0L;   // Number of mesh materials
+float GSpeed = GAMESPEED;
+
 
 //-----------------------------------------------------------------------------
 // Xfile Draw
@@ -134,6 +138,7 @@ Xfile* mapBox;
 //-----------------------------------------------------------------------------
 Monster* first_mon;
 Monai* m_Ai;
+Missile* mMissile[10];
 //-----------------------------------------------------------------------------
 // InitD3D
 //-----------------------------------------------------------------------------
@@ -475,15 +480,27 @@ inline VOID Render(double time)
 		//-----------------------------------------------------------------------------
 		// Monster Setting
 		//-----------------------------------------------------------------------------
-		
 		m_Ai->getPositionMon(time);
+
+/*		
 		D3DXMatrixIdentity(&mBox);
 		D3DXMatrixScaling(&myScale,MON_SIZE,MON_SIZE,MON_SIZE);
 		D3DXMatrixTranslation(&myTrans,first_mon->getPosition().x,first_mon->getPosition().y,first_mon->getPosition().z);
 		mBox *= myScale;
 		mBox *= myTrans;
 		mapBox->DrawMyballShader(mBox);	
-
+*/
+		//-----------------------------------------------------------------------------
+		// Missile Setting
+		//-----------------------------------------------------------------------------
+		for(int i=0;i<10;i++){
+			D3DXMatrixIdentity(&mMis);
+			D3DXMatrixScaling(&myScale,MON_SIZE,MON_SIZE,MON_SIZE);
+			D3DXMatrixTranslation(&myTrans,mMissile[i]->getPosition().x,mMissile[i]->getPosition().y,mMissile[i]->getPosition().z);
+			mMis *= myScale;
+			mMis *= myTrans;
+			mapBox->DrawMyballShader(mMis);
+		}
 		//-----------------------------------------------------------------------------
 		// Room Setting
 		//-----------------------------------------------------------------------------
@@ -500,7 +517,7 @@ inline VOID Render(double time)
 		setItemList(time);
 		itemListDraw(time);
 		mMoving->getItem(myCharacter,itemList,BALL_REAL_SIZE,ITEM_REAL_SIZE);
-		mMoving->crashMon(myCharacter,first_mon);
+		mMoving->crashMon(myCharacter,first_mon,time);
 		DrawUi();
 		g_pd3dDevice->EndScene();
 	}
@@ -510,19 +527,21 @@ inline VOID Render(double time)
 inline VOID afterInitD3D(){
 	m_fStartTime = (float)timeGetTime() * 0.001f;
 	srand((unsigned)GetTickCount());
+	for(int i=0;i<10;i++){mMissile[i]= new Missile(MISSILE_REAL_SIZE,MON_REAL_SIZE,BALL_REAL_SIZE,MAXBOUNDX,MAXBOUNDY,MAXBOUNDZ,MINBOUNDX,MINBOUNDY,MINBOUNDZ);}
 	g_pCamera = new ZCamera;
 	drawXfile = new Xfile();
 	mapBox = new Xfile();
-	myCharacter = new Ball(START_LIFE,START_MANA,0,CHARACTER_MAX_LEVEL,( D3DXVECTOR3 )Pos,( D3DXVECTOR3 )Vel,( D3DXVECTOR3 )Vel);	
-	mMoving = new Moving(GRAVITY,BOUNCE_LOST,BOUNCE_TRANSFER,REVERSE_GRAVITY,GROUND,MYSIZE,MON_REAL_SIZE,CEILING,THRESHOLD,BALLSPEED,GAMESPEED,ABSORBANCE,MINBOUNDX,MINBOUNDY,MINBOUNDZ,MAXBOUNDX,MAXBOUNDY,MAXBOUNDZ);
+	myCharacter = new Ball(( D3DXVECTOR3 )Pos,( D3DXVECTOR3 )Vel,( D3DXVECTOR3 )Vel);	
+	mMoving = new Moving();
 	itemList = new ItemsList();
 	g_pModel = new CModel(g_pd3dDevice);
-	first_mon = new Monster(MON_HEALTH,10,(D3DXVECTOR3)MonPos,(D3DXVECTOR3)MonVel,(D3DXVECTOR3)MonVel);
-	m_Ai = new Monai(first_mon,myCharacter,MAXBOUNDX,MAXBOUNDY,MAXBOUNDZ,MINBOUNDX,MINBOUNDY,MINBOUNDZ,GAMESPEED,MON_REAL_SIZE);
-	m_Ui = new Ui(WINDOW_WIDTH,WINDOW_HEIGHT);
+	first_mon = new Monster((D3DXVECTOR3)MonPos,(D3DXVECTOR3)MonVel,(D3DXVECTOR3)MonVel);
+	m_Ai = new Monai(first_mon,myCharacter,mMissile);
+	m_Ui = new Ui();
 }
 
 inline VOID afterRender(){
+	for(int i=0;i<10;i++){delete mMissile[i];}
 	delete g_pCamera;
 	delete drawXfile;
 	delete mapBox;

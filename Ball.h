@@ -3,7 +3,7 @@
 
 #include <d3d9.h>
 #include <d3dx9.h>
-
+#include "Settings.h"
 class Ball{
 private:
 	int level;
@@ -27,7 +27,7 @@ private:
 	
 public:
 	Ball();
-	Ball(int life,int mana,int weight,int setMaxLevel,D3DXVECTOR3 position,D3DXVECTOR3 velocity,D3DXVECTOR3 goal);
+	Ball(D3DXVECTOR3 setPosition,D3DXVECTOR3 setVelocity,D3DXVECTOR3 setGoal);
 
 	void setMaxLife(int argu);
 	void setMaxMana(int argu);

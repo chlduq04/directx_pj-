@@ -1,45 +1,49 @@
 #include "Monai.h"
 
-Monai::Monai(Monster* monster,Ball* charecter, float max_x,float max_y,float max_z,float min_x,float min_y,float min_z,float game_speed, float mon_size){
+Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[]){
 	zero.x = 0.0f;
 	zero.y = 0.0f;
 	zero.z = 0.0f;
 
-	maxBoundx = (int)max_x;
-	maxBoundy = (int)max_y;
-	maxBoundz = (int)max_z;
-	minBoundx = (int)min_x;
-	minBoundy = (int)min_y;
-	minBoundz = (int)min_z;
+	maxBoundx = (int)MAXBOUNDX;
+	maxBoundy = (int)MAXBOUNDY;
+	maxBoundz = (int)MAXBOUNDZ;
+	minBoundx = (int)MINBOUNDX;
+	minBoundy = (int)MINBOUNDY;
+	minBoundz = (int)MINBOUNDZ;
 	ActionStart = -1.0f;
 	mon = monster;
 	cha = charecter;
-	speed = game_speed;
-	monsize = mon_size;
-}
-Monai::~Monai(){
+	speed = GAMESPEED;
+	monsize = MON_REAL_SIZE;
 
-}
-void Monai::getPositionMon(double time){
-	switch(mon->getmType()){
-	case 0:
-		normalMove(time);
-		break;
-	case 1:
-		closetoMove(time);
-		break;
-	case 2:
-		stopMove(time);
-		break;
-	case 3:
-		jumpMove(time);
-		break;
-	case 4:
-		dodgeMove(time);
-		break;
-	default:
-		break;
+	for(int i=0;i<10;i++){
+		msi[i] = missile[i];
 	}
+	
+}
+Monai::~Monai(){}
+void Monai::getPositionMon(double time){
+	missileMode(time);
+	//switch(mon->getmType()){
+	//case 0:
+	//	normalMove(time);
+	//	break;
+	//case 1:
+	//	closetoMove(time);
+	//	break;
+	//case 2:
+	//	stopMove(time);
+	//	break;
+	//case 3:
+	//	jumpMove(time);
+	//	break;
+	//case 4:
+	//	dodgeMove(time);
+	//	break;
+	//default:
+	//	break;
+	//}
 }
 void Monai::closetoMove(double time){
 	if(!mon->isGoal()){
@@ -106,7 +110,9 @@ void Monai::defenceMode(double time){
 }
 
 void Monai::missileMode(double time){
-	
+	for(int i=0;i<10;i++){
+		msi[i]->moveMissile(mon,cha);
+	}
 }
 void Monai::wallMode(double time){
 

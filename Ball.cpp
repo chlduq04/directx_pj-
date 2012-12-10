@@ -3,22 +3,22 @@
 Ball::Ball(){
 	
 }
-Ball::Ball(int setLife,int setMana,int setWeight,int setMaxLevel,D3DXVECTOR3 setPosition,D3DXVECTOR3 setVelocity,D3DXVECTOR3 setGoal){
+Ball::Ball(D3DXVECTOR3 setPosition,D3DXVECTOR3 setVelocity,D3DXVECTOR3 setGoal){
 	level = 1;
-	maxLevel = setMaxLevel;
+	maxLevel = CHARACTER_MAX_LEVEL;
 	alive = true;
 
-	life = setLife;
-	maxLife = setLife;
+	life = START_LIFE;
+	maxLife = START_LIFE;
 
 	def = 20;
 	maxDef = 20;
 
-	mana = setMana;
-	maxMana = setMana;
+	mana = START_MANA;
+	maxMana = START_MANA;
 
-	weight = setWeight;
-	maxWeight = setWeight;
+	weight = START_WEIGHT;
+	maxWeight = START_WEIGHT;
 
 	ptPosition = setPosition;
 	ptVelocity = setVelocity;

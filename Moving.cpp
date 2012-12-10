@@ -1,25 +1,26 @@
 #include "Moving.h"
 
-Moving::Moving(float gravity,float bouncelost,float bouncetrans,float reversegravity,float ground,float mysize,float monsize,float ceiling,float threshold,float ballspeed,float gamespeed,float absorbance,float minboundx,float minboundy,float minboundz,float maxboundx,float maxboundy,float maxboundz){
+Moving::Moving(){
 	bCount = 0;
-	vGravity = gravity;
-	rGravity = reversegravity;
-	yGround = ground;
-	mySize = mysize;
-	monSize = monsize;
-	rCeiling = ceiling;
-	rThreshold = threshold;
-	bSpeed = ballspeed;//공 속도
-	gSpeed = gamespeed;//게임속도
-	gAbsorbance = absorbance;
-	minBoundx = minboundx;
-	minBoundy = minboundy;
-	minBoundz = minboundz;
-	maxBoundx = maxboundx;
-	maxBoundy = maxboundy;
-	maxBoundz = maxboundz;
-	bounceLost = bouncelost;
-	bounceTrans = bouncetrans;
+	vGravity = GRAVITY;
+	rGravity = REVERSE_GRAVITY;
+	yGround = GROUND;
+	mySize = MYSIZE;
+	monSize = MON_REAL_SIZE;
+	rCeiling = CEILING;
+	rThreshold = THRESHOLD;
+	bSpeed = BALLSPEED;//공 속도
+	gSpeed = GAMESPEED;//게임속도
+	gAbsorbance = ABSORBANCE;
+	minBoundx = MINBOUNDX;
+	minBoundy = MINBOUNDY;
+	minBoundz = MINBOUNDZ;
+	maxBoundx = MAXBOUNDX;
+	maxBoundy = MAXBOUNDY;
+	maxBoundz = MAXBOUNDZ;
+	bounceLost = BOUNCE_LOST;
+	bounceTrans = BOUNCE_TRANSFER;
+	isCrash = false;
 	wallxr = false;
 	wallyr = false;
 	wallzr = false;
@@ -28,7 +29,7 @@ Moving::Moving(float gravity,float bouncelost,float bouncetrans,float reversegra
 	wallzl = false;
 	wall_position = 0.0f;
 	wall_bounce = 0;
-
+	crashTime = 0;
 	ActionStart = -1.0f;
 }
 
@@ -193,7 +194,11 @@ void Moving::getPositionWall(Ball* cha,float speed,D3DXVECTOR3 wall){
 			wallzl = true;
 	}
 }
-void Moving::crashMon(Ball* cha, Monster* mon){
+void Moving::crashMon(Ball* cha, Monster* mon,float time){
+	if((time - crashTime > 2.0f)&&(isCrash == true)){
+		mon->setisGoal(false);
+		isCrash = false;
+	}
 	if(mon->isAlive()==true)//is alive?
 	{
 		D3DXVECTOR3 vOneToTwo = cha->getPosition() - mon->getPosition();
@@ -206,6 +211,9 @@ void Moving::crashMon(Ball* cha, Monster* mon){
 			
 			if( fImpact > 0.0f )
 			{
+				isCrash = true;
+				crashTime = time;
+
 				D3DXVECTOR3 vVelocityOneN = ( 1 - bounceLost ) * D3DXVec3Dot( &vOneToTwo, &mon->getVelocity() ) * vOneToTwo;
 				D3DXVECTOR3 vVelocityOneT = ( 1 - bounceLost ) * mon->getVelocity() - vVelocityOneN;
 

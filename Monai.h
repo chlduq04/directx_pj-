@@ -4,7 +4,8 @@
 #include <d3dx9.h>
 #include "Monster.h"
 #include "Ball.h"
-
+#include "Missile.h"
+#include "Settings.h"
 class Monai{
 private:
 	D3DXVECTOR3 face;
@@ -21,10 +22,11 @@ private:
 	float ActionStart;
 	Monster* mon;
 	Ball* cha;
+	Missile* msi[10];
 	float speed;
 	float monsize;
 public:
-	Monai(Monster* monster,Ball* charecter, float max_x,float max_y,float max_z,float min_x,float min_y,float min_z,float game_speed, float mon_size);
+	Monai(Monster* monster,Ball* charecter,Missile* missile[]);
 	~Monai();
 	void getPositionMon(double time);
 	void normalMove(double time);

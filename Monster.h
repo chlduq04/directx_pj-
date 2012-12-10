@@ -3,7 +3,7 @@
 
 #include <d3d9.h>
 #include <d3dx9.h>
-
+#include "Settings.h"
 class Monster{
 private:
 	float mLife;
@@ -30,7 +30,7 @@ private:
 public:
 	Monster();
 	~Monster();
-	Monster(float life,int weight,D3DXVECTOR3 position,D3DXVECTOR3 velocity,D3DXVECTOR3 goal);
+	Monster(D3DXVECTOR3 position,D3DXVECTOR3 velocity,D3DXVECTOR3 goal);
 	void monMoving(D3DXVECTOR3 limitMove,float max_x,float max_y,float max_z,float error);
 	void monDefence(int def);
 	void monAttack();

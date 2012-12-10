@@ -17,7 +17,7 @@
 
 #define START_LIFE	100 
 #define START_MANA	100
-
+#define START_WEIGHT 0
 #define CHARACTER_MAX_LEVEL 10
 
 
@@ -44,12 +44,14 @@
 #define START_MON_VELOCITYZ 0.0f
 
 #define MON_HEALTH 1000.0f
-
+#define MON_WEIGHT 10
+#define MISSILE_REAL_SIZE 5.0f
 //-----------------------------------------------------------------------------
 // Setting
 //-----------------------------------------------------------------------------
 #define BALL_SIZE 0.02f
 #define MON_SIZE 0.1f
+#define MISSILE_SIZE 0.01f
 
 #define MON_REAL_SIZE 8.0f
 #define BALL_REAL_SIZE 5.0f
@@ -72,7 +74,5 @@
 #define WINDOW_HEIGHT 600
 #define BOUNCE_LOST 0.1f
 #define BOUNCE_TRANSFER 0.05f
-
-float GSpeed = GAMESPEED;
 
 #endif 

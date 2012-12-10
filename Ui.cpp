@@ -1,8 +1,8 @@
 #include "Ui.h"
 
-Ui::Ui(float width,float height){
-	win_width = width;
-	win_height = height;
+Ui::Ui(){
+	win_width = WINDOW_WIDTH;
+	win_height = WINDOW_HEIGHT;
 }
 
 

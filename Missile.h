@@ -8,6 +8,7 @@
 
 class Missile{
 private:
+	float m;
 	float monSize;
 	float mySize;
 	float missileSize;
@@ -27,11 +28,10 @@ private:
 	int nowType;
 public:
 	Missile(float missilesize,float monsize,float mysize,float max_x,float max_y,float max_z,float min_x,float min_y,float min_z);
-	~Missile();
 	inline void setPosition(D3DXVECTOR3 position){vPosition = position;};
 	inline D3DXVECTOR3 getPosition(){return vPosition;};
 	inline void setBackPosition(D3DXVECTOR3 backposition){vBackPosition = backposition;};
-	inline D3DXVECTOR3 getBackPosition(){return vBackPosition};
+	inline D3DXVECTOR3 getBackPosition(){return vBackPosition;};
 	inline void setVelocity(D3DXVECTOR3 velocity){vVelocity = velocity;};
 	inline D3DXVECTOR3 getVelocity(){return vVelocity;};
 	inline void setGoal(D3DXVECTOR3 goal){vGoal = goal;};
@@ -43,6 +43,7 @@ public:
 	void rendGoal(Ball* cha);
 	void rendValue();
 	void moveMissile(Monster* mon,Ball* cha);
-}
+	inline void start(){nowType = 0;};
+};
 
 #endif

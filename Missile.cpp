@@ -31,19 +31,21 @@ void Missile::moveMissile(Monster* mon,Ball* cha){
 	case 0:
 		startPosition(mon);
 		rendGoal(cha);
+		rendValue();
 		nowType = 1;
 		break;
 	case 1:
-		missile_wall_length = vBackPosition - vPosition;
-		if(!D3DXVec3Length(&missile_wall_length)<4.0f){setPosition(vPosition+vBackPosition/400);}
+		missile_wall_length = vPosition - vBackPosition;
+		m = D3DXVec3Length(&missile_wall_length);
+		if(D3DXVec3Length(&missile_wall_length)>4.0f){setPosition(vPosition+(vBackPosition-vPosition)/4000);}
 		else{nowType = 2;}
 		break;
 	case 2:
-		missile_my_length = cha->getPosition() - vPosition;
+		missile_my_length = vPosition - cha->getPosition();
 		D3DXVec3Normalize(&vGoal,&vGoal);
-		vVelocity = vGoal*30.0f;
+		vVelocity = vGoal;
 		setPosition(vPosition+vVelocity);
-		if(vPosition.x>maxBoundx||vPosition.y>maxBoundy||vPosition.z>maxBoundz||vPosition.x<minBoundx||vPosition.y<minBoundy||vPosition.z<minBoundz){
+		if(vPosition.x>maxBoundx*2||vPosition.y>maxBoundy*2||vPosition.z>maxBoundz*2||vPosition.x<minBoundx-100||vPosition.y<minBoundy-100||vPosition.z<minBoundz-100){
 			nowType = 3;
 		}
 		if(D3DXVec3Length(&missile_my_length)<(mySize+missileSize)*(mySize+missileSize)){
@@ -52,7 +54,6 @@ void Missile::moveMissile(Monster* mon,Ball* cha){
 		}
 		break;
 	case 3:
-
 		break;
 	}
 }

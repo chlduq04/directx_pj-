@@ -7,6 +7,7 @@
 #include "Monster.h"
 #include "Ball.h"
 #include "ItemsList.h"
+#include "Settings.h"
 
 class Moving{
 private:
@@ -32,7 +33,8 @@ private:
 	float monSize;
 	float bounceLost;
 	float bounceTrans;
-	
+	float crashTime;
+	bool isCrash;
 	bool wallxl;
 	bool wallxr;
 	bool wallyl;
@@ -45,11 +47,11 @@ private:
 	float ActionStart;
 
 public:
-	Moving(float gravity,float bouncelost,float bouncetrans,float reversegravity,float ground,float mysize,float monsize,float ceiling,float threshold,float ballspeed,float gamespeed,float absorbance,float minboundx,float minboundy,float minboundz,float maxboundx,float maxboundy,float maxboundz);
+	Moving();
 	void getPositionWall(Ball* cha,float speed,D3DXVECTOR3 wall);
 	void getPosition(Ball* cha,float speed);
 	void getItem(Ball* cha,ItemsList* itList,int mySize,int itemSize);
-	void crashMon(Ball* cha, Monster* mon);
+	void crashMon(Ball* cha, Monster* mon,float time);
 };
 
 #endif

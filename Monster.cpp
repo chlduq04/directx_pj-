@@ -1,10 +1,10 @@
 #include "Monster.h"
 
 Monster::~Monster(){}
-Monster::Monster(float life,int weight,D3DXVECTOR3 position,D3DXVECTOR3 velocity,D3DXVECTOR3 goal){
-	maxLife = life;
-	mLife = life;
-	mWeight = weight;
+Monster::Monster(D3DXVECTOR3 position,D3DXVECTOR3 velocity,D3DXVECTOR3 goal){
+	maxLife = MON_HEALTH;
+	mLife = MON_HEALTH;
+	mWeight = MON_WEIGHT;
 	mAttack = 0;
 	mDefence = 0;
 	mType = 0;
