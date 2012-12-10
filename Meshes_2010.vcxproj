@@ -379,6 +379,7 @@
     <ClCompile Include="DirectInput.cpp" />
     <ClCompile Include="Items.cpp" />
     <ClCompile Include="ItemsList.cpp" />
+    <ClCompile Include="Missile.cpp" />
     <ClCompile Include="Monai.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Moving.cpp" />
@@ -398,6 +399,7 @@
     <ClInclude Include="Items.h" />
     <ClInclude Include="ItemsList.h" />
     <ClInclude Include="Macros.h" />
+    <ClInclude Include="Missile.h" />
     <ClInclude Include="Monai.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Moving.h" />

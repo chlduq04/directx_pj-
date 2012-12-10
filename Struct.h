@@ -9,12 +9,4 @@ struct MYVERTEX
 
 };
 
-struct MonMissile
-{
-	D3DXVECTOR3 vPosition; //위치
-	D3DXVECTOR3 vVelocity; //방향벡터
-	D3DXVECTOR3 vGoal;
-	int demage;
-};
-
 #endif

@@ -72,6 +72,9 @@
     <ClCompile Include="Monai.cpp">
       <Filter>project</Filter>
     </ClCompile>
+    <ClCompile Include="Missile.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
@@ -132,6 +135,9 @@
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="Monai.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="Missile.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>

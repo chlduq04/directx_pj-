@@ -9,7 +9,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <crtdbg.h>	
 //-----------------------------------------------------------------------------
 // Header Files
 //-----------------------------------------------------------------------------
@@ -28,6 +28,10 @@
 #include "Monster.h"
 #include "Monai.h"
 
+#ifdef _DEBUG       
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__) 
+#endif
+//memory leak check
 HWND					g_hwnd = NULL;
 
 ZCamera*				g_pCamera = NULL;
@@ -657,6 +661,8 @@ inline LRESULT WINAPI MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 //-----------------------------------------------------------------------------
 INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 {
+	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );//memory leak check
+
 	UNREFERENCED_PARAMETER( hInst );
 
 	// Register the window class
