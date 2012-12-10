@@ -25,35 +25,34 @@ private:
 public:
 	Items();
 	Items(char* type,int level,D3DXVECTOR3 position,int static_item_number,float time);
-	int getNumber();
-	int getHp();
-	int getMp();
-	int getDef();
-	int getSpd();
-	void setPosition(D3DXVECTOR3 argu);
-	void setVelocity(D3DXVECTOR3 argu);
-	void setGoal(D3DXVECTOR3 argu);
-	void setPositionX(float argu);
-	void setPositionY(float argu);
-	void setPositionZ(float argu);
-	void setVelocityX(float argu);
-	void setVelocityY(float argu);
-	void setVelocityZ(float argu);
-	void setGoalX(float argu);
-	void setGoalY(float argu);
-	void setGoalZ(float argu);
+
+	inline int getNumber(){return itNum;};
+	inline int getHp(){return hp;};
+	inline int getMp(){return mp;};
+	inline int getDef(){return defence;};
+	inline int getSpd(){return speed;};
+	inline void setPositionX(float argu){ptPosition.x = argu;};
+	inline void setPositionY(float argu){ptPosition.y = argu;};
+	inline void setPositionZ(float argu){ptPosition.z = argu;};
+	inline void setVelocityX(float argu){ptVelocity.x = argu;};
+	inline void setVelocityY(float argu){ptVelocity.y = argu;};
+	inline void setVelocityZ(float argu){ptVelocity.z = argu;};
+	inline void setGoalX(float argu){ptGoal.x = argu;};
+	inline void setGoalY(float argu){ptGoal.y = argu;};
+	inline void setGoalZ(float argu){ptGoal.z = argu;};
+	inline void setPosition(D3DXVECTOR3 argu){ptPosition = argu;};
+	inline void setVelocity(D3DXVECTOR3 argu){ptVelocity = argu;};
+	inline void setGoal(D3DXVECTOR3 argu){ptGoal = argu;};
 
 
-	D3DXVECTOR3 getPosition();
-	D3DXVECTOR3 getVelocity();
-	D3DXVECTOR3 getGoal();
+	inline D3DXVECTOR3 getPosition(){return ptPosition;};
+	inline D3DXVECTOR3 getVelocity(){return ptVelocity;};
+	inline D3DXVECTOR3 getGoal(){return ptGoal;};
 
-	void setPrev(Items* argu);
-	void setNext(Items* argu);
-	Items* getPrev();
-	Items* getNext();
-
-	float getTime();
+	inline void setPrev(Items* argu){iprev = argu;};
+	inline void setNext(Items* argu){inext = argu;};
+	inline Items* getPrev(){return iprev;};
+	inline Items* getNext(){return inext;};
+	inline float getTime(){return mTime;};
 };
-
 #endif

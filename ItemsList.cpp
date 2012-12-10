@@ -91,18 +91,3 @@ Items* ItemsList::searchNode(){
 	return inow;
 }
 
-Items* ItemsList::returnNode(){
-	return nowNode;
-}
-
-int ItemsList::getCount(){
-	return count;
-}
-
-Items* ItemsList::getStart(){
-	return istart;
-}
-
-Items* ItemsList::getEnd(){
-	return iend;
-}

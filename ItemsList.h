@@ -18,11 +18,12 @@ public:
 	~ItemsList();
 	void setNode(Items* argu);
 	void delNode(int item_number);
-
 	Items* searchNode();
-	Items* returnNode();
-	int getCount();
-	Items* getStart();
-	Items* getEnd();
+
+	inline Items* returnNode(){return nowNode;};
+	inline int getCount(){return count;};
+	inline Items* getStart(){return istart;};
+	inline Items* getEnd(){return iend;};
+
 };
 #endif

@@ -31,53 +31,50 @@ public:
 	Monster();
 	~Monster();
 	Monster(float life,int weight,D3DXVECTOR3 position,D3DXVECTOR3 velocity,D3DXVECTOR3 goal);
-	bool isAlive();
-	int hisLife();
-	bool isbGround();
-	
-	void setGoal(D3DXVECTOR3 goal);
-	void setGoalX(float goal);
-	void setGoalY(float goal);
-	void setGoalZ(float goal);
-
-	D3DXVECTOR3 getGoal();
-	
-	void setPostion(D3DXVECTOR3 position);
-	void setPostionX(float position);
-	void setPostionY(float position);
-	void setPostionZ(float position);
-	D3DXVECTOR3 getPosition();
-
-	void setVelocity(D3DXVECTOR3 vel);
-	void setVelocityX(float vel);
-	void setVelocityY(float vel);
-	void setVelocityZ(float vel);
-	D3DXVECTOR3 getVelocity();
-
-
-
-	void setMove(bool argu);
-	bool isMove();
-
-	void setJump(bool argu);
-	bool isJump();
-
-	void setmType(int type);
-	int getmType();
-	void setsType(int type);
-	int getsType();
-
-	bool isGoal();
-
 	void monMoving(D3DXVECTOR3 limitMove,float max_x,float max_y,float max_z,float error);
 	void monDefence(int def);
 	void monAttack();
 	void monMissile();
 	void monJump();
 	void monHealing();
+	
+	inline void setisGoal(bool argu){bGoal = argu;};
+	inline bool isGoal(){return bGoal;};
+	inline bool isAlive(){return mAlive;};
+	inline int hisLife(){return mLife;};
+	inline bool isbGround(){return bGround;};
 
-	void setisGoal(bool argu);
+	inline void setGoal(D3DXVECTOR3 goal){vGoal = goal;};
+	inline void setGoalX(float goal){vGoal.x = goal;};
+	inline void setGoalY(float goal){vGoal.y = goal;};
+	inline void setGoalZ(float goal){vGoal.z = goal;};
+	inline D3DXVECTOR3 getGoal(){return vGoal;};
 
-	float getDefTime();
+	inline void setPostion(D3DXVECTOR3 position){vPosition = position;};
+	inline void setPostionX(float position){vPosition.x = position;};
+	inline void setPostionY(float position){vPosition.y = position;};
+	inline void setPostionZ(float position){vPosition.z = position;};
+	inline D3DXVECTOR3 getPosition(){return vPosition;};
+
+	inline void setMove(bool argu){bMove = argu;};
+	inline bool isMove(){return bMove;};
+
+	inline void setJump(bool argu){bJump = argu;};
+	inline bool isJump(){return bJump;};
+
+	inline void setVelocity(D3DXVECTOR3 vel){vVelocity = vel;};
+	inline void setVelocityX(float vel){vVelocity.x = vel;};
+	inline void setVelocityY(float vel){vVelocity.y = vel;};
+	inline void setVelocityZ(float vel){vVelocity.z = vel;};
+	inline D3DXVECTOR3 getVelocity(){return vVelocity;};
+	
+	inline void setmType(int type){mType = type;};
+	inline int getmType(){return mType;};
+	
+	inline void setsType(int type){sType= type;};
+	inline int getsType(){return sType;};
+	
+	inline float getDefTime(){return defendTime;};
+
 };
 #endif

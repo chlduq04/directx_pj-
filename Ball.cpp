@@ -25,36 +25,6 @@ Ball::Ball(int setLife,int setMana,int setWeight,int setMaxLevel,D3DXVECTOR3 set
 	ptGoal = setGoal;
 	ptGround = false;
 }
-bool Ball::isAlive(){
-	return alive;
-}
-void Ball::setAlive(bool argu){
-	alive = argu;
-}
-int Ball::hisLife(){
-	return life;
-}
-int Ball::hisMana(){
-	return mana;
-}
-int Ball::hisWeight(){
-	return weight;
-}
-int Ball::hisDef(){
-	return def;
-}
-
-void Ball::setPosition(D3DXVECTOR3 xyz){
-	ptPosition = xyz;
-}
-
-void Ball::setVelocity(D3DXVECTOR3 xyz){
-	ptVelocity= xyz;
-}
-
-void Ball::setGoal(D3DXVECTOR3 xyz){
-	ptGoal = xyz;
-}
 
 void Ball::setLife(int argu){
 	if(argu>=0){
@@ -176,50 +146,6 @@ void Ball::downLevel(){
 void Ball::move(){
 }
 
-bool Ball::isGround(){
-	return ptGround;
-}
-
-void Ball::setGround(bool argu){
-	ptGround = argu;
-}
-
-void Ball::setPositionX(float argu){
-	ptPosition.x = argu;
-}
-void Ball::setPositionY(float argu){
-	ptPosition.y = argu;
-}
-void Ball::setPositionZ(float argu){
-	ptPosition.z = argu;
-}
-void Ball::setVelocityX(float argu){
-	ptVelocity.x = argu;
-}
-void Ball::setVelocityY(float argu){
-	ptVelocity.y = argu;
-}
-void Ball::setVelocityZ(float argu){
-	ptVelocity.z = argu;
-}
-void Ball::setGoalX(float argu){
-	ptGoal.x = argu;
-}
-void Ball::setGoalY(float argu){
-	ptGoal.y = argu;
-}
-void Ball::setGoalZ(float argu){
-	ptGoal.z = argu;
-}
-D3DXVECTOR3 Ball::getPosition(){
-	return ptPosition;
-}
-D3DXVECTOR3 Ball::getVelocity(){
-	return ptVelocity;
-}
-D3DXVECTOR3 Ball::getGoal(){
-	return ptGoal;
-}
 void Ball::setDefence(int argu){
 	if(argu>0){
 		if(def+argu > maxDef)
