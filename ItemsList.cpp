@@ -53,32 +53,11 @@ void ItemsList::setNode(Items* argu){
 	count++;
 }
 
-void ItemsList::delNode(int item_number){
-	Items* inow;
-	if(!count==0){
-		listPrev = istart;
-		inow = listPrev->getNext();
-		listNext = inow->getNext();
-		do{
-			if(inow->getNumber()==item_number){
-				listPrev->setNext(listNext);
-				listNext->setPrev(listPrev);
-				inow = NULL;
-				count--;
-				break;
-			}
-			else{
-				if(listNext==iend){
-					break;
-				}
-				else{
-					listPrev = inow;
-					inow = listNext;
-					listNext = listNext->getNext();
-				}
-			}
-		}while(listNext!=iend);
-	}
+void ItemsList::delNode(Items* node){
+	node->getPrev()->setNext(node->getNext());
+	node->getNext()->setPrev(node->getPrev());
+	delete node;
+	count--;
 }
 
 Items* ItemsList::searchNode(){

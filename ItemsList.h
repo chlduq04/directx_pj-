@@ -17,7 +17,7 @@ public:
 	ItemsList();
 	~ItemsList();
 	void setNode(Items* argu);
-	void delNode(int item_number);
+	void delNode(Items* node);
 	Items* searchNode();
 
 	inline Items* returnNode(){return nowNode;};

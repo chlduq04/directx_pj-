@@ -35,7 +35,7 @@ Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,
 	raseron = false;
 	rushon = false;
 
-	msiStartDelay = 20;
+	msiStartDelay = 30;
 	msiEndDelay = 30;
 
 	defStartDelay = 5;

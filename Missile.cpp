@@ -25,7 +25,7 @@ void Missile::moveMissile(Monster* mon,Ball* cha,float time){
 		break;
 	case 1:
 		missile_wall_length = vPosition - vBackPosition;
-		if(D3DXVec3Length(&missile_wall_length)>5.0f){setPosition(vPosition+(vBackPosition-vPosition)/4000);}
+		if(D3DXVec3Length(&missile_wall_length)>4.0f){setPosition(vPosition+(vBackPosition-vPosition)/4000);}
 		else{nowType = 2;}
 		break;
 	case 2:

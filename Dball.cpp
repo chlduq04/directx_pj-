@@ -356,20 +356,24 @@ inline VOID setItemList(double time){
 }
 
 inline VOID itemListDraw(double time){
-	Items* nowNode = itemList->getStart(); 
-	while(nowNode->getNext()!=itemList->getEnd()){
-		nowNode=nowNode->getNext();
-		if(time-(nowNode->getTime())>20){
-			itemList->delNode(nowNode->getNumber());
-		}else{
-			D3DXMatrixIdentity(&iWorld);
-			D3DXMatrixScaling(&myScale,0.1f,0.1f,0.1f);
-			D3DXMatrixRotationY(&myRotate, time);
-			D3DXMatrixTranslation(&myTrans,nowNode->getPosition().x,nowNode->getPosition().y,nowNode->getPosition().z);
-			iWorld *= myScale;
-			iWorld *= myRotate;
-			iWorld *= myTrans;
-			mapBox->DrawMyballShader(iWorld);
+	Items* nowNode = itemList->getStart()->getNext();
+	if(nowNode!=itemList->getEnd()){
+		while(nowNode->getNext()!=itemList->getEnd()){
+			if(time-(nowNode->getTime())>20){
+				Items* deleteNode = nowNode;
+				nowNode=nowNode->getNext();
+				itemList->delNode(deleteNode);
+			}else{
+				D3DXMatrixIdentity(&iWorld);
+				D3DXMatrixScaling(&myScale,0.1f,0.1f,0.1f);
+				D3DXMatrixRotationY(&myRotate, time);
+				D3DXMatrixTranslation(&myTrans,nowNode->getPosition().x,nowNode->getPosition().y,nowNode->getPosition().z);
+				iWorld *= myScale;
+				iWorld *= myRotate;
+				iWorld *= myTrans;
+				mapBox->DrawMyballShader(iWorld);
+				nowNode=nowNode->getNext();
+			}
 		}
 	}
 }
@@ -515,10 +519,10 @@ inline VOID Render(double time)
 		g_pModel->setBoundingSphereCenter(D3DXVECTOR3(0.0f,0.0f,0.0f));
 		modelLeader(time);
 
-		
+		mMoving->getItem(myCharacter,itemList);		
 		setItemList(time);
 		itemListDraw(time);
-		mMoving->getItem(myCharacter,itemList);
+
 		mMoving->crashMon(myCharacter,first_mon,time);
 		DrawUi();
 		g_pd3dDevice->EndScene();

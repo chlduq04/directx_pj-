@@ -52,7 +52,7 @@
 #define MON_SIZE 0.1f
 #define MISSILE_SIZE 0.01f
 
-#define MON_REAL_SIZE 8.0f
+#define MON_REAL_SIZE 3.0f
 #define BALL_REAL_SIZE 5.0f
 #define ITEM_REAL_SIZE 10.0f
 #define MISSILE_REAL_SIZE 1.0f

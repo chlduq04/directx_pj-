@@ -18,28 +18,24 @@ Moving::Moving(){
 }
 
 void Moving::getItem(Ball* cha,ItemsList* itList){
-
-	Items* nowNode = itList->getStart(); 
-
-	while(nowNode->getNext()!=itList->getEnd()){
-		nowNode=nowNode->getNext();
-
-		D3DXVECTOR3 vOneToTwo = cha->getPosition() - nowNode->getPosition();
-		float DistSq = D3DXVec3LengthSq( &vOneToTwo );
-		if( DistSq < (MYSIZE+ITEM_REAL_SIZE) * (MYSIZE+ITEM_REAL_SIZE) )
-		{
-			D3DXVec3Normalize( &vOneToTwo, &vOneToTwo );
-
-			float fImpact = D3DXVec3Dot( &vOneToTwo, &nowNode->getVelocity() ) - D3DXVec3Dot( &vOneToTwo, &cha->getVelocity() );	
-			if( fImpact > 0.0f )
-			{
-				cha->setLife(nowNode->getHp());
-				cha->setMana(nowNode->getMp());
-				cha->setDefence(nowNode->getDef());
-				itList->delNode(nowNode->getNumber());
+		Items* nowNode = itList->getStart()->getNext(); 
+		if(nowNode!=itList->getEnd()){
+			while(nowNode->getNext()!=itList->getEnd()){
+				D3DXVECTOR3 vOneToTwo = cha->getPosition() - nowNode->getPosition();
+				float DistSq = D3DXVec3LengthSq( &vOneToTwo );
+				if( DistSq < (MYSIZE+ITEM_REAL_SIZE) * (MYSIZE+ITEM_REAL_SIZE) )
+				{
+					Items* deleteNode = nowNode;
+					cha->setLife(nowNode->getHp());
+					cha->setMana(nowNode->getMp());
+					cha->setDefence(nowNode->getDef());
+					nowNode = nowNode->getNext();
+					itList->delNode(deleteNode);
+				}else{
+					nowNode = nowNode->getNext();
+				}
 			}
 		}
-	}
 }
 
 
