@@ -93,7 +93,7 @@ D3DXMATRIXA16			mBox;
 D3DXMATRIXA16			mMis;
 D3DXVECTOR4             gLightColor(1.0f, 1.0f, 1.0f, 1.0f);//빛의 색
 D3DXVECTOR3				zero(0.0f,0.0f,0.0f);
-
+ 
 Ball*					myCharacter;
 
 Moving*					mMoving;
@@ -226,13 +226,13 @@ inline void ProcessInputs( void )
 
 
 	if(cameraCase == 1){
-	if( GetAsyncKeyState( 'W' )||GetAsyncKeyState( 'w' ) ) g_pCamera->MoveLocalZ( 0.5f );	// 카메라 전진!
-	if( GetAsyncKeyState( 'S' )||GetAsyncKeyState( 's' ) ) g_pCamera->MoveLocalZ( -0.5f );	// 카메라 후진!
-	if( GetAsyncKeyState( 'A' )||GetAsyncKeyState( 'a' ) ) g_pCamera->MoveLocalX( -0.5f );	// 카메라 후진!
-	if( GetAsyncKeyState( 'D' )||GetAsyncKeyState( 'd' ) ) g_pCamera->MoveLocalX( 0.5f );	// 카메라 후진!
-	if( GetAsyncKeyState( VK_ESCAPE ) ) PostMessage( g_hwnd, WM_DESTROY, 0, 0L );
-	//if( GetAsyncKeyState( VK_LBUTTON ) ) g_pd3dDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_WIREFRAME );
-	//if( GetAsyncKeyState( VK_RBUTTON ) ) g_pd3dDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
+		if( GetAsyncKeyState( 'W' )||GetAsyncKeyState( 'w' ) ) g_pCamera->MoveLocalZ( 0.5f );	// 카메라 전진!
+		if( GetAsyncKeyState( 'S' )||GetAsyncKeyState( 's' ) ) g_pCamera->MoveLocalZ( -0.5f );	// 카메라 후진!
+		if( GetAsyncKeyState( 'A' )||GetAsyncKeyState( 'a' ) ) g_pCamera->MoveLocalX( -0.5f );	// 카메라 후진!
+		if( GetAsyncKeyState( 'D' )||GetAsyncKeyState( 'd' ) ) g_pCamera->MoveLocalX( 0.5f );	// 카메라 후진!
+		if( GetAsyncKeyState( VK_ESCAPE ) ) PostMessage( g_hwnd, WM_DESTROY, 0, 0L );
+		//if( GetAsyncKeyState( VK_LBUTTON ) ) g_pd3dDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_WIREFRAME );
+		//if( GetAsyncKeyState( VK_RBUTTON ) ) g_pd3dDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
 	}
 	else if(cameraCase == 2){
 		g_pCamera->RotateLocalX( dy * MOUSE_SENSITIVE );	// 마우스의 Y축 회전값은 3D world의  X축 회전값
@@ -242,7 +242,7 @@ inline void ProcessInputs( void )
 	}
 
 	// 마우스를 윈도우의 중앙으로 초기화
-	 SetCursor( NULL );	// 마우스를 나타나지 않게 않다.
+	SetCursor( NULL );	// 마우스를 나타나지 않게 않다.
 	RECT	rc;
 	GetClientRect( g_hwnd, &rc );
 	pt.x = (rc.right - rc.left) / 2;
@@ -385,35 +385,35 @@ inline VOID DrawUi(){
 		velocity = 50;
 	}
 	switch(velocity){
-		case 50 : case 49 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[1],&matBillboard,-10.5f,120.0f,0.0f,vtx);
-		case 48 : case 47 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[1],&matBillboard,-10.5f,115.0f,0.0f,vtx);
-		case 46 : case 45 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[1],&matBillboard,-10.5f,110.0f,0.0f,vtx);
-		case 44 : case 43 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[1],&matBillboard,-10.5f,105.0f,0.0f,vtx);
-		case 42 : case 41 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,100.0f,0.0f,vtx);
-		case 40 : case 39 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,95.0f,0.0f,vtx);
-		case 38 : case 37 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,90.0f,0.0f,vtx);
-		case 36 : case 35 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,85.0f,0.0f,vtx);
-		case 34 : case 33 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,80.0f,0.0f,vtx);
-		case 32 : case 31 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,75.0f,0.0f,vtx);
-		case 30 : case 29 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,70.0f,0.0f,vtx);
-		case 28 : case 27 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,65.0f,0.0f,vtx);
-		case 26 : case 25 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,60.0f,0.0f,vtx);
-		case 24 : case 23 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,55.0f,0.0f,vtx);
-		case 22 : case 21 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,50.0f,0.0f,vtx);
-		case 20 : case 19 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,45.0f,0.0f,vtx);
-		case 18 : case 17 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,40.0f,0.0f,vtx);
-		case 16 : case 15 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,35.0f,0.0f,vtx);
-		case 14 : case 13 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,30.0f,0.0f,vtx);
-		case 12 : case 11 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,25.0f,0.0f,vtx);
-		case 10 : case 9 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,20.0f,0.0f,vtx);
-		case 8 : case 7 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,15.0f,0.0f,vtx);
-		case 6 : case 5 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,10.0f,0.0f,vtx);
-		case 4 : case 3 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,5.0f,0.0f,vtx);
-		case 2 : case 1: m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,0.0f,0.0f,vtx);
+	case 50 : case 49 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[1],&matBillboard,-10.5f,120.0f,0.0f,vtx);
+	case 48 : case 47 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[1],&matBillboard,-10.5f,115.0f,0.0f,vtx);
+	case 46 : case 45 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[1],&matBillboard,-10.5f,110.0f,0.0f,vtx);
+	case 44 : case 43 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[1],&matBillboard,-10.5f,105.0f,0.0f,vtx);
+	case 42 : case 41 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,100.0f,0.0f,vtx);
+	case 40 : case 39 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,95.0f,0.0f,vtx);
+	case 38 : case 37 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,90.0f,0.0f,vtx);
+	case 36 : case 35 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,85.0f,0.0f,vtx);
+	case 34 : case 33 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,80.0f,0.0f,vtx);
+	case 32 : case 31 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,75.0f,0.0f,vtx);
+	case 30 : case 29 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,70.0f,0.0f,vtx);
+	case 28 : case 27 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,65.0f,0.0f,vtx);
+	case 26 : case 25 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,60.0f,0.0f,vtx);
+	case 24 : case 23 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,55.0f,0.0f,vtx);
+	case 22 : case 21 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,50.0f,0.0f,vtx);
+	case 20 : case 19 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,45.0f,0.0f,vtx);
+	case 18 : case 17 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,40.0f,0.0f,vtx);
+	case 16 : case 15 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,35.0f,0.0f,vtx);
+	case 14 : case 13 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,30.0f,0.0f,vtx);
+	case 12 : case 11 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,25.0f,0.0f,vtx);
+	case 10 : case 9 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,20.0f,0.0f,vtx);
+	case 8 : case 7 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,15.0f,0.0f,vtx);
+	case 6 : case 5 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,10.0f,0.0f,vtx);
+	case 4 : case 3 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,5.0f,0.0f,vtx);
+	case 2 : case 1: m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,0.0f,0.0f,vtx);
 		break;
 	}
 	m_Ui->drawBillboard(g_pd3dDevice,speed_bar[6],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/5,0,0,mapVtx);
-	
+
 	for(int i=0;i<myCharacter->hisLife()/10;i++){
 		m_Ui->drawBillboard(g_pd3dDevice,speed_bar[3],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/20,12.0f*i,0.0f,hpVtx);
 	}
@@ -461,7 +461,7 @@ inline VOID Render(double time)
 			D3DXMatrixLookAtLH( &mView, &vEyePt, &vLookatPt, &vUpVec );
 			mEye = vLookatPt - vEyePt;
 		}
-		
+
 		//-----------------------------------------------------------------------------
 		// View Setting
 		//-----------------------------------------------------------------------------
@@ -475,9 +475,9 @@ inline VOID Render(double time)
 		D3DXMatrixIdentity(&myWorld);
 		D3DXMatrixScaling(&myScale,BALL_SIZE,BALL_SIZE,BALL_SIZE);
 		D3DXMatrixTranslation(&myTrans,myCharacter->getPosition().x,myCharacter->getPosition().y,myCharacter->getPosition().z);
-	//	D3DXMatrixRotationAxis(&myRotate,myCharacter->hisptVelocity(),timeGetTime() / 1000.0f);
+		//	D3DXMatrixRotationAxis(&myRotate,myCharacter->hisptVelocity(),timeGetTime() / 1000.0f);
 		myWorld *= myScale;
-	//	myWorld *= myRotate;
+		//	myWorld *= myRotate;
 		myWorld *= myTrans;
 		drawXfile->DrawMyballShader(myWorld);	
 
@@ -564,7 +564,7 @@ inline VOID beforeRender(){
 	InitGeometry();
 	drawXfile->set_viewprojtexture(matProj,gLightColor);
 	mapBox->set_viewprojtexture(matProj,gLightColor);
-	
+
 }
 inline HRESULT initLoad(){
 	/*---------init character---------*/
@@ -616,25 +616,25 @@ inline LRESULT WINAPI MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		{
 		case VK_SPACE:
 			if(myCharacter->spendMana(-10)){
-			myCharacter->setGround(false);
-			myCharacter->setVelocity(zero);
-			myCharacter->setVelocity(myCharacter->getVelocity()+ mEye*2.5f*GAMESPEED);
+				myCharacter->setGround(false);
+				myCharacter->setVelocity(zero);
+				myCharacter->setVelocity(myCharacter->getVelocity()+ mEye*2.5f*GAMESPEED);
 			}
 			break;
 		case 'E':
 			break;
 		case 'Q':
 			if(cameraCase == 2){
-			myCharacter->setGround(false);
-			myCharacter->setVelocityY(myCharacter->getVelocity().y+0.005f);
-			myCharacter->setPosition(myCharacter->getPosition()+myCharacter->getVelocity());
+				myCharacter->setGround(false);
+				myCharacter->setVelocityY(myCharacter->getVelocity().y+0.005f);
+				myCharacter->setPosition(myCharacter->getPosition()+myCharacter->getVelocity());
 			}
 			break;
 		case 'W':
 			if(cameraCase == 2){
 				myCharacter->setGround(false);
 				myCharacter->setVelocity(myCharacter->getVelocity()+mEye*0.05f*GSpeed);
-				 }
+			}
 			break;
 		case 'D':
 			break;
@@ -703,13 +703,13 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 	HWND hWnd = CreateWindow( "D3D Tutorial", "D3D Tutorial 06: Meshes",
 		WS_OVERLAPPEDWINDOW, 100, 100, WINDOW_WIDTH, WINDOW_HEIGHT,
 		NULL, NULL, wc.hInstance, NULL );
-	
+
 	g_hwnd = hWnd;
 
 	// Initialize Direct3D
 	if( SUCCEEDED( InitD3D( hWnd ) ) )
 	{
-	afterInitD3D();
+		afterInitD3D();
 
 		// Create the scene geometry
 		if(SUCCEEDED( initLoad()))

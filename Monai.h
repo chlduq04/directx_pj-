@@ -32,39 +32,36 @@ private:
 
 	float defStartTime; //선5sec
 	float defEndTime; //후15sec
-	float defStartDelay;
-	float defEndDelay;
 	bool defon;
 	float wallStartTime; //선10sec
 	float wallEndTime; //후25sec
-	float wallStartDelay;
-	float wallEndDelay;
 	bool wallon;	
 	float healStartTime; //선5sec
 	float healEndTime; //후15sec
-	float healStartDelay;
-	float healEndDelay;
 	float healEachDelay;
 	bool healon;	
 	float raserStartTime; //선5sec
 	float raserEndTime; //후30sec
-	float raserStartDelay;
-	float raserEndDelay;
 	bool raseron;
 	float rushStartTime; //선5sec
 	float rushEndTime; //후10sec
-	float rushStartDelay;
-	float rushEndDelay;
 	bool rushon;
 	float msiStartTime; 
 	float msiEndTime; 
-	float msiStartDelay;
-	float msiEndDelay;
 	bool msion;
+	float norAttStartTime; 
+	float norAttEndTime; 
+	bool naton;
 
 public:
 	Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,float time);
 	~Monai();
+
+	void Pase0(float time);
+	void Pase1(float time);
+	void Pase2(float time);
+
+
 	void subAction(float time);
 	bool defenceMode(float time);
 	bool missileMode(float time);
@@ -72,13 +69,13 @@ public:
 	bool healingMode(float time);
 	bool raserMode(float time);
 	bool rushMode(float time);
-	
+	bool normalAtt(float time);
 	bool canDef(float time);
 	bool canMissile(float time);
 	bool canHealing(float time);
 	bool canRaser(float time);
 	bool canRush(float time);
-	
+	bool canNorAtt(float time);
 	void getPositionMon(float time);
 	void normalMove(float time);
 	void closetoMove(float time);

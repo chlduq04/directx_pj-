@@ -367,6 +367,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="DXUT\Optional\directx.ico" />
     <None Include="sample.txt" />
   </ItemGroup>

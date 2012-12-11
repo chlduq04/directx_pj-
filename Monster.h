@@ -6,6 +6,7 @@
 #include "Settings.h"
 class Monster{
 private:
+	int pase;
 	float mLife;
 	int mWeight;
 	float mAttack;
@@ -75,6 +76,6 @@ public:
 	inline int getsType(){return sType;};
 	
 	inline float getDefTime(){return defendTime;};
-
+	inline int getPase(){return pase;};
 };
 #endif

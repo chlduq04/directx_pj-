@@ -2,6 +2,7 @@
 
 Monster::~Monster(){}
 Monster::Monster(D3DXVECTOR3 position,D3DXVECTOR3 velocity,D3DXVECTOR3 goal){
+	pase = 0;
 	maxLife = MON_HEALTH;
 	mLife = MON_HEALTH;
 	mWeight = MON_WEIGHT;

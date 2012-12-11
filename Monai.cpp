@@ -27,6 +27,8 @@ Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,
 	raserEndTime = time;
 	rushStartTime = time;
 	rushEndTime = time;
+	norAttStartTime = time;
+	norAttEndTime = time;
 
 	msion = false;
 	defon = false;
@@ -34,6 +36,7 @@ Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,
 	healon = false;
 	raseron = false;
 	rushon = false;
+	naton = false;
 
 }
 Monai::~Monai(){}
@@ -58,7 +61,7 @@ void Monai::getPositionMon(float time){
 	case 13:
 	case 14:
 		closetoMove(time);
-		break;
+		bxreak;
 	case 15:
 	case 16:
 	case 17:
@@ -282,6 +285,10 @@ bool Monai::raserMode(float time){
 	return false;
 
 }
+bool Monai::normalAtt(float time){
+
+}
+
 bool Monai::rushMode(float time){
 	if((rushon == false)&&(time-(rushEndTime+RUSH_END_DELAY>0))){
 		rushStartTime = time;
@@ -304,6 +311,7 @@ bool Monai::rushMode(float time){
 	return false;
 
 }
+
 void Monai::subAction(float time){
 	switch(mon->getsType()){
 	case 0:
@@ -352,4 +360,63 @@ bool Monai::canRush(float time){
 	if(rushEndTime+RUSH_END_DELAY<time){return true;}
 	return false;
 }
+bool Monai::canNorAtt(float time){
+	if(norAttEndTime+NATT_END_DELAY<time){return true;}
+	return false;
+}
 
+
+void Monai::Pase0(float time){
+	switch(mon->getmType()){
+	case 0:
+		if(canMissile(time)){missileMode(time);}
+		else if(canNorAtt(time)){normalAtt(time);}
+		else if(canHealing(time)){healingMode(time);}
+		break;
+	case 1:
+		if(canNorAtt(time)){normalAtt(time);}
+		else if(canRush(time)){rushMode(time);}
+		break;
+	case 2:
+		if(canMissile(time)){missileMode(time);}
+		else if(canRaser(time)){raserMode(time);}
+		else if(canHealing(time)){healingMode(time);}
+		break;
+	case 3:
+		if(canDef(time)){defenceMode(time);}
+		else if(canMissile(time)){missileMode(time);}
+		break;
+	case 4:
+		if(canRush(time)){rushMode(time);}
+		else if(canNorAtt(time)){normalAtt(time);}
+		break;
+	}
+}
+void Monai::Pase1(float time){
+	switch(mon->getmType()){
+	case 0:
+		break;
+	case 1:
+		break;
+	case 2:
+		break;
+	case 3:
+		break;
+	case 4:
+		break;
+	}
+}
+void Monai::Pase2(float time){
+	switch(mon->getmType()){
+	case 0:
+		break;
+	case 1:
+		break;
+	case 2:
+		break;
+	case 3:
+		break;
+	case 4:
+		break;
+	}
+}

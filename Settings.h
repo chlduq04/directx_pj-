@@ -48,16 +48,31 @@
 
 #define MSI_START_DELAY 30
 #define MSI_END_DELAY 30
+#define MSI_MOTION_DELAY 2
+
 #define DEF_START_DELAY 5
 #define DEF_END_DELAY 15
+#define DEF_MOTION_DELAY 3
+
 #define WALL_START_DELAY 10
 #define WALL_END_DELAY 25
+#define WALL_MOTION_DELAY 5
+
 #define HEAL_START_DELAY 5
 #define HEAL_END_DELAY 15
+#define HEAL_MOTION_DELAY 5
+
 #define RASER_START_DELAY 5
 #define RASER_END_DELAY 30
+#define RASER_MOTION_DELAY 5
+
 #define RUSH_START_DELAY 5
 #define RUSH_END_DELAY 10
+#define RUSH_MOTION_DELAY 1
+
+#define NATT_START_DELAY 5
+#define NATT_END_DELAY 10
+#define NATT_MOTION_DELAY 1
 
 //-----------------------------------------------------------------------------
 // Setting
