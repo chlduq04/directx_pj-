@@ -28,6 +28,7 @@ private:
 	float speed;
 	float monsize;
 	int wallPos;
+	float monSpeed;
 
 	float defStartTime; //¼±5sec
 	float defEndTime; //ÈÄ15sec
@@ -85,6 +86,7 @@ public:
 	void jumpMove(float time);
 	void dodgeMove(float time);
 
+	inline void randPositionMon(float time){mon->setsType(rand()%26);};
 
 	D3DXVECTOR3 getNormal();
 	float getRotation();

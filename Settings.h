@@ -45,6 +45,20 @@
 
 #define MON_HEALTH 1000.0f
 #define MON_WEIGHT 10
+
+#define MSI_START_DELAY 30
+#define MSI_END_DELAY 30
+#define DEF_START_DELAY 5
+#define DEF_END_DELAY 15
+#define WALL_START_DELAY 10
+#define WALL_END_DELAY 25
+#define HEAL_START_DELAY 5
+#define HEAL_END_DELAY 15
+#define RASER_START_DELAY 5
+#define RASER_END_DELAY 30
+#define RUSH_START_DELAY 5
+#define RUSH_END_DELAY 10
+
 //-----------------------------------------------------------------------------
 // Setting
 //-----------------------------------------------------------------------------
