@@ -1,6 +1,6 @@
 #include "Monai.h"
 
-Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[]){
+Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,float time){
 	zero.x = 0.0f;
 	zero.y = 0.0f;
 	zero.z = 0.0f;
@@ -8,17 +8,58 @@ Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[]){
 	ActionStart = -1.0f;
 	mon = monster;
 	cha = charecter;
+	mov = moving;
 
 	for(int i=0;i<10;i++){
 		msi[i] = missile[i];
 	}
-	
+
+	msiStartTime = time; 
+	msiEndTime = time; 
+	defStartTime = time;
+	defEndTime = time;
+	wallStartTime = time;
+	wallEndTime = time;
+	healStartTime = time;
+	healEndTime = time;
+	healEachDelay = time;
+	raserStartTime = time;
+	raserEndTime = time;
+	rushStartTime = time;
+	rushEndTime = time;
+
+	msion = false;
+	defon = false;
+	wallon = false;
+	healon = false;
+	raseron = false;
+	rushon = false;
+
+	msiStartDelay = 20;
+	msiEndDelay = 30;
+
+	defStartDelay = 5;
+	defEndDelay = 15;
+
+	wallStartDelay = 10;
+	wallEndDelay = 25;
+
+	healStartDelay = 5;
+	healEndDelay = 15;
+
+	raserStartDelay = 5;
+	raserEndDelay = 30;
+
+	rushStartDelay = 5;
+	rushEndDelay = 10;
+
 }
 Monai::~Monai(){}
-void Monai::getPositionMon(double time){	
+void Monai::getPositionMon(float time){	
 	switch(mon->getmType()){
 	case 0:
 		normalMove(time);
+		subAction(time);
 		break;
 	case 1:
 		closetoMove(time);
@@ -36,7 +77,7 @@ void Monai::getPositionMon(double time){
 		break;
 	}
 }
-void Monai::closetoMove(double time){
+void Monai::closetoMove(float time){
 	if(!mon->isGoal()){
 		mon->setGoalX(cha->getPosition().x);
 		mon->setGoalY(1.0f);
@@ -52,7 +93,7 @@ void Monai::closetoMove(double time){
 		}
 	}
 }
-void Monai::normalMove(double time){
+void Monai::normalMove(float time){
 	if(!mon->isGoal()){
 		mon->setGoalX((rand()%(int)MAXBOUNDX)-MINBOUNDX);
 		mon->setGoalY(1.0f);
@@ -78,41 +119,161 @@ void Monai::normalMove(double time){
 		if(mon->getPosition().z<MINBOUNDZ) mon->setPostionZ(MINBOUNDZ);
 	}
 }
-void Monai::jumpMove(double time){
+void Monai::jumpMove(float time){
 
 }
-void Monai::dodgeMove(double time){
+void Monai::dodgeMove(float time){
 
 }
-void Monai::stopMove(double time){
-
+void Monai::stopMove(float time){
+	//stop
 }
 
-void Monai::defenceMode(double time){
-	if(ActionStart < 0.0f){
-		ActionStart = time;
+bool Monai::defenceMode(float time){
+	if((defon == false)&&(time-(defEndTime+defEndDelay>0))){
+		defStartTime = time;
+		defon = true;
 	}
-
-	mon->monDefence(100);
-
-	if((float)timeGetTime() * 0.001f - ActionStart>mon->getDefTime()){
-		ActionStart = -1.0f;
+	if(defon == true){
+		if(time - defStartTime < defStartDelay){
+			mon->monDefence(100);
+			return true;
+		}
+		else{
+			defon = false;
+			defEndTime = time;
+			return false;
+		}
+		return false;
 	}
+	return false;
+
 }
 
-void Monai::missileMode(double time){
-	for(int i=0;i<10;i++){
-		msi[i]->moveMissile(mon,cha,time);
+bool Monai::missileMode(float time){
+	if((msion == false)&&(time-(msiEndTime+msiEndDelay>0))){
+		msiStartTime = time;
+		msion = true;
+		for(int i=0;i<10;i++){
+			msi[i]->start();
+		}
+
 	}
-}
-void Monai::wallMode(double time){
+	if(msion == true){
+		if(time - msiStartTime < msiStartDelay){
+			for(int i=0;i<10;i++){
+				msi[i]->moveMissile(mon,cha,time);
+			}
+			return true;
+		}
+		else{
+			msion = false;
+			msiEndTime = time;
+			return false;
+		}
+		return false;
+	}
+	return false;
 
 }
-void Monai::healingMode(double time){
+bool Monai::wallMode(float time){
+	if((wallon == false)&&(time-(wallEndTime+wallEndDelay>0))){
+			wallStartTime = time;
+			wallon = true;
+			wallPos = rand()%(int)MAXBOUNDX;	}
+	if(wallon == true){
+		if(time - wallStartTime < wallStartDelay){
+			switch(wallPos%3){
+			case 0:
+				mov->getPositionWall(cha,D3DXVECTOR3(wallPos,0,0));
+				break;
+			case 1:
+				mov->getPositionWall(cha,D3DXVECTOR3(0,wallPos,0));
+				break;
+			case 2:
+				mov->getPositionWall(cha,D3DXVECTOR3(0,0,wallPos));
+				break;
+			}
+			return true;
+		}
+		else{
+			wallon = false;
+			wallEndTime = time;
+			return false;
+		}
+		return false;
+	}
+	return false;
+}
+bool Monai::healingMode(float time){
+	if((healon == false)&&(time-(healEndTime+healEndDelay>0))){
+		healStartTime = time;
+		healEachDelay = time;
+		healon = true;
+	}
+	if(healon == true){
+		if(time - healStartTime < healStartDelay){
+			if(time - healEachDelay > 1){
+				healEachDelay = time;
+				mon->monHealing();
+			}
+			return true;
+		}
+		else{
+			healon = false;
+			healEndTime = time;
+			return false;
+		}
+		return false;
+	}
+	return false;
 
 }
+bool Monai::raserMode(float time){
+	if((raseron == false)&&(time-(raserEndTime+raserEndDelay>0))){
+		raserStartTime = time;
+		raseron = true;
+	}
+	if(raseron == true){
+		if(time - raserStartTime < raserStartDelay){
+	//		for(int i=0;i<10;i++){
+	//			msi[i]->moveMissile(mon,cha,time);
+	//		}
+			return true;
+		}
+		else{
+			raseron = false;
+			raserEndTime = time;
+			return false;
+		}
+		return false;
+	}
+	return false;
 
-void Monai::subAction(double time){
+}
+bool Monai::rushMode(float time){
+	if((rushon == false)&&(time-(rushEndTime+rushEndDelay>0))){
+		rushStartTime = time;
+		rushon = true;
+	}
+	if(rushon == true){
+		if(time - rushStartTime < rushStartDelay){
+	//		for(int i=0;i<10;i++){
+	//			msi[i]->moveMissile(mon,cha,time);
+	//		}
+			return true;
+		}
+		else{
+			rushon = false;
+			rushEndTime = time;
+			return false;
+		}
+		return false;
+	}
+	return false;
+
+}
+void Monai::subAction(float time){
 	switch(mon->getsType()){
 	case 0:
 		missileMode(time);
@@ -122,6 +283,12 @@ void Monai::subAction(double time){
 		break;
 	case 2:
 		healingMode(time);
+		break;
+	case 3:
+		raserMode(time);
+		break;
+	case 4:
+		rushMode(time);
 		break;
 	default:
 		break;
@@ -133,4 +300,24 @@ D3DXVECTOR3 Monai::getNormal(){
 }
 float Monai::getRotation(){
 	return rotate;
+}
+bool Monai::canDef(float time){
+	if(defEndTime+defEndDelay<time){return true;}
+	return false;
+}
+bool Monai::canMissile(float time){
+	if(msiEndTime+msiEndDelay<time){return true;}
+	return false;
+}
+bool Monai::canHealing(float time){
+	if(healEndTime+healEndDelay<time){return true;}
+	return false;
+}
+bool Monai::canRaser(float time){
+	if(raserEndTime+raserEndDelay<time){return true;}
+	return false;
+}
+bool Monai::canRush(float time){
+	if(rushEndTime+rushEndDelay<time){return true;}
+	return false;
 }

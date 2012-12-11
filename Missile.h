@@ -33,9 +33,6 @@ public:
 	inline bool getStart(){return isStart;};
 	inline void setStart(bool on){isStart = on;};
 
-
-
-
 	void startPosition(Monster* mon);
 	void rendGoal(Ball* cha);
 	void rendValue();

@@ -18,19 +18,20 @@ private:
 	int bCount;
 	float crashTime;
 	bool isCrash;
-	bool wallxl;
-	bool wallxr;
-	bool wallyl;
-	bool wallyr;
-	bool wallzl;
-	bool wallzr;
-	float wall_position;
 	float wall_bounce;
 	float ActionStart;
 
+	float maxboundx;
+	float maxboundy;
+	float maxboundz;
+	float minboundx;
+	float minboundy;
+	float minboundz;
+	bool monWall;
+
 public:
 	Moving();
-	void getPositionWall(Ball* cha,float speed,D3DXVECTOR3 wall);
+	void getPositionWall(Ball* cha,D3DXVECTOR3 wall);
 	void getPosition(Ball* cha,float speed);
 	void getItem(Ball* cha,ItemsList* itList);
 	void crashMon(Ball* cha, Monster* mon,float time);

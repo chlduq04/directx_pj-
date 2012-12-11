@@ -3,13 +3,15 @@
 Moving::Moving(){
 	bCount = 0;
 	isCrash = false;
-	wallxr = false;
-	wallyr = false;
-	wallzr = false;
-	wallxl = false;
-	wallyl = false;
-	wallzl = false;
-	wall_position = 0.0f;
+
+	maxboundx = MAXBOUNDX;
+	maxboundy = MAXBOUNDY;
+	maxboundz = MAXBOUNDZ;
+	minboundx = MINBOUNDX;
+	minboundy = MINBOUNDY;
+	minboundz = MINBOUNDZ;
+
+	monWall = false;
 	wall_bounce = 0;
 	crashTime = 0;
 	ActionStart = -1.0f;
@@ -88,91 +90,50 @@ void Moving::getPosition(Ball* cha,float speed){
 		cha->setVelocityX(cha->getVelocity().x*0.5f*speed);
 		cha->setVelocityZ(cha->getVelocity().z*0.5f*speed);
 	}
-
-	if( cha->getPosition().z < MINBOUNDZ + ( MYSIZE * 0.5f ) )
+	if( cha->getPosition().z < minboundz + ( MYSIZE * 0.5f ) )
 	{
-		cha->setPositionZ(MINBOUNDZ + ( MYSIZE * 0.5f ));
+		cha->setPositionZ(minboundz + ( MYSIZE * 0.5f ));
 		cha->setVelocityZ(-(cha->getVelocity().z) * ( 1 - ABSORBANCE )*speed);
 	}
-	if( cha->getPosition().x < MINBOUNDX + ( MYSIZE * 0.5f ) )
+	if( cha->getPosition().x < minboundx + ( MYSIZE * 0.5f ) )
 	{
-		cha->setPositionX(MINBOUNDX + ( MYSIZE * 0.5f ));
+		cha->setPositionX(minboundx + ( MYSIZE * 0.5f ));
 		cha->setVelocityX(-(cha->getVelocity().x) * ( 1 - ABSORBANCE )*speed);
 	}
-	if( cha->getPosition().z > MAXBOUNDZ - ( MYSIZE * 0.5f ) )
+	if( cha->getPosition().z > maxboundz - ( MYSIZE * 0.5f ) )
 	{
-		cha->setPositionZ(MAXBOUNDZ - ( MYSIZE * 0.5f ));
+		cha->setPositionZ(maxboundz - ( MYSIZE * 0.5f ));
 		cha->setVelocityZ(-(cha->getVelocity().z) * ( 1 - ABSORBANCE )*speed);
 	}
-	if( cha->getPosition().x > MAXBOUNDX - ( MYSIZE * 0.5f ) )
+	if( cha->getPosition().x > maxboundx - ( MYSIZE * 0.5f ) )
 	{
-		cha->setPositionX(MAXBOUNDX - ( MYSIZE * 0.5f ));
+		cha->setPositionX(maxboundx - ( MYSIZE * 0.5f ));
 		cha->setVelocityX(-(cha->getVelocity().x) * ( 1 - ABSORBANCE )*speed);
 	}
 
-	if(wallxr){
-		if( cha->getPosition().x > wall_position - ( MYSIZE * 0.5f ) )
-		{
-			cha->setPositionX(wall_position - ( MYSIZE * 0.5f ));
-			cha->setVelocityX(-(cha->getVelocity().x) * ( 1 - ABSORBANCE )*speed);
-		}
-	}
-	if(wallxl){
-		if( cha->getPosition().x < wall_position + ( MYSIZE * 0.5f ) )
-		{
-			cha->setPositionX(wall_position + ( MYSIZE * 0.5f ));
-			cha->setVelocityX(-(cha->getVelocity().x) * ( 1 - ABSORBANCE )*speed);
-		}
-	}
-	if(wallyr){
-	}
-	if(wallyl){
-	}
-	if(wallzr){
-		if( cha->getPosition().z > MINBOUNDZ - ( MYSIZE * 0.5f ) )
-		{
-			cha->setPositionZ(MINBOUNDZ - ( MYSIZE * 0.5f ));
-			cha->setVelocityZ(-(cha->getVelocity().z) * ( 1 - ABSORBANCE )*speed);
-		}
-	}
-	if(wallzl){
-		if( cha->getPosition().z < MINBOUNDZ + ( MYSIZE * 0.5f ) )
-		{
-			cha->setPositionZ(MINBOUNDZ + ( MYSIZE * 0.5f ));
-			cha->setVelocityZ(-(cha->getVelocity().z) * ( 1 - ABSORBANCE )*speed);
-		}
-
-	}
 }
 
-void Moving::getPositionWall(Ball* cha,float speed,D3DXVECTOR3 wall){
-	wallxl = false;
-	wallxr = false;
-	wallyl = false;
-	wallyr = false;
-	wallzl = false;
-	wallzr = false;
-
+void Moving::getPositionWall(Ball* cha,D3DXVECTOR3 wall){
 	if(wall.x!=0){
-		wall_position = wall.x;
-		if(cha->getPosition().x>wall_position)
-			wallxr = true;
+		monWall = true;
+		if(cha->getPosition().x>wall.x)
+			minboundx = wall.x;
 		else
-			wallxl = true;
+			maxboundx = wall.x;
 	}
 	else if(wall.y!=0){
-		wall_position = wall.y;
-		if(cha->getPosition().y>wall_position)
-			wallyr = true;
+		monWall = true;
+		if(cha->getPosition().y>wall.y)
+			minboundy = wall.y;
 		else
-			wallyl = true;
+			maxboundy = wall.y;
 	}
 	else if(wall.z!=0){
-		wall_position = wall.z;
-		if(cha->getPosition().z>wall_position)
-			wallzr = true;
+		monWall = true;
+		if(cha->getPosition().z>wall.z)
+			minboundz = wall.z;
 		else
-			wallzl = true;
+			maxboundz = wall.z;
 	}
 }
 void Moving::crashMon(Ball* cha, Monster* mon,float time){
@@ -189,7 +150,7 @@ void Moving::crashMon(Ball* cha, Monster* mon,float time){
 		{
 			D3DXVec3Normalize( &vOneToTwo, &vOneToTwo );
 			float fImpact = D3DXVec3Dot( &vOneToTwo, &mon->getVelocity() ) - D3DXVec3Dot( &vOneToTwo, &cha->getVelocity());	
-			
+
 			if( fImpact > 0.0f )
 			{
 				isCrash = true;

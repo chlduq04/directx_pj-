@@ -13,7 +13,7 @@ ItemsList::ItemsList(){
 
 ItemsList::~ItemsList(){
 	Items* inow = istart->getNext();
-	while(istart->getNext()!=iend){
+	while(inow!=iend){
 		istart->setNext(inow->getNext());
 		inow->getNext()->setPrev(istart);
 		delete inow;

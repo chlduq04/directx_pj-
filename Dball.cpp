@@ -457,7 +457,7 @@ inline VOID Render(double time)
 			D3DXMatrixLookAtLH( &mView, &vEyePt, &vLookatPt, &vUpVec );
 			mEye = vLookatPt - vEyePt;
 		}
-
+		
 		//-----------------------------------------------------------------------------
 		// View Setting
 		//-----------------------------------------------------------------------------
@@ -482,14 +482,12 @@ inline VOID Render(double time)
 		//-----------------------------------------------------------------------------
 		m_Ai->getPositionMon(time);
 
-		
 		D3DXMatrixIdentity(&mBox);
 		D3DXMatrixScaling(&myScale,MON_SIZE,MON_SIZE,MON_SIZE);
 		D3DXMatrixTranslation(&myTrans,first_mon->getPosition().x,first_mon->getPosition().y,first_mon->getPosition().z);
 		mBox *= myScale;
 		mBox *= myTrans;
 		mapBox->DrawMyballShader(mBox);	
-		mMoving->getPositionWall(myCharacter,GSpeed,D3DXVECTOR3(0,0,10));
 
 		//-----------------------------------------------------------------------------
 		// Missile Setting
@@ -540,7 +538,7 @@ inline VOID afterInitD3D(){
 	itemList = new ItemsList();
 	g_pModel = new CModel(g_pd3dDevice);
 	first_mon = new Monster((D3DXVECTOR3)MonPos,(D3DXVECTOR3)MonVel,(D3DXVECTOR3)MonVel);
-	m_Ai = new Monai(first_mon,myCharacter,mMissile);
+	m_Ai = new Monai(first_mon,myCharacter,mMissile,mMoving, m_fStartTime);
 	m_Ui = new Ui();
 }
 
