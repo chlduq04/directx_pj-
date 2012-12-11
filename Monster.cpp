@@ -24,9 +24,11 @@ Monster::Monster(D3DXVECTOR3 position,D3DXVECTOR3 velocity,D3DXVECTOR3 goal){
 
 
 
-void Monster::monDefence(int def){mDefence = def;
+void Monster::monDefence(int def){
+	mDefence = def;
 }
-void Monster::monAttack(){mAttack = 20;
+void Monster::monAttack(){
+	mAttack = 20;
 }
 void Monster::monMissile(){}
 void Monster::monJump(){}

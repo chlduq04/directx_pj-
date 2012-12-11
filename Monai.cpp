@@ -5,17 +5,9 @@ Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[]){
 	zero.y = 0.0f;
 	zero.z = 0.0f;
 
-	maxBoundx = (int)MAXBOUNDX;
-	maxBoundy = (int)MAXBOUNDY;
-	maxBoundz = (int)MAXBOUNDZ;
-	minBoundx = (int)MINBOUNDX;
-	minBoundy = (int)MINBOUNDY;
-	minBoundz = (int)MINBOUNDZ;
 	ActionStart = -1.0f;
 	mon = monster;
 	cha = charecter;
-	speed = GAMESPEED;
-	monsize = MON_REAL_SIZE;
 
 	for(int i=0;i<10;i++){
 		msi[i] = missile[i];
@@ -23,37 +15,36 @@ Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[]){
 	
 }
 Monai::~Monai(){}
-void Monai::getPositionMon(double time){
-	missileMode(time);
-	//switch(mon->getmType()){
-	//case 0:
-	//	normalMove(time);
-	//	break;
-	//case 1:
-	//	closetoMove(time);
-	//	break;
-	//case 2:
-	//	stopMove(time);
-	//	break;
-	//case 3:
-	//	jumpMove(time);
-	//	break;
-	//case 4:
-	//	dodgeMove(time);
-	//	break;
-	//default:
-	//	break;
-	//}
+void Monai::getPositionMon(double time){	
+	switch(mon->getmType()){
+	case 0:
+		normalMove(time);
+		break;
+	case 1:
+		closetoMove(time);
+		break;
+	case 2:
+		stopMove(time);
+		break;
+	case 3:
+		jumpMove(time);
+		break;
+	case 4:
+		dodgeMove(time);
+		break;
+	default:
+		break;
+	}
 }
 void Monai::closetoMove(double time){
 	if(!mon->isGoal()){
 		mon->setGoalX(cha->getPosition().x);
 		mon->setGoalY(1.0f);
 		mon->setGoalZ(cha->getPosition().z);
-		mon->setVelocity((mon->getGoal()-mon->getPosition())/200*speed);
+		mon->setVelocity((mon->getGoal()-mon->getPosition())/200*GAMESPEED);
 	}else{
 		mon->setPostion(mon->getPosition()+mon->getVelocity());
-		if( abs(mon->getPosition().x-mon->getGoal().x)< (monsize/2)*(monsize/2) ){
+		if( abs(mon->getPosition().x-mon->getGoal().x)< (MON_REAL_SIZE/2)*(MON_REAL_SIZE/2) ){
 			mon->setVelocityX(0.0f);
 			mon->setVelocityY(0.0f);
 			mon->setVelocityZ(0.0f);
@@ -63,28 +54,28 @@ void Monai::closetoMove(double time){
 }
 void Monai::normalMove(double time){
 	if(!mon->isGoal()){
-		mon->setGoalX((rand()%maxBoundx)-minBoundx);
+		mon->setGoalX((rand()%(int)MAXBOUNDX)-MINBOUNDX);
 		mon->setGoalY(1.0f);
-		mon->setGoalZ((rand()%maxBoundz)-minBoundz);
-		mon->setVelocity((mon->getGoal()-mon->getPosition())/400*speed);
+		mon->setGoalZ((rand()%(int)MAXBOUNDZ)-MINBOUNDZ);
+		mon->setVelocity((mon->getGoal()-mon->getPosition())/400*GAMESPEED);
 		mon->setisGoal(true);
 
 //		D3DXVec3Normalize(&face,&mon->getGoal());
 //		rotate = D3DXVec3Dot(&zero,&mon->getGoal());
 	}else{
 		mon->setPostion(mon->getPosition()+mon->getVelocity());
-		if( abs(mon->getPosition().x-mon->getGoal().x)< (monsize/2)*(monsize/2) ){
+		if( abs(mon->getPosition().x-mon->getGoal().x)< (MON_REAL_SIZE/2)*(MON_REAL_SIZE/2) ){
 			mon->setVelocityX(0.0f);
 			mon->setVelocityY(0.0f);
 			mon->setVelocityZ(0.0f);
 			mon->setisGoal(false);
 		}
-		if(mon->getPosition().x>maxBoundx) mon->setPostionX(maxBoundx);
-		if(mon->getPosition().x<minBoundx) mon->setPostionX(minBoundx);
-		if(mon->getPosition().y>maxBoundy) mon->setPostionY(maxBoundy);
-		if(mon->getPosition().y<minBoundy) mon->setPostionY(minBoundy);
-		if(mon->getPosition().z>maxBoundz) mon->setPostionZ(maxBoundz);
-		if(mon->getPosition().z<minBoundz) mon->setPostionZ(minBoundz);
+		if(mon->getPosition().x>MAXBOUNDX) mon->setPostionX(MAXBOUNDX);
+		if(mon->getPosition().x<MINBOUNDX) mon->setPostionX(MINBOUNDX);
+		if(mon->getPosition().y>MAXBOUNDY) mon->setPostionY(MAXBOUNDY);
+		if(mon->getPosition().y<MINBOUNDY) mon->setPostionY(MINBOUNDY);
+		if(mon->getPosition().z>MAXBOUNDZ) mon->setPostionZ(MAXBOUNDZ);
+		if(mon->getPosition().z<MINBOUNDZ) mon->setPostionZ(MINBOUNDZ);
 	}
 }
 void Monai::jumpMove(double time){
@@ -111,7 +102,7 @@ void Monai::defenceMode(double time){
 
 void Monai::missileMode(double time){
 	for(int i=0;i<10;i++){
-		msi[i]->moveMissile(mon,cha);
+		msi[i]->moveMissile(mon,cha,time);
 	}
 }
 void Monai::wallMode(double time){

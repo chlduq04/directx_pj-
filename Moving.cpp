@@ -2,24 +2,6 @@
 
 Moving::Moving(){
 	bCount = 0;
-	vGravity = GRAVITY;
-	rGravity = REVERSE_GRAVITY;
-	yGround = GROUND;
-	mySize = MYSIZE;
-	monSize = MON_REAL_SIZE;
-	rCeiling = CEILING;
-	rThreshold = THRESHOLD;
-	bSpeed = BALLSPEED;//공 속도
-	gSpeed = GAMESPEED;//게임속도
-	gAbsorbance = ABSORBANCE;
-	minBoundx = MINBOUNDX;
-	minBoundy = MINBOUNDY;
-	minBoundz = MINBOUNDZ;
-	maxBoundx = MAXBOUNDX;
-	maxBoundy = MAXBOUNDY;
-	maxBoundz = MAXBOUNDZ;
-	bounceLost = BOUNCE_LOST;
-	bounceTrans = BOUNCE_TRANSFER;
 	isCrash = false;
 	wallxr = false;
 	wallyr = false;
@@ -33,7 +15,7 @@ Moving::Moving(){
 	ActionStart = -1.0f;
 }
 
-void Moving::getItem(Ball* cha,ItemsList* itList,int mySize,int itemSize){
+void Moving::getItem(Ball* cha,ItemsList* itList){
 
 	Items* nowNode = itList->getStart(); 
 
@@ -42,7 +24,7 @@ void Moving::getItem(Ball* cha,ItemsList* itList,int mySize,int itemSize){
 
 		D3DXVECTOR3 vOneToTwo = cha->getPosition() - nowNode->getPosition();
 		float DistSq = D3DXVec3LengthSq( &vOneToTwo );
-		if( DistSq < (mySize+itemSize) * (mySize+itemSize) )
+		if( DistSq < (MYSIZE+ITEM_REAL_SIZE) * (MYSIZE+ITEM_REAL_SIZE) )
 		{
 			D3DXVec3Normalize( &vOneToTwo, &vOneToTwo );
 
@@ -60,18 +42,17 @@ void Moving::getItem(Ball* cha,ItemsList* itList,int mySize,int itemSize){
 
 
 void Moving::getPosition(Ball* cha,float speed){
-
-	if( (vGravity+rGravity) * ( (cha->getPosition().y + yGround - ( mySize * 1.0f ) ) + 0.5f *
-		cha->getVelocity().y * cha->getVelocity().y< rThreshold) && cha->isGround()== false)
+	if( (GRAVITY+REVERSE_GRAVITY) * ( (cha->getPosition().y + GROUND - ( MYSIZE * 1.0f ) ) + 0.5f *
+		cha->getVelocity().y * cha->getVelocity().y< THRESHOLD) && cha->isGround()== false)
 	{
 		bCount++;
 	}
 
-	if( (vGravity+rGravity) * ( (cha->getPosition().y + yGround - ( mySize * 1.0f ) ) + 0.5f *
+	if( (GRAVITY+REVERSE_GRAVITY) * ( (cha->getPosition().y + GROUND - ( MYSIZE * 1.0f ) ) + 0.5f *
 		cha->getVelocity().y * cha->getVelocity().y
-		< rThreshold) && bCount>5)
+		< THRESHOLD) && bCount>5)
 	{
-		cha->setPositionY(-yGround +  mySize * 0.5f );
+		cha->setPositionY(-GROUND +  MYSIZE * 0.5f );
 		cha->setVelocityY(0.0f);
 		cha->setGround(true);
 		bCount=0;
@@ -79,16 +60,16 @@ void Moving::getPosition(Ball* cha,float speed){
 
 	if( !cha->isGround() )
 	{
-		cha->setPosition(cha->getPosition()+cha->getVelocity()*bSpeed*speed);
+		cha->setPosition(cha->getPosition()+cha->getVelocity()*BALLSPEED*speed);
 		if(cha->getVelocity().y>0)
-			cha->setVelocityY(cha->getVelocity().y-(vGravity+rGravity)*bSpeed*speed);
+			cha->setVelocityY(cha->getVelocity().y-(GRAVITY+REVERSE_GRAVITY)*BALLSPEED*speed);
 		else
-			cha->setVelocityY(cha->getVelocity().y-(vGravity*bSpeed*speed));
+			cha->setVelocityY(cha->getVelocity().y-(GRAVITY*BALLSPEED*speed));
 
-		if( cha->getPosition().y < -yGround + ( mySize * 0.5f ) )
+		if( cha->getPosition().y < -GROUND + ( MYSIZE * 0.5f ) )
 		{
-			cha->setPositionY(-yGround + ( mySize * 0.5f ));
-			cha->setVelocityY(-cha->getVelocity().y* ( 1 - gAbsorbance )*speed);
+			cha->setPositionY(-GROUND + ( MYSIZE * 0.5f ));
+			cha->setVelocityY(-cha->getVelocity().y* ( 1 - ABSORBANCE )*speed);
 			cha->setVelocityX(cha->getVelocity().x*0.5f*speed);
 			cha->setVelocityZ(cha->getVelocity().z*0.5f*speed);
 		}
@@ -100,47 +81,47 @@ void Moving::getPosition(Ball* cha,float speed){
 	}
 
 
-	if( cha->getPosition().y > rCeiling - ( mySize * 0.5f ) )
+	if( cha->getPosition().y > CEILING - ( MYSIZE * 0.5f ) )
 	{
-		cha->setPositionY(rCeiling - ( mySize * 0.5f ));
-		cha->setVelocityY(-cha->getVelocity().y * ( 1 - gAbsorbance )*speed);
+		cha->setPositionY(CEILING - ( MYSIZE * 0.5f ));
+		cha->setVelocityY(-cha->getVelocity().y * ( 1 - ABSORBANCE )*speed);
 		cha->setVelocityX(cha->getVelocity().x*0.5f*speed);
 		cha->setVelocityZ(cha->getVelocity().z*0.5f*speed);
 	}
 
-	if( cha->getPosition().z < minBoundz + ( mySize * 0.5f ) )
+	if( cha->getPosition().z < MINBOUNDZ + ( MYSIZE * 0.5f ) )
 	{
-		cha->setPositionZ(minBoundz + ( mySize * 0.5f ));
-		cha->setVelocityZ(-(cha->getVelocity().z) * ( 1 - gAbsorbance )*speed);
+		cha->setPositionZ(MINBOUNDZ + ( MYSIZE * 0.5f ));
+		cha->setVelocityZ(-(cha->getVelocity().z) * ( 1 - ABSORBANCE )*speed);
 	}
-	if( cha->getPosition().x < minBoundx + ( mySize * 0.5f ) )
+	if( cha->getPosition().x < MINBOUNDX + ( MYSIZE * 0.5f ) )
 	{
-		cha->setPositionX(minBoundx + ( mySize * 0.5f ));
-		cha->setVelocityX(-(cha->getVelocity().x) * ( 1 - gAbsorbance )*speed);
+		cha->setPositionX(MINBOUNDX + ( MYSIZE * 0.5f ));
+		cha->setVelocityX(-(cha->getVelocity().x) * ( 1 - ABSORBANCE )*speed);
 	}
-	if( cha->getPosition().z > maxBoundz - ( mySize * 0.5f ) )
+	if( cha->getPosition().z > MAXBOUNDZ - ( MYSIZE * 0.5f ) )
 	{
-		cha->setPositionZ(maxBoundz - ( mySize * 0.5f ));
-		cha->setVelocityZ(-(cha->getVelocity().z) * ( 1 - gAbsorbance )*speed);
+		cha->setPositionZ(MAXBOUNDZ - ( MYSIZE * 0.5f ));
+		cha->setVelocityZ(-(cha->getVelocity().z) * ( 1 - ABSORBANCE )*speed);
 	}
-	if( cha->getPosition().x > maxBoundx - ( mySize * 0.5f ) )
+	if( cha->getPosition().x > MAXBOUNDX - ( MYSIZE * 0.5f ) )
 	{
-		cha->setPositionX(maxBoundx - ( mySize * 0.5f ));
-		cha->setVelocityX(-(cha->getVelocity().x) * ( 1 - gAbsorbance )*speed);
+		cha->setPositionX(MAXBOUNDX - ( MYSIZE * 0.5f ));
+		cha->setVelocityX(-(cha->getVelocity().x) * ( 1 - ABSORBANCE )*speed);
 	}
 
 	if(wallxr){
-		if( cha->getPosition().x > wall_position - ( mySize * 0.5f ) )
+		if( cha->getPosition().x > wall_position - ( MYSIZE * 0.5f ) )
 		{
-			cha->setPositionX(wall_position - ( mySize * 0.5f ));
-			cha->setVelocityX(-(cha->getVelocity().x) * ( 1 - gAbsorbance )*speed);
+			cha->setPositionX(wall_position - ( MYSIZE * 0.5f ));
+			cha->setVelocityX(-(cha->getVelocity().x) * ( 1 - ABSORBANCE )*speed);
 		}
 	}
 	if(wallxl){
-		if( cha->getPosition().x < wall_position + ( mySize * 0.5f ) )
+		if( cha->getPosition().x < wall_position + ( MYSIZE * 0.5f ) )
 		{
-			cha->setPositionX(wall_position + ( mySize * 0.5f ));
-			cha->setVelocityX(-(cha->getVelocity().x) * ( 1 - gAbsorbance )*speed);
+			cha->setPositionX(wall_position + ( MYSIZE * 0.5f ));
+			cha->setVelocityX(-(cha->getVelocity().x) * ( 1 - ABSORBANCE )*speed);
 		}
 	}
 	if(wallyr){
@@ -148,17 +129,17 @@ void Moving::getPosition(Ball* cha,float speed){
 	if(wallyl){
 	}
 	if(wallzr){
-		if( cha->getPosition().z > minBoundz - ( mySize * 0.5f ) )
+		if( cha->getPosition().z > MINBOUNDZ - ( MYSIZE * 0.5f ) )
 		{
-			cha->setPositionZ(minBoundz - ( mySize * 0.5f ));
-			cha->setVelocityZ(-(cha->getVelocity().z) * ( 1 - gAbsorbance )*speed);
+			cha->setPositionZ(MINBOUNDZ - ( MYSIZE * 0.5f ));
+			cha->setVelocityZ(-(cha->getVelocity().z) * ( 1 - ABSORBANCE )*speed);
 		}
 	}
 	if(wallzl){
-		if( cha->getPosition().z < minBoundz + ( mySize * 0.5f ) )
+		if( cha->getPosition().z < MINBOUNDZ + ( MYSIZE * 0.5f ) )
 		{
-			cha->setPositionZ(minBoundz + ( mySize * 0.5f ));
-			cha->setVelocityZ(-(cha->getVelocity().z) * ( 1 - gAbsorbance )*speed);
+			cha->setPositionZ(MINBOUNDZ + ( MYSIZE * 0.5f ));
+			cha->setVelocityZ(-(cha->getVelocity().z) * ( 1 - ABSORBANCE )*speed);
 		}
 
 	}
@@ -204,7 +185,7 @@ void Moving::crashMon(Ball* cha, Monster* mon,float time){
 		D3DXVECTOR3 vOneToTwo = cha->getPosition() - mon->getPosition();
 		float DistSq = D3DXVec3LengthSq( &vOneToTwo );
 
-		if( DistSq < (monSize+mySize) * (monSize+mySize) )
+		if( DistSq < (MON_REAL_SIZE+MYSIZE) * (MON_REAL_SIZE+MYSIZE) )
 		{
 			D3DXVec3Normalize( &vOneToTwo, &vOneToTwo );
 			float fImpact = D3DXVec3Dot( &vOneToTwo, &mon->getVelocity() ) - D3DXVec3Dot( &vOneToTwo, &cha->getVelocity());	
@@ -214,22 +195,31 @@ void Moving::crashMon(Ball* cha, Monster* mon,float time){
 				isCrash = true;
 				crashTime = time;
 
-				D3DXVECTOR3 vVelocityOneN = ( 1 - bounceLost ) * D3DXVec3Dot( &vOneToTwo, &mon->getVelocity() ) * vOneToTwo;
-				D3DXVECTOR3 vVelocityOneT = ( 1 - bounceLost ) * mon->getVelocity() - vVelocityOneN;
+				D3DXVECTOR3 vVelocityOneN = ( 1 - BOUNCE_LOST ) * D3DXVec3Dot( &vOneToTwo, &mon->getVelocity() ) * vOneToTwo;
+				D3DXVECTOR3 vVelocityOneT = ( 1 - BOUNCE_LOST ) * mon->getVelocity() - vVelocityOneN;
 
-				D3DXVECTOR3 vVelocityTwoN = ( 1 - bounceLost ) * D3DXVec3Dot( &vOneToTwo, &cha->getVelocity()) * vOneToTwo;
-				D3DXVECTOR3 vVelocityTwoT = ( 1 - bounceLost ) * cha->getVelocity() - vVelocityTwoN;
+				D3DXVECTOR3 vVelocityTwoN = ( 1 - BOUNCE_LOST ) * D3DXVec3Dot( &vOneToTwo, &cha->getVelocity()) * vOneToTwo;
+				D3DXVECTOR3 vVelocityTwoT = ( 1 - BOUNCE_LOST ) * cha->getVelocity() - vVelocityTwoN;
 
-				mon->setVelocity(vVelocityOneT - vVelocityOneN * ( 1 - bounceTrans ) + vVelocityTwoN * bounceTrans);
-				cha->setVelocity(vVelocityTwoT - vVelocityTwoN * ( 1 - bounceTrans ) + vVelocityOneN * bounceTrans);
+				mon->setVelocity(vVelocityOneT - vVelocityOneN * ( 1 - BOUNCE_TRANSFER ) + vVelocityTwoN * BOUNCE_TRANSFER);
+				cha->setVelocity(vVelocityTwoT - vVelocityTwoN * ( 1 - BOUNCE_TRANSFER ) + vVelocityOneN * BOUNCE_TRANSFER);
 
-				float fDistanceToMove = ( monSize - sqrtf( DistSq ) ) * 0.5f;
+				float fDistanceToMove = ( MON_REAL_SIZE - sqrtf( DistSq ) ) * 0.5f;
 				mon->setPostion(mon->getPosition()-vOneToTwo * fDistanceToMove);
 				cha->setPosition(cha->getPosition()+vOneToTwo * fDistanceToMove);
 				if(D3DXVec3LengthSq(&cha->getVelocity())>5.0f)
 				{
 				}
 			}
+		}
+	}
+}
+void Moving::crashMissile(Ball* cha,Missile* msi){
+	if(msi->getType()!= 4){
+		D3DXVECTOR3 vOneToTwo = cha->getPosition() - msi->getPosition();
+		float DistSq = D3DXVec3LengthSq( &vOneToTwo );
+		if( DistSq < (MON_REAL_SIZE+MYSIZE) * (MON_REAL_SIZE+MYSIZE) ){
+			cha->setLife(msi->getDemage());
 		}
 	}
 }

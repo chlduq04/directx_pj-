@@ -45,7 +45,6 @@
 
 #define MON_HEALTH 1000.0f
 #define MON_WEIGHT 10
-#define MISSILE_REAL_SIZE 5.0f
 //-----------------------------------------------------------------------------
 // Setting
 //-----------------------------------------------------------------------------
@@ -56,6 +55,7 @@
 #define MON_REAL_SIZE 8.0f
 #define BALL_REAL_SIZE 5.0f
 #define ITEM_REAL_SIZE 10.0f
+#define MISSILE_REAL_SIZE 1.0f
 
 #define GRAVITY 0.5f
 #define REVERSE_GRAVITY 0.05f

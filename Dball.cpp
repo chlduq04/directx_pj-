@@ -482,24 +482,28 @@ inline VOID Render(double time)
 		//-----------------------------------------------------------------------------
 		m_Ai->getPositionMon(time);
 
-/*		
+		
 		D3DXMatrixIdentity(&mBox);
 		D3DXMatrixScaling(&myScale,MON_SIZE,MON_SIZE,MON_SIZE);
 		D3DXMatrixTranslation(&myTrans,first_mon->getPosition().x,first_mon->getPosition().y,first_mon->getPosition().z);
 		mBox *= myScale;
 		mBox *= myTrans;
 		mapBox->DrawMyballShader(mBox);	
-*/
+		mMoving->getPositionWall(myCharacter,GSpeed,D3DXVECTOR3(0,0,10));
+
 		//-----------------------------------------------------------------------------
 		// Missile Setting
 		//-----------------------------------------------------------------------------
-		for(int i=0;i<10;i++){
-			D3DXMatrixIdentity(&mMis);
-			D3DXMatrixScaling(&myScale,MON_SIZE,MON_SIZE,MON_SIZE);
-			D3DXMatrixTranslation(&myTrans,mMissile[i]->getPosition().x,mMissile[i]->getPosition().y,mMissile[i]->getPosition().z);
-			mMis *= myScale;
-			mMis *= myTrans;
-			mapBox->DrawMyballShader(mMis);
+		if(mMissile[1]->getStart()){
+			for(int i=0;i<10;i++){
+				D3DXMatrixIdentity(&mMis);
+				D3DXMatrixScaling(&myScale,MISSILE_SIZE,MISSILE_SIZE,MISSILE_SIZE);
+				D3DXMatrixTranslation(&myTrans,mMissile[i]->getPosition().x,mMissile[i]->getPosition().y,mMissile[i]->getPosition().z);
+				mMis *= myScale;
+				mMis *= myTrans;
+				mapBox->DrawMyballShader(mMis);
+				mMoving->crashMissile(myCharacter,mMissile[i]);
+			}
 		}
 		//-----------------------------------------------------------------------------
 		// Room Setting
@@ -516,7 +520,7 @@ inline VOID Render(double time)
 		
 		setItemList(time);
 		itemListDraw(time);
-		mMoving->getItem(myCharacter,itemList,BALL_REAL_SIZE,ITEM_REAL_SIZE);
+		mMoving->getItem(myCharacter,itemList);
 		mMoving->crashMon(myCharacter,first_mon,time);
 		DrawUi();
 		g_pd3dDevice->EndScene();
@@ -527,7 +531,7 @@ inline VOID Render(double time)
 inline VOID afterInitD3D(){
 	m_fStartTime = (float)timeGetTime() * 0.001f;
 	srand((unsigned)GetTickCount());
-	for(int i=0;i<10;i++){mMissile[i]= new Missile(MISSILE_REAL_SIZE,MON_REAL_SIZE,BALL_REAL_SIZE,MAXBOUNDX,MAXBOUNDY,MAXBOUNDZ,MINBOUNDX,MINBOUNDY,MINBOUNDZ);}
+	for(int i=0;i<10;i++){mMissile[i]= new Missile();}
 	g_pCamera = new ZCamera;
 	drawXfile = new Xfile();
 	mapBox = new Xfile();
