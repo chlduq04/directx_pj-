@@ -8,6 +8,7 @@ Monster::Monster(D3DXVECTOR3 position,D3DXVECTOR3 velocity,D3DXVECTOR3 goal){
 	mWeight = MON_WEIGHT;
 	mAttack = 0;
 	mDefence = 0;
+	originType = 0;
 	mType = 0;
 	sType = 0;
 	mMotion = 0;
@@ -19,7 +20,7 @@ Monster::Monster(D3DXVECTOR3 position,D3DXVECTOR3 velocity,D3DXVECTOR3 goal){
 	bMove = false;
 	bJump = false;
 	bGoal = false;
-
+	doAction = false;
 	defendTime = 8.0f;
 }
 

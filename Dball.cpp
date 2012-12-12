@@ -28,6 +28,7 @@
 #include "Monster.h"
 #include "Monai.h"
 #include "Missile.h"
+#include "Wall.h"
 
 #ifdef _DEBUG       
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__) 
@@ -44,6 +45,10 @@ DWORD					g_dwMouseY = 0;
 // Drow Animation
 //-----------------------------------------------------------------------------
 CModel*					g_pModel		 = NULL; // A model object to work with
+//-----------------------------------------------------------------------------
+// Drow Wall
+//-----------------------------------------------------------------------------
+Wall*					wWall			 = NULL;
 //-----------------------------------------------------------------------------
 // Drow Billboard
 //-----------------------------------------------------------------------------
@@ -124,7 +129,7 @@ LPD3DXMESH				g_pMesh = NULL; // Our mesh object in sysmem
 D3DMATERIAL9*			g_pMeshMaterials = NULL; // Materials for our mesh
 LPDIRECT3DTEXTURE9*		g_pMeshTextures = NULL; // Textures for our mesh
 DWORD					g_dwNumMaterials = 0L;   // Number of mesh materials
-float GSpeed = GAMESPEED;
+float GSPEED = GAMESPEED;
 
 
 //-----------------------------------------------------------------------------
@@ -330,7 +335,7 @@ inline VOID Cleanup()
 // Name: Render()
 // Desc: Draws the scene
 //-----------------------------------------------------------------------------
-inline VOID setItemList(double time){
+inline VOID setItemList(float time){
 	if( time-m_fStartTime >=  1.0f){
 		if((rand()%10==5)&&(itemList->getCount()<10)){
 			D3DXVECTOR3 iPosition(rand()%100,rand()%100,rand()%100);
@@ -355,7 +360,7 @@ inline VOID setItemList(double time){
 	}
 }
 
-inline VOID itemListDraw(double time){
+inline VOID itemListDraw(float time){
 	Items* nowNode = itemList->getStart()->getNext();
 	if(nowNode!=itemList->getEnd()){
 		while(nowNode->getNext()!=itemList->getEnd()){
@@ -434,7 +439,7 @@ inline void modelLeader(float time){
 	}
 }
 
-inline VOID Render(double time)
+inline VOID Render(float time)
 {
 	g_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB( 0, 0, 0 ), 1.0f, 0 );
 	SetupLight();
@@ -471,7 +476,7 @@ inline VOID Render(double time)
 		//-----------------------------------------------------------------------------
 		// Character Setting
 		//-----------------------------------------------------------------------------
-		mMoving->getPosition(myCharacter,GSpeed);	
+		mMoving->getPosition(myCharacter,GSPEED);	
 		D3DXMatrixIdentity(&myWorld);
 		D3DXMatrixScaling(&myScale,BALL_SIZE,BALL_SIZE,BALL_SIZE);
 		D3DXMatrixTranslation(&myTrans,myCharacter->getPosition().x,myCharacter->getPosition().y,myCharacter->getPosition().z);
@@ -485,7 +490,6 @@ inline VOID Render(double time)
 		// Monster Setting
 		//-----------------------------------------------------------------------------
 		m_Ai->getPositionMon(time);
-
 		D3DXMatrixIdentity(&mBox);
 		D3DXMatrixScaling(&myScale,MON_SIZE,MON_SIZE,MON_SIZE);
 		D3DXMatrixTranslation(&myTrans,first_mon->getPosition().x,first_mon->getPosition().y,first_mon->getPosition().z);
@@ -496,7 +500,7 @@ inline VOID Render(double time)
 		//-----------------------------------------------------------------------------
 		// Missile Setting
 		//-----------------------------------------------------------------------------
-		if(mMissile[1]->getStart()){
+		if(mMissile[0]->getStart()){
 			for(int i=0;i<10;i++){
 				D3DXMatrixIdentity(&mMis);
 				D3DXMatrixScaling(&myScale,MISSILE_SIZE,MISSILE_SIZE,MISSILE_SIZE);
@@ -516,8 +520,39 @@ inline VOID Render(double time)
 		mBox *= myScale;
 		mBox *= myTrans;
 		mapBox->DrawMyballShader(mBox);
-		g_pModel->setBoundingSphereCenter(D3DXVECTOR3(0.0f,0.0f,0.0f));
-		modelLeader(time);
+
+		mMoving->getPositionWall(myCharacter,D3DXVECTOR3(0,0,30.0f));
+		
+		if(mMoving->getMonWall())
+		{
+			D3DXMatrixIdentity(&mBox);
+			if(mMoving->getMonMaxWallX()){
+				D3DXMatrixScaling(&myScale,0.001f,3.2f,3.2f);
+				D3DXMatrixTranslation(&myTrans,mMoving->getMaxX(),78.0f,80.0f);
+			}
+			else if(mMoving->getMonMinWallX()){
+				D3DXMatrixScaling(&myScale,0.001f,3.2f,3.2f);
+				D3DXMatrixTranslation(&myTrans,mMoving->getMinX(),78.0f,80.0f);
+			}
+			else if(mMoving->getMonMaxWallY()){
+			}
+			else if(mMoving->getMonMinWallY()){
+			}
+			else if(mMoving->getMonMaxWallZ()){
+				D3DXMatrixScaling(&myScale,3.2f,3.2f,0.001f);
+				D3DXMatrixTranslation(&myTrans,80.0f,78.0f,mMoving->getMaxZ());
+			}
+			else if(mMoving->getMonMinWallZ()){
+				D3DXMatrixScaling(&myScale,3.2f,3.2f,0.001f);
+				D3DXMatrixTranslation(&myTrans,80.0f,78.0f,mMoving->getMinZ());
+			}
+			mBox *= myScale;
+			mBox *= myTrans;
+			mapBox->DrawMyballShader(mBox);
+		}
+
+		//g_pModel->setBoundingSphereCenter(D3DXVECTOR3(0.0f,0.0f,0.0f));
+		//modelLeader(time);
 
 		mMoving->getItem(myCharacter,itemList);		
 		setItemList(time);
@@ -533,6 +568,7 @@ inline VOID Render(double time)
 inline VOID afterInitD3D(){
 	m_fStartTime = (float)timeGetTime() * 0.001f;
 	srand((unsigned)GetTickCount());
+	wWall = new Wall();
 	for(int i=0;i<10;i++){mMissile[i]= new Missile();}
 	g_pCamera = new ZCamera;
 	drawXfile = new Xfile();
@@ -548,6 +584,7 @@ inline VOID afterInitD3D(){
 
 inline VOID afterRender(){
 	for(int i=0;i<10;i++){delete mMissile[i];}
+	delete wWall;
 	delete g_pCamera;
 	delete drawXfile;
 	delete mapBox;
@@ -633,7 +670,7 @@ inline LRESULT WINAPI MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		case 'W':
 			if(cameraCase == 2){
 				myCharacter->setGround(false);
-				myCharacter->setVelocity(myCharacter->getVelocity()+mEye*0.05f*GSpeed);
+				myCharacter->setVelocity(myCharacter->getVelocity()+mEye*0.05f*GSPEED);
 			}
 			break;
 		case 'D':
@@ -660,10 +697,10 @@ inline LRESULT WINAPI MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		}
 		break;
 	case WM_RBUTTONDOWN :
-		GSpeed = 0.5f;
+		GSPEED = 0.5f;
 		break;
 	case WM_RBUTTONUP:
-		GSpeed = 1.0f;
+		GSPEED = 1.0f;
 		break;
 	case WM_LBUTTONDOWN:
 		myCharacter->setGround(false);

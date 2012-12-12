@@ -76,6 +76,9 @@
     <ClCompile Include="Missile.cpp">
       <Filter>project</Filter>
     </ClCompile>
+    <ClCompile Include="Wall.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
@@ -139,6 +142,9 @@
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="Missile.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="Wall.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>

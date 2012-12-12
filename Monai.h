@@ -9,6 +9,7 @@
 #include "Moving.h"
 class Monai{
 private:
+	D3DXVECTOR3 velocty;
 	D3DXVECTOR3 face;
 	D3DXVECTOR3 zero;
 	float rotate;
@@ -27,9 +28,10 @@ private:
 	Missile* msi[10];
 	float speed;
 	float monsize;
-	int wallPos;
 	float monSpeed;
+	int wallPos;
 
+	bool doAction;
 	float defStartTime; //¼±5sec
 	float defEndTime; //ÈÄ15sec
 	bool defon;
@@ -83,7 +85,7 @@ public:
 	void jumpMove(float time);
 	void dodgeMove(float time);
 
-	inline void randPositionMon(float time){mon->setsType(rand()%26);};
+	inline void randPositionMon(){mon->setOriginType(rand()%26);};
 
 	D3DXVECTOR3 getNormal();
 	float getRotation();

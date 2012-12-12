@@ -11,6 +11,7 @@ private:
 	int mWeight;
 	float mAttack;
 	int mDefence;
+	int originType;
 	int mType;
 	int sType;
 
@@ -25,7 +26,7 @@ private:
 	bool bMove;
 	bool bJump;
 	bool bGoal;
-	
+	bool doAction;
 	float defendTime;
 
 public:
@@ -42,7 +43,7 @@ public:
 	inline void setisGoal(bool argu){bGoal = argu;};
 	inline bool isGoal(){return bGoal;};
 	inline bool isAlive(){return mAlive;};
-	inline int hisLife(){return mLife;};
+	inline float hisLife(){return mLife;};
 	inline bool isbGround(){return bGround;};
 
 	inline void setGoal(D3DXVECTOR3 goal){vGoal = goal;};
@@ -69,6 +70,8 @@ public:
 	inline void setVelocityZ(float vel){vVelocity.z = vel;};
 	inline D3DXVECTOR3 getVelocity(){return vVelocity;};
 	
+	inline void setOriginType(int type){originType = type;};
+	inline int getOriginType(){return originType;};
 	inline void setmType(int type){mType = type;};
 	inline int getmType(){return mType;};
 	
@@ -77,5 +80,6 @@ public:
 	
 	inline float getDefTime(){return defendTime;};
 	inline int getPase(){return pase;};
+	inline bool isAction(){return doAction;};
 };
 #endif

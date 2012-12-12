@@ -12,30 +12,36 @@ Moving::Moving(){
 	minboundz = MINBOUNDZ;
 
 	monWall = false;
+	monMaxWallX = false;
+	monMaxWallY = false;
+	monMaxWallZ = false;
+	monMinWallX = false;
+	monMinWallY = false;
+	monMinWallZ = false;
 	wall_bounce = 0;
 	crashTime = 0;
 	ActionStart = -1.0f;
 }
 
 void Moving::getItem(Ball* cha,ItemsList* itList){
-		Items* nowNode = itList->getStart()->getNext(); 
-		if(nowNode!=itList->getEnd()){
-			while(nowNode->getNext()!=itList->getEnd()){
-				D3DXVECTOR3 vOneToTwo = cha->getPosition() - nowNode->getPosition();
-				float DistSq = D3DXVec3LengthSq( &vOneToTwo );
-				if( DistSq < (MYSIZE+ITEM_REAL_SIZE) * (MYSIZE+ITEM_REAL_SIZE) )
-				{
-					Items* deleteNode = nowNode;
-					cha->setLife(nowNode->getHp());
-					cha->setMana(nowNode->getMp());
-					cha->setDefence(nowNode->getDef());
-					nowNode = nowNode->getNext();
-					itList->delNode(deleteNode);
-				}else{
-					nowNode = nowNode->getNext();
-				}
+	Items* nowNode = itList->getStart()->getNext(); 
+	if(nowNode!=itList->getEnd()){
+		while(nowNode->getNext()!=itList->getEnd()){
+			D3DXVECTOR3 vOneToTwo = cha->getPosition() - nowNode->getPosition();
+			float DistSq = D3DXVec3LengthSq( &vOneToTwo );
+			if( DistSq < (MYSIZE+ITEM_REAL_SIZE) * (MYSIZE+ITEM_REAL_SIZE) )
+			{
+				Items* deleteNode = nowNode;
+				cha->setLife(nowNode->getHp());
+				cha->setMana(nowNode->getMp());
+				cha->setDefence(nowNode->getDef());
+				nowNode = nowNode->getNext();
+				itList->delNode(deleteNode);
+			}else{
+				nowNode = nowNode->getNext();
 			}
 		}
+	}
 }
 
 
@@ -110,31 +116,64 @@ void Moving::getPosition(Ball* cha,float speed){
 }
 
 void Moving::getPositionWall(Ball* cha,D3DXVECTOR3 wall){
+	monWall = true;
 	if(wall.x!=0){
-		monWall = true;
-		if(cha->getPosition().x>wall.x)
+		if(cha->getPosition().x>wall.x){
+			monMinWallX = true;
 			minboundx = wall.x;
-		else
+		}
+		else{
+			monMaxWallX = true;
 			maxboundx = wall.x;
+		}
 	}
 	else if(wall.y!=0){
-		monWall = true;
-		if(cha->getPosition().y>wall.y)
+		if(cha->getPosition().y>wall.y){
+			monMinWallY = true;
 			minboundy = wall.y;
-		else
+		}
+		else{
+			monMaxWallY = true;
 			maxboundy = wall.y;
+		}
 	}
 	else if(wall.z!=0){
-		monWall = true;
-		if(cha->getPosition().z>wall.z)
+		if(cha->getPosition().z>wall.z){
+			monMinWallZ = true;
 			minboundz = wall.z;
-		else
+		}
+		else{
+			monMaxWallZ = true;
 			maxboundz = wall.z;
+		}
+	}
+}
+void Moving::returnWall(){
+	monWall = false;
+	if(monMaxWallX){
+		monMaxWallX = false; 
+		maxboundx = MAXBOUNDX;
+	}else if(monMinWallX){
+		monMinWallX = false; 
+		minboundx = MINBOUNDX;
+	}else if(monMaxWallY){
+		monMaxWallY = false; 
+		maxboundy = MAXBOUNDY;
+	}else if(monMinWallY){
+		monMinWallY = false; 
+		minboundy = MINBOUNDY;
+	}else if(monMaxWallZ){
+		monMaxWallZ = false; 
+		maxboundz = MAXBOUNDZ;
+	}else if(monMinWallZ){
+		monMinWallZ = false; 
+		minboundz = MINBOUNDZ;
 	}
 }
 void Moving::crashMon(Ball* cha, Monster* mon,float time){
 	if((time - crashTime > 2.0f)&&(isCrash == true)){
 		mon->setisGoal(false);
+		mon->setOriginType(0);
 		isCrash = false;
 	}
 	if(mon->isAlive()==true)//is alive?
@@ -164,6 +203,7 @@ void Moving::crashMon(Ball* cha, Monster* mon,float time){
 				float fDistanceToMove = ( MON_REAL_SIZE - sqrtf( DistSq ) ) * 0.5f;
 				mon->setPostion(mon->getPosition()-vOneToTwo * fDistanceToMove);
 				cha->setPosition(cha->getPosition()+vOneToTwo * fDistanceToMove);
+
 				if(D3DXVec3LengthSq(&cha->getVelocity())>5.0f)
 				{
 				}

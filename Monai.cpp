@@ -9,7 +9,7 @@ Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,
 	mon = monster;
 	cha = charecter;
 	mov = moving;
-
+	doAction = false;
 	for(int i=0;i<10;i++){
 		msi[i] = missile[i];
 	}
@@ -41,7 +41,7 @@ Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,
 }
 Monai::~Monai(){}
 void Monai::getPositionMon(float time){	
-	switch(mon->getmType()){
+	switch(mon->getOriginType()){
 	case 0:
 	case 1:
 	case 2:
@@ -52,6 +52,7 @@ void Monai::getPositionMon(float time){
 	case 7:
 	case 8:
 	case 9:
+		mon->setmType(0);
 		normalMove(time);
 		//subAction(time);
 		break;
@@ -60,16 +61,19 @@ void Monai::getPositionMon(float time){
 	case 12:
 	case 13:
 	case 14:
+		mon->setmType(1);
 		closetoMove(time);
-		bxreak;
+		break;
 	case 15:
 	case 16:
 	case 17:
+		mon->setmType(2);
 		stopMove(time);
 		break;
 	case 18:
 	case 19:
 	case 20:
+		mon->setmType(3);
 		jumpMove(time);
 		break;
 	case 21:
@@ -77,35 +81,65 @@ void Monai::getPositionMon(float time){
 	case 23:
 	case 24:
 	case 25:
+		mon->setmType(4);
 		dodgeMove(time);
 		break;
 	default:
+		mon->setOriginType(0);
 		break;
 	}
+
+	switch(mon->getPase()){
+	case 0:
+		Pase0(time);
+		break;
+	case 1:
+		Pase0(time);
+		Pase1(time);
+		break;
+	case 2:
+		//Pase0(time);
+		//Pase1(time);
+		//Pase2(time);
+		break;
+	}
+
 }
 void Monai::closetoMove(float time){
 	if(!mon->isGoal()){
-		mon->setGoalX(cha->getPosition().x);
-		mon->setGoalY(1.0f);
-		mon->setGoalZ(cha->getPosition().z);
-		mon->setVelocity((mon->getGoal()-mon->getPosition())/200*GAMESPEED);
+		mon->setGoal(D3DXVECTOR3(cha->getPosition().x,1.0f,cha->getPosition().z));
+		velocty = mon->getGoal() - mon->getPosition();
+		D3DXVec3Normalize(&velocty,&velocty);
+		mon->setVelocity(velocty*GAMESPEED*0.5f);
+		mon->setisGoal(true);
 	}else{
 		mon->setPostion(mon->getPosition()+mon->getVelocity());
-		if( abs(mon->getPosition().x-mon->getGoal().x)< (MON_REAL_SIZE/2)*(MON_REAL_SIZE/2) ){
+		if	( abs(mon->getPosition().x-mon->getGoal().x)< (MON_REAL_SIZE/2)*(MON_REAL_SIZE/2) ){
 			mon->setVelocityX(0.0f);
 			mon->setVelocityY(0.0f);
 			mon->setVelocityZ(0.0f);
 			mon->setisGoal(false);
-			randPositionMon(time);
+			randPositionMon();
+		}
+		if((mon->getPosition().x>MAXBOUNDX)||(mon->getPosition().x<MINBOUNDX)||
+			(mon->getPosition().z>MAXBOUNDZ)||(mon->getPosition().z<MINBOUNDZ)){
+			mon->setisGoal(false);
+			randPositionMon();
+		}
+		if(mon->getPosition().y>MAXBOUNDY){
+			mon->setPostionY(MAXBOUNDY);
+		}
+		if(mon->getPosition().y<MINBOUNDY){
+			mon->setPostionY(MINBOUNDY);
 		}
 	}
 }
 void Monai::normalMove(float time){
 	if(!mon->isGoal()){
-		mon->setGoalX((rand()%(int)MAXBOUNDX)-MINBOUNDX);
-		mon->setGoalY(1.0f);
-		mon->setGoalZ((rand()%(int)MAXBOUNDZ)-MINBOUNDZ);
-		mon->setVelocity((mon->getGoal()-mon->getPosition())/400*GAMESPEED);
+		mon->setGoal(D3DXVECTOR3((rand()%(int)MAXBOUNDX)-MINBOUNDX,1.0f,(rand()%(int)MAXBOUNDZ)-MINBOUNDZ));
+		velocty = mon->getGoal() - mon->getPosition();
+		D3DXVec3Normalize(&velocty,&velocty);
+		mon->setVelocity(velocty*GAMESPEED*0.3f);
 		mon->setisGoal(true);
 
 //		D3DXVec3Normalize(&face,&mon->getGoal());
@@ -117,26 +151,31 @@ void Monai::normalMove(float time){
 			mon->setVelocityY(0.0f);
 			mon->setVelocityZ(0.0f);
 			mon->setisGoal(false);
-			randPositionMon(time);
+			randPositionMon();
 		}
-		if(mon->getPosition().x>MAXBOUNDX) mon->setPostionX(MAXBOUNDX);
-		if(mon->getPosition().x<MINBOUNDX) mon->setPostionX(MINBOUNDX);
-		if(mon->getPosition().y>MAXBOUNDY) mon->setPostionY(MAXBOUNDY);
-		if(mon->getPosition().y<MINBOUNDY) mon->setPostionY(MINBOUNDY);
-		if(mon->getPosition().z>MAXBOUNDZ) mon->setPostionZ(MAXBOUNDZ);
-		if(mon->getPosition().z<MINBOUNDZ) mon->setPostionZ(MINBOUNDZ);
+		if((mon->getPosition().x>MAXBOUNDX)||(mon->getPosition().x<MINBOUNDX)||
+			(mon->getPosition().z>MAXBOUNDZ)||(mon->getPosition().z<MINBOUNDZ)){
+			mon->setisGoal(false);
+			randPositionMon();
+		}
+		if(mon->getPosition().y>MAXBOUNDY){
+			mon->setPostionY(MAXBOUNDY);
+		}
+		if(mon->getPosition().y<MINBOUNDY){
+			mon->setPostionY(MINBOUNDY);
+		}
 	}
 }
 void Monai::jumpMove(float time){
 	//delayed
-	randPositionMon(time);
+	randPositionMon();
 }
 void Monai::dodgeMove(float time){
 	if(!mon->isGoal()){
-		mon->setGoalX((rand()%(int)MAXBOUNDX)-MINBOUNDX);
-		mon->setGoalY(1.0f);
-		mon->setGoalZ((rand()%(int)MAXBOUNDZ)-MINBOUNDZ);
-		mon->setVelocity((mon->getGoal()-mon->getPosition())/100*GAMESPEED);
+		mon->setGoal(D3DXVECTOR3((rand()%(int)MAXBOUNDX)-MINBOUNDX,1.0f,(rand()%(int)MAXBOUNDZ)-MINBOUNDZ));
+		velocty = mon->getGoal() - mon->getPosition();
+		D3DXVec3Normalize(&velocty,&velocty);
+		mon->setVelocity(velocty*GAMESPEED);
 		mon->setisGoal(true);
 
 //		D3DXVec3Normalize(&face,&mon->getGoal());
@@ -148,19 +187,32 @@ void Monai::dodgeMove(float time){
 			mon->setVelocityY(0.0f);
 			mon->setVelocityZ(0.0f);
 			mon->setisGoal(false);
-			randPositionMon(time);
+			randPositionMon();
 		}
-		if(mon->getPosition().x>MAXBOUNDX) mon->setPostionX(MAXBOUNDX);
-		if(mon->getPosition().x<MINBOUNDX) mon->setPostionX(MINBOUNDX);
-		if(mon->getPosition().y>MAXBOUNDY) mon->setPostionY(MAXBOUNDY);
-		if(mon->getPosition().y<MINBOUNDY) mon->setPostionY(MINBOUNDY);
-		if(mon->getPosition().z>MAXBOUNDZ) mon->setPostionZ(MAXBOUNDZ);
-		if(mon->getPosition().z<MINBOUNDZ) mon->setPostionZ(MINBOUNDZ);
+		if((mon->getPosition().x>MAXBOUNDX)||(mon->getPosition().x<MINBOUNDX)||
+			(mon->getPosition().z>MAXBOUNDZ)||(mon->getPosition().z<MINBOUNDZ)){
+			mon->setisGoal(false);
+			randPositionMon();
+		}
+		if(mon->getPosition().y>MAXBOUNDY){
+			mon->setPostionY(MAXBOUNDY);
+		}
+		if(mon->getPosition().y<MINBOUNDY){
+			mon->setPostionY(MINBOUNDY);
+		}
 	}
 }
 void Monai::stopMove(float time){
-	//stop
-		randPositionMon(time);
+	if(!doAction){
+		ActionStart = time;
+		doAction = true;
+	}
+	if(doAction){
+		if(time-ActionStart>5.0f){
+			randPositionMon();
+			doAction = false;
+		}
+	}
 }
 
 bool Monai::defenceMode(float time){
@@ -176,9 +228,9 @@ bool Monai::defenceMode(float time){
 		else{
 			defon = false;
 			defEndTime = time;
+			mon->monDefence(20);
 			return false;
 		}
-		return false;
 	}
 	return false;
 
@@ -191,7 +243,6 @@ bool Monai::missileMode(float time){
 		for(int i=0;i<10;i++){
 			msi[i]->start();
 		}
-
 	}
 	if(msion == true){
 		if(time - msiStartTime < MSI_START_DELAY){
@@ -205,7 +256,6 @@ bool Monai::missileMode(float time){
 			msiEndTime = time;
 			return false;
 		}
-		return false;
 	}
 	return false;
 
@@ -214,7 +264,8 @@ bool Monai::wallMode(float time){
 	if((wallon == false)&&(time-(wallEndTime+WALL_END_DELAY>0))){
 			wallStartTime = time;
 			wallon = true;
-			wallPos = rand()%(int)MAXBOUNDX;	}
+			wallPos = rand()%(int)MAXBOUNDX;	
+	}
 	if(wallon == true){
 		if(time - wallStartTime < WALL_START_DELAY){
 			switch(wallPos%3){
@@ -233,9 +284,9 @@ bool Monai::wallMode(float time){
 		else{
 			wallon = false;
 			wallEndTime = time;
+			mov->returnWall();
 			return false;
 		}
-		return false;
 	}
 	return false;
 }
@@ -258,7 +309,6 @@ bool Monai::healingMode(float time){
 			healEndTime = time;
 			return false;
 		}
-		return false;
 	}
 	return false;
 
@@ -280,13 +330,30 @@ bool Monai::raserMode(float time){
 			raserEndTime = time;
 			return false;
 		}
-		return false;
 	}
 	return false;
 
 }
 bool Monai::normalAtt(float time){
-
+	if((naton == false)&&(time-(norAttEndTime+NATT_END_DELAY>0))){
+		norAttStartTime = time;
+		naton = true;
+	}
+	if(naton == true){
+		if(time - norAttStartTime < NATT_START_DELAY){
+	//		for(int i=0;i<10;i++){
+	//			msi[i]->moveMissile(mon,cha,time);
+	//		}
+			return true;
+		}
+		else{
+			naton = false;
+			norAttEndTime = time;
+			return false;
+		}
+		return false;
+	}
+	return false;
 }
 
 bool Monai::rushMode(float time){
@@ -306,7 +373,6 @@ bool Monai::rushMode(float time){
 			rushEndTime = time;
 			return false;
 		}
-		return false;
 	}
 	return false;
 
@@ -394,13 +460,25 @@ void Monai::Pase0(float time){
 }
 void Monai::Pase1(float time){
 	switch(mon->getmType()){
-	case 0:
+	case 0: 
+		if(wallMode(time)&&missileMode(time)){}
+		else if(wallMode(time)&&raserMode(time)){}
+		else if(defenceMode(time)&&healingMode(time)){}
+		else if(wallMode(time)&&healingMode(time)){}
+		else if(defenceMode(time)&&raserMode(time)){}
+		else if(defenceMode(time)&&rushMode(time)){}
 		break;
 	case 1:
 		break;
 	case 2:
+		if(wallMode(time)&&missileMode(time)){}
+		else if(wallMode(time)&&raserMode(time)){}
+		else if(wallMode(time)&&rushMode(time)){}
+		else if(defenceMode(time)&&healingMode(time)){}
+		else if(defenceMode(time)&&rushMode(time)){}
 		break;
 	case 3:
+		if(wallMode(time)&&healingMode(time)){}
 		break;
 	case 4:
 		break;
@@ -409,14 +487,25 @@ void Monai::Pase1(float time){
 void Monai::Pase2(float time){
 	switch(mon->getmType()){
 	case 0:
+		if(missileMode(time)&&normalAtt(time)){}
+		else if(wallMode(time)&&rushMode(time)){}
 		break;
 	case 1:
+		if(defenceMode(time)&&raserMode(time)){}
 		break;
 	case 2:
+		if(healingMode(time)&&missileMode(time)){}
 		break;
 	case 3:
+		if(wallMode(time)&&missileMode(time)){}
+		else if(wallMode(time)&&raserMode(time)){}
+		else if(raserMode(time)){}
+		else if(defenceMode(time)&&raserMode(time)){}
 		break;
 	case 4:
+		if(defenceMode(time)&&rushMode(time)){}
+		else if(defenceMode(time)&&normalAtt(time)){}
+		else if(missileMode(time)&&raserMode(time)){}
 		break;
 	}
 }

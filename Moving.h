@@ -28,6 +28,13 @@ private:
 	float minboundy;
 	float minboundz;
 	bool monWall;
+	bool monMaxWallX; 
+	bool monMaxWallY; 
+	bool monMaxWallZ; 
+	bool monMinWallX; 
+	bool monMinWallY; 
+	bool monMinWallZ; 
+
 
 public:
 	Moving();
@@ -36,6 +43,23 @@ public:
 	void getItem(Ball* cha,ItemsList* itList);
 	void crashMon(Ball* cha, Monster* mon,float time);
 	void crashMissile(Ball* cha,Missile* msi);
+	void returnWall();
+
+	inline bool getMonWall(){return monWall;};
+
+	inline bool getMonMaxWallX(){return monMaxWallX;};
+	inline bool getMonMaxWallY(){return monMaxWallY;};
+	inline bool getMonMaxWallZ(){return monMaxWallZ;};
+	inline bool getMonMinWallX(){return monMinWallX;};
+	inline bool getMonMinWallY(){return monMinWallY;};
+	inline bool getMonMinWallZ(){return monMinWallZ;};
+
+	inline float getMaxX(){return maxboundx;};
+	inline float getMinX(){return minboundx;};
+	inline float getMaxY(){return maxboundy;};
+	inline float getMinY(){return minboundy;};
+	inline float getMaxZ(){return maxboundz;};
+	inline float getMinZ(){return minboundz;};
 };
 
 #endif
