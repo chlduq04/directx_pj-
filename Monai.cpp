@@ -270,13 +270,13 @@ bool Monai::wallMode(float time){
 		if(time - wallStartTime < WALL_START_DELAY){
 			switch(wallPos%3){
 			case 0:
-				mov->getPositionWall(cha,D3DXVECTOR3(wallPos,0,0));
+//				mov->getPositionWall(cha,D3DXVECTOR3(wallPos,0,0));
 				break;
 			case 1:
-				mov->getPositionWall(cha,D3DXVECTOR3(0,wallPos,0));
+//				mov->getPositionWall(cha,D3DXVECTOR3(0,wallPos,0));
 				break;
 			case 2:
-				mov->getPositionWall(cha,D3DXVECTOR3(0,0,wallPos));
+//				mov->getPositionWall(cha,D3DXVECTOR3(0,0,wallPos));
 				break;
 			}
 			return true;

@@ -2,6 +2,7 @@
 
 Moving::Moving(){
 	bCount = 0;
+	bWallCount = 0;
 	isCrash = false;
 
 	maxboundx = MAXBOUNDX;
@@ -115,7 +116,7 @@ void Moving::getPosition(Ball* cha,float speed){
 
 }
 
-void Moving::getPositionWall(Ball* cha,D3DXVECTOR3 wall){
+void Moving::getPositionWall(Ball* cha,Wall* mWall,D3DXVECTOR3 wall,float speed){
 	monWall = true;
 	if(wall.x!=0){
 		if(cha->getPosition().x>wall.x){
@@ -145,6 +146,27 @@ void Moving::getPositionWall(Ball* cha,D3DXVECTOR3 wall){
 		else{
 			monMaxWallZ = true;
 			maxboundz = wall.z;
+		}
+	}
+
+	if( !mWall->isGround() )
+	{
+		mWall->setPosition(mWall->getPosition()+mWall->getVelocity()*BALLSPEED*speed);
+		if(mWall->getVelocity().y>0)
+			mWall->setVelocityY(mWall->getVelocity().y-(GRAVITY+REVERSE_GRAVITY)*BALLSPEED*speed*15.0f);
+		else
+			mWall->setVelocityY(mWall->getVelocity().y-(GRAVITY*BALLSPEED*speed)*5.0f);
+
+		if( mWall->getPosition().y < -GROUND)
+		{
+			if(bWallCount>7){
+				mWall->isGround(true);
+			}else{
+				mWall->setPositionY(-GROUND );
+				mWall->setVelocityY(-mWall->getVelocity().y* ( 1 - ABSORBANCE*20 )*speed);
+				bWallCount++;
+			}
+
 		}
 	}
 }

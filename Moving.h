@@ -9,13 +9,14 @@
 #include "ItemsList.h"
 #include "Settings.h"
 #include "Missile.h"
-
+#include "Wall.h"
 class Moving{
 private:
 	D3DXVECTOR3 pos;
 	D3DXVECTOR3 vel;
 	D3DXVECTOR3 goal;
 	int bCount;
+	int bWallCount;
 	float crashTime;
 	bool isCrash;
 	float wall_bounce;
@@ -38,7 +39,7 @@ private:
 
 public:
 	Moving();
-	void getPositionWall(Ball* cha,D3DXVECTOR3 wall);
+	void getPositionWall(Ball* cha,Wall* mWall,D3DXVECTOR3 wall,float speed);
 	void getPosition(Ball* cha,float speed);
 	void getItem(Ball* cha,ItemsList* itList);
 	void crashMon(Ball* cha, Monster* mon,float time);
@@ -60,6 +61,7 @@ public:
 	inline float getMinY(){return minboundy;};
 	inline float getMaxZ(){return maxboundz;};
 	inline float getMinZ(){return minboundz;};
+
 };
 
 #endif

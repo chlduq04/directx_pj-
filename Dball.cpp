@@ -44,11 +44,11 @@ DWORD					g_dwMouseY = 0;
 //-----------------------------------------------------------------------------
 // Drow Animation
 //-----------------------------------------------------------------------------
-CModel*					g_pModel		 = NULL; // A model object to work with
+CModel*					g_pModel = NULL; // A model object to work with
 //-----------------------------------------------------------------------------
 // Drow Wall
 //-----------------------------------------------------------------------------
-Wall*					wWall			 = NULL;
+Wall*					wWall = NULL;
 //-----------------------------------------------------------------------------
 // Drow Billboard
 //-----------------------------------------------------------------------------
@@ -130,8 +130,6 @@ D3DMATERIAL9*			g_pMeshMaterials = NULL; // Materials for our mesh
 LPDIRECT3DTEXTURE9*		g_pMeshTextures = NULL; // Textures for our mesh
 DWORD					g_dwNumMaterials = 0L;   // Number of mesh materials
 float GSPEED = GAMESPEED;
-
-
 //-----------------------------------------------------------------------------
 // Xfile Draw
 //-----------------------------------------------------------------------------
@@ -516,40 +514,47 @@ inline VOID Render(float time)
 		//-----------------------------------------------------------------------------
 		D3DXMatrixIdentity(&mBox);
 		D3DXMatrixScaling(&myScale,3.2f,0.15f,3.2f);
-		D3DXMatrixTranslation(&myTrans,80.0f,-5.2f,80.0f);
+		D3DXMatrixTranslation(&myTrans,MAXBOUNDX/2,-5.2f,MAXBOUNDZ/2);
 		mBox *= myScale;
 		mBox *= myTrans;
 		mapBox->DrawMyballShader(mBox);
 
-		mMoving->getPositionWall(myCharacter,D3DXVECTOR3(0,0,30.0f));
-		
-		if(mMoving->getMonWall())
-		{
-			D3DXMatrixIdentity(&mBox);
-			if(mMoving->getMonMaxWallX()){
-				D3DXMatrixScaling(&myScale,0.001f,3.2f,3.2f);
-				D3DXMatrixTranslation(&myTrans,mMoving->getMaxX(),78.0f,80.0f);
-			}
-			else if(mMoving->getMonMinWallX()){
-				D3DXMatrixScaling(&myScale,0.001f,3.2f,3.2f);
-				D3DXMatrixTranslation(&myTrans,mMoving->getMinX(),78.0f,80.0f);
-			}
-			else if(mMoving->getMonMaxWallY()){
-			}
-			else if(mMoving->getMonMinWallY()){
-			}
-			else if(mMoving->getMonMaxWallZ()){
-				D3DXMatrixScaling(&myScale,3.2f,3.2f,0.001f);
-				D3DXMatrixTranslation(&myTrans,80.0f,78.0f,mMoving->getMaxZ());
-			}
-			else if(mMoving->getMonMinWallZ()){
-				D3DXMatrixScaling(&myScale,3.2f,3.2f,0.001f);
-				D3DXMatrixTranslation(&myTrans,80.0f,78.0f,mMoving->getMinZ());
-			}
-			mBox *= myScale;
-			mBox *= myTrans;
-			mapBox->DrawMyballShader(mBox);
-		}
+		mMoving->getPositionWall(myCharacter,wWall,D3DXVECTOR3(0,0,30.0f),GSPEED);
+
+		D3DXMatrixIdentity(&mBox);
+		D3DXMatrixScaling(&myScale,3.2f,3.2f,0.001f);
+		D3DXMatrixTranslation(&myTrans,MAXBOUNDX/2,wWall->getPositionY()+MAXBOUNDY/2,mMoving->getMaxZ());
+		mBox *= myScale;
+		mBox *= myTrans;
+		mapBox->DrawMyballShader(mBox);
+
+		//if(mMoving->getMonWall())
+		//{
+		//	D3DXMatrixIdentity(&mBox);
+		//	if(mMoving->getMonMaxWallX()){
+		//		D3DXMatrixScaling(&myScale,0.001f,3.2f,3.2f);
+		//		D3DXMatrixTranslation(&myTrans,mMoving->getMaxX(),MAXBOUNDY/2-WALL_GAB,MAXBOUNDZ/2);
+		//	}
+		//	else if(mMoving->getMonMinWallX()){
+		//		D3DXMatrixScaling(&myScale,0.001f,3.2f,3.2f);
+		//		D3DXMatrixTranslation(&myTrans,mMoving->getMinX(),MAXBOUNDY/2-WALL_GAB,MAXBOUNDZ/2);
+		//	}
+		//	else if(mMoving->getMonMaxWallY()){
+		//	}
+		//	else if(mMoving->getMonMinWallY()){
+		//	}
+		//	else if(mMoving->getMonMaxWallZ()){
+		//		D3DXMatrixScaling(&myScale,3.2f,3.2f,0.001f);
+		//		D3DXMatrixTranslation(&myTrans,MAXBOUNDX/2,MAXBOUNDY/2-WALL_GAB,mMoving->getMaxZ());
+		//	}
+		//	else if(mMoving->getMonMinWallZ()){
+		//		D3DXMatrixScaling(&myScale,3.2f,3.2f,0.001f);
+		//		D3DXMatrixTranslation(&myTrans,MAXBOUNDX/2,MAXBOUNDY/2-WALL_GAB,mMoving->getMinZ());
+		//	}
+		//	mBox *= myScale;
+		//	mBox *= myTrans;
+		//	mapBox->DrawMyballShader(mBox);
+		//}
 
 		//g_pModel->setBoundingSphereCenter(D3DXVECTOR3(0.0f,0.0f,0.0f));
 		//modelLeader(time);
