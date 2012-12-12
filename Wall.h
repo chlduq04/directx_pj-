@@ -10,8 +10,11 @@ private:
 	float hp;
 	float type;
 	bool ground;
+	int bouncecount;
 public:
 	Wall();
+	inline int getBcount(){return bouncecount;};
+	inline void setBcount(){bouncecount++;};
 	inline float getHp(){return hp;};
 	inline void setHp(float argu){hp = argu;};
 	inline float getType(){return type;};
@@ -37,5 +40,12 @@ public:
 	
 	inline bool isGround(){return ground;};
 	inline void isGround(bool argu){ground = argu;};
+
+	inline void resetPosVel(){
+		vPosition = D3DXVECTOR3(0,MAXBOUNDY,0);
+		vVelocity = D3DXVECTOR3(0,0,0);
+		ground = false;
+		bouncecount = 0;
+	};
 };
 #endif

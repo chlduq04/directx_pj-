@@ -36,18 +36,21 @@ private:
 	bool monMinWallY; 
 	bool monMinWallZ; 
 
+	Ball* cha;
+	Monster* mon;
+	Wall* wall;
 
 public:
-	Moving();
-	void getPositionWall(Ball* cha,Wall* mWall,D3DXVECTOR3 wall,float speed);
-	void getPosition(Ball* cha,float speed);
-	void getItem(Ball* cha,ItemsList* itList);
-	void crashMon(Ball* cha, Monster* mon,float time);
-	void crashMissile(Ball* cha,Missile* msi);
+	Moving(Ball* myball,Monster* monster,Wall* wallset);
+	void getPositionWall(D3DXVECTOR3 wall,float speed);
+	void getPosition(float speed);
+	void getItem(ItemsList* itList);
+	void crashMon(float time);
+	void crashMissile(Missile* msi);
 	void returnWall();
 
 	inline bool getMonWall(){return monWall;};
-
+	inline void setMonWall(bool argu){monWall = argu;};
 	inline bool getMonMaxWallX(){return monMaxWallX;};
 	inline bool getMonMaxWallY(){return monMaxWallY;};
 	inline bool getMonMaxWallZ(){return monMaxWallZ;};

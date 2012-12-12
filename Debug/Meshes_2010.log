@@ -1,15 +1,17 @@
-﻿빌드 시작: 2012-12-12 오후 6:37:50
+﻿빌드 시작: 2012-12-13 오전 12:05:36
      1>2 노드의 "C:\Users\ouchoi\Documents\Visual Studio 2010\Projects\DirectXSamples\Meshes\Meshes_2010.vcxproj" 프로젝트(build 대상)입니다.
      1>InitializeBuildStatus:
          "AlwaysCreate"이(가) 지정되었기 때문에 "Debug\Meshes.unsuccessfulbuild"을(를) 만들고 있습니다.
        ClCompile:
-         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IDXUT\Core /IDXUT\Optional /ZI /nologo /W4 /WX- /Od /Oi /Oy- /D WIN32 /D _DEBUG /D DEBUG /D PROFILE /D _WINDOWS /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Moving.cpp  
-         Moving.cpp
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\moving.cpp(209): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\moving.cpp(209): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\moving.cpp(216): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\moving.cpp(219): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\moving.cpp(229): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IDXUT\Core /IDXUT\Optional /ZI /nologo /W4 /WX- /Od /Oi /Oy- /D WIN32 /D _DEBUG /D DEBUG /D PROFILE /D _WINDOWS /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Monai.cpp  
+         Monai.cpp
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(110): warning C4100: 'time' : 참조되지 않은 정식 매개 변수입니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(139): warning C4100: 'time' : 참조되지 않은 정식 매개 변수입니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(171): warning C4100: 'time' : 참조되지 않은 정식 매개 변수입니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(175): warning C4100: 'time' : 참조되지 않은 정식 매개 변수입니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(293): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(299): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(376): warning C4702: 접근할 수 없는 코드입니다.
        ResourceCompile:
          모든 출력이 최신 상태입니다.
        ManifestResourceCompile:
@@ -46,4 +48,4 @@
 
 빌드했습니다.
 
-경과 시간: 00:00:02.04
+경과 시간: 00:00:01.67

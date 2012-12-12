@@ -474,7 +474,7 @@ inline VOID Render(float time)
 		//-----------------------------------------------------------------------------
 		// Character Setting
 		//-----------------------------------------------------------------------------
-		mMoving->getPosition(myCharacter,GSPEED);	
+		mMoving->getPosition(GSPEED);	
 		D3DXMatrixIdentity(&myWorld);
 		D3DXMatrixScaling(&myScale,BALL_SIZE,BALL_SIZE,BALL_SIZE);
 		D3DXMatrixTranslation(&myTrans,myCharacter->getPosition().x,myCharacter->getPosition().y,myCharacter->getPosition().z);
@@ -506,7 +506,7 @@ inline VOID Render(float time)
 				mMis *= myScale;
 				mMis *= myTrans;
 				mapBox->DrawMyballShader(mMis);
-				mMoving->crashMissile(myCharacter,mMissile[i]);
+				mMoving->crashMissile(mMissile[i]);
 			}
 		}
 		//-----------------------------------------------------------------------------
@@ -519,51 +519,44 @@ inline VOID Render(float time)
 		mBox *= myTrans;
 		mapBox->DrawMyballShader(mBox);
 
-		mMoving->getPositionWall(myCharacter,wWall,D3DXVECTOR3(0,0,30.0f),GSPEED);
+//		mMoving->getPositionWall(myCharacter,wWall,D3DXVECTOR3(30,0,0),GSPEED);
 
-		D3DXMatrixIdentity(&mBox);
-		D3DXMatrixScaling(&myScale,3.2f,3.2f,0.001f);
-		D3DXMatrixTranslation(&myTrans,MAXBOUNDX/2,wWall->getPositionY()+MAXBOUNDY/2,mMoving->getMaxZ());
-		mBox *= myScale;
-		mBox *= myTrans;
-		mapBox->DrawMyballShader(mBox);
-
-		//if(mMoving->getMonWall())
-		//{
-		//	D3DXMatrixIdentity(&mBox);
-		//	if(mMoving->getMonMaxWallX()){
-		//		D3DXMatrixScaling(&myScale,0.001f,3.2f,3.2f);
-		//		D3DXMatrixTranslation(&myTrans,mMoving->getMaxX(),MAXBOUNDY/2-WALL_GAB,MAXBOUNDZ/2);
-		//	}
-		//	else if(mMoving->getMonMinWallX()){
-		//		D3DXMatrixScaling(&myScale,0.001f,3.2f,3.2f);
-		//		D3DXMatrixTranslation(&myTrans,mMoving->getMinX(),MAXBOUNDY/2-WALL_GAB,MAXBOUNDZ/2);
-		//	}
-		//	else if(mMoving->getMonMaxWallY()){
-		//	}
-		//	else if(mMoving->getMonMinWallY()){
-		//	}
-		//	else if(mMoving->getMonMaxWallZ()){
-		//		D3DXMatrixScaling(&myScale,3.2f,3.2f,0.001f);
-		//		D3DXMatrixTranslation(&myTrans,MAXBOUNDX/2,MAXBOUNDY/2-WALL_GAB,mMoving->getMaxZ());
-		//	}
-		//	else if(mMoving->getMonMinWallZ()){
-		//		D3DXMatrixScaling(&myScale,3.2f,3.2f,0.001f);
-		//		D3DXMatrixTranslation(&myTrans,MAXBOUNDX/2,MAXBOUNDY/2-WALL_GAB,mMoving->getMinZ());
-		//	}
-		//	mBox *= myScale;
-		//	mBox *= myTrans;
-		//	mapBox->DrawMyballShader(mBox);
-		//}
+		if(mMoving->getMonWall())
+		{
+			D3DXMatrixIdentity(&mBox);
+			if(mMoving->getMonMaxWallX()){
+				D3DXMatrixScaling(&myScale,0.001f,3.2f,3.2f);
+				D3DXMatrixTranslation(&myTrans,mMoving->getMaxX(),wWall->getPositionY()+MAXBOUNDY/2,MAXBOUNDZ/2);
+			}
+			else if(mMoving->getMonMinWallX()){
+				D3DXMatrixScaling(&myScale,0.001f,3.2f,3.2f);
+				D3DXMatrixTranslation(&myTrans,mMoving->getMinX(),wWall->getPositionY()+MAXBOUNDY/2,MAXBOUNDZ/2);
+			}
+			else if(mMoving->getMonMaxWallY()){
+			}
+			else if(mMoving->getMonMinWallY()){
+			}
+			else if(mMoving->getMonMaxWallZ()){
+				D3DXMatrixScaling(&myScale,3.2f,3.2f,0.001f);
+				D3DXMatrixTranslation(&myTrans,MAXBOUNDX/2,wWall->getPositionY()+MAXBOUNDY/2,mMoving->getMaxZ());
+			}
+			else if(mMoving->getMonMinWallZ()){
+				D3DXMatrixScaling(&myScale,3.2f,3.2f,0.001f);
+				D3DXMatrixTranslation(&myTrans,MAXBOUNDX/2,wWall->getPositionY()+MAXBOUNDY/2,mMoving->getMinZ());
+			}
+			mBox *= myScale;
+			mBox *= myTrans;
+			mapBox->DrawMyballShader(mBox);
+		}
 
 		//g_pModel->setBoundingSphereCenter(D3DXVECTOR3(0.0f,0.0f,0.0f));
 		//modelLeader(time);
 
-		mMoving->getItem(myCharacter,itemList);		
+		mMoving->getItem(itemList);		
 		setItemList(time);
 		itemListDraw(time);
 
-		mMoving->crashMon(myCharacter,first_mon,time);
+		mMoving->crashMon(time);
 		DrawUi();
 		g_pd3dDevice->EndScene();
 	}
@@ -579,11 +572,11 @@ inline VOID afterInitD3D(){
 	drawXfile = new Xfile();
 	mapBox = new Xfile();
 	myCharacter = new Ball(( D3DXVECTOR3 )Pos,( D3DXVECTOR3 )Vel,( D3DXVECTOR3 )Vel);	
-	mMoving = new Moving();
 	itemList = new ItemsList();
 	g_pModel = new CModel(g_pd3dDevice);
 	first_mon = new Monster((D3DXVECTOR3)MonPos,(D3DXVECTOR3)MonVel,(D3DXVECTOR3)MonVel);
-	m_Ai = new Monai(first_mon,myCharacter,mMissile,mMoving, m_fStartTime);
+	mMoving = new Moving(myCharacter,first_mon,wWall);
+	m_Ai = new Monai(first_mon,myCharacter,mMissile,mMoving,wWall, m_fStartTime);
 	m_Ui = new Ui();
 }
 

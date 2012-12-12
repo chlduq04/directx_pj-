@@ -1,6 +1,6 @@
 #include "Monai.h"
 
-Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,float time){
+Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,Wall* createwall,float time){
 	zero.x = 0.0f;
 	zero.y = 0.0f;
 	zero.z = 0.0f;
@@ -9,6 +9,7 @@ Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,
 	mon = monster;
 	cha = charecter;
 	mov = moving;
+	wall = createwall;
 	doAction = false;
 	for(int i=0;i<10;i++){
 		msi[i] = missile[i];
@@ -37,7 +38,7 @@ Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,
 	raseron = false;
 	rushon = false;
 	naton = false;
-
+	msionAll = false;
 }
 Monai::~Monai(){}
 void Monai::getPositionMon(float time){	
@@ -89,20 +90,21 @@ void Monai::getPositionMon(float time){
 		break;
 	}
 
-	switch(mon->getPase()){
-	case 0:
-		Pase0(time);
-		break;
-	case 1:
-		Pase0(time);
-		Pase1(time);
-		break;
-	case 2:
+	wallMode(time);
+	//switch(mon->getPase()){
+	//case 0:
+		//Pase0(time);
+		//break;
+	//case 1:
+		//Pase0(time);
+		//Pase1(time);
+		//break;
+	//case 2:
 		//Pase0(time);
 		//Pase1(time);
 		//Pase2(time);
-		break;
-	}
+		//break;
+	//}
 
 }
 void Monai::closetoMove(float time){
@@ -216,7 +218,7 @@ void Monai::stopMove(float time){
 }
 
 bool Monai::defenceMode(float time){
-	if((defon == false)&&(time-(defEndTime+DEF_END_DELAY>0))){
+	if((defon == false)&&(time-defEndTime-DEF_END_DELAY>0)){
 		defStartTime = time;
 		defon = true;
 	}
@@ -237,7 +239,7 @@ bool Monai::defenceMode(float time){
 }
 
 bool Monai::missileMode(float time){
-	if((msion == false)&&(time-(msiEndTime+MSI_END_DELAY>0))){
+	if((msion == false)&&(time-msiEndTime-MSI_END_DELAY>0)){
 		msiStartTime = time;
 		msion = true;
 		for(int i=0;i<10;i++){
@@ -245,13 +247,28 @@ bool Monai::missileMode(float time){
 		}
 	}
 	if(msion == true){
-		if(time - msiStartTime < MSI_START_DELAY){
+		if((time - msiStartTime < MSI_START_DELAY)){
+			msionAll = true;
 			for(int i=0;i<10;i++){
 				msi[i]->moveMissile(mon,cha,time);
+				if(msionAll&&msi[i]->nowStart()){
+					msionAll = false;
+				}
+			}
+			return true;
+		}
+		else if(msionAll==false){
+			msionAll = true;
+			for(int i=0;i<10;i++){
+				msi[i]->moveMissile(mon,cha,time);
+				if(msi[i]->nowStart()){
+					msionAll = false;
+				}
 			}
 			return true;
 		}
 		else{
+			msionAll = false;
 			msion = false;
 			msiEndTime = time;
 			return false;
@@ -261,37 +278,42 @@ bool Monai::missileMode(float time){
 
 }
 bool Monai::wallMode(float time){
-	if((wallon == false)&&(time-(wallEndTime+WALL_END_DELAY>0))){
+	if(!mov->getMonWall()){
+		if((wallon == false)&&(time-wallEndTime-WALL_END_DELAY>0)){
 			wallStartTime = time;
 			wallon = true;
-			wallPos = rand()%(int)MAXBOUNDX;	
-	}
-	if(wallon == true){
-		if(time - wallStartTime < WALL_START_DELAY){
-			switch(wallPos%3){
-			case 0:
-//				mov->getPositionWall(cha,D3DXVECTOR3(wallPos,0,0));
-				break;
-			case 1:
-//				mov->getPositionWall(cha,D3DXVECTOR3(0,wallPos,0));
-				break;
-			case 2:
-//				mov->getPositionWall(cha,D3DXVECTOR3(0,0,wallPos));
-				break;
+			wallPos =  rand()%(int)MAXBOUNDX;
+			mov->setMonWall(true);
+		}
+	}else{
+		if(wallon == true){
+			if(time - wallStartTime < WALL_START_DELAY){
+				switch(wallPos%3){
+				case 0:
+					mov->getPositionWall(D3DXVECTOR3(wallPos,0,0),GAMESPEED);
+					break;
+				case 1:
+					//mov->getPositionWall(cha,wall,D3DXVECTOR3(0,wallPos,0),GAMESPEED);
+					//break;
+				case 2:
+					mov->getPositionWall(D3DXVECTOR3(0,0,wallPos),GAMESPEED);
+					break;
+				}
+				return true;
 			}
-			return true;
+			else{
+				wallon = false;
+				wallEndTime = time;
+				mov->returnWall();
+				return false;
+			}
 		}
-		else{
-			wallon = false;
-			wallEndTime = time;
-			mov->returnWall();
-			return false;
-		}
+		return false;
 	}
 	return false;
 }
 bool Monai::healingMode(float time){
-	if((healon == false)&&(time-(healEndTime+HEAL_END_DELAY>0))){
+	if((healon == false)&&(time-healEndTime-HEAL_END_DELAY>0)){
 		healStartTime = time;
 		healEachDelay = time;
 		healon = true;
@@ -314,7 +336,7 @@ bool Monai::healingMode(float time){
 
 }
 bool Monai::raserMode(float time){
-	if((raseron == false)&&(time-(raserEndTime+RASER_END_DELAY>0))){
+	if((raseron == false)&&(time-raserEndTime-RASER_END_DELAY>0)){
 		raserStartTime = time;
 		raseron = true;
 	}
@@ -335,7 +357,7 @@ bool Monai::raserMode(float time){
 
 }
 bool Monai::normalAtt(float time){
-	if((naton == false)&&(time-(norAttEndTime+NATT_END_DELAY>0))){
+	if((naton == false)&&(time-norAttEndTime-NATT_END_DELAY>0)){
 		norAttStartTime = time;
 		naton = true;
 	}
@@ -357,7 +379,7 @@ bool Monai::normalAtt(float time){
 }
 
 bool Monai::rushMode(float time){
-	if((rushon == false)&&(time-(rushEndTime+RUSH_END_DELAY>0))){
+	if((rushon == false)&&(time-rushEndTime-RUSH_END_DELAY>0)){
 		rushStartTime = time;
 		rushon = true;
 	}
@@ -435,26 +457,42 @@ bool Monai::canNorAtt(float time){
 void Monai::Pase0(float time){
 	switch(mon->getmType()){
 	case 0:
-		if(canMissile(time)){missileMode(time);}
-		else if(canNorAtt(time)){normalAtt(time);}
-		else if(canHealing(time)){healingMode(time);}
+		if(canMissile(time)){
+			missileMode(time);
+		}
+		//else if(canNorAtt(time)){
+		//	normalAtt(time);
+		//}
+		//else if(canHealing(time)){
+		//	healingMode(time);
+		//}
 		break;
 	case 1:
-		if(canNorAtt(time)){normalAtt(time);}
-		else if(canRush(time)){rushMode(time);}
+		//if(canNorAtt(time)){
+		//	normalAtt(time);
+		//}
+		//else if(canRush(time)){
+		//	rushMode(time);
+		//}
 		break;
 	case 2:
-		if(canMissile(time)){missileMode(time);}
-		else if(canRaser(time)){raserMode(time);}
-		else if(canHealing(time)){healingMode(time);}
+		//if(canMissile(time)){
+		//	missileMode(time);
+		//}
+		//else if(canRaser(time)){
+		//	raserMode(time);
+		//}
+		//else if(canHealing(time)){
+		//	healingMode(time);
+		//}
 		break;
 	case 3:
-		if(canDef(time)){defenceMode(time);}
-		else if(canMissile(time)){missileMode(time);}
+		//if(canDef(time)){defenceMode(time);}
+		//else if(canMissile(time)){missileMode(time);}
 		break;
 	case 4:
-		if(canRush(time)){rushMode(time);}
-		else if(canNorAtt(time)){normalAtt(time);}
+		//if(canRush(time)){rushMode(time);}
+		//else if(canNorAtt(time)){normalAtt(time);}
 		break;
 	}
 }

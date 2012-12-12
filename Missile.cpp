@@ -22,10 +22,13 @@ void Missile::moveMissile(Monster* mon,Ball* cha,float time){
 		startPosition(mon);
 		rendValue();
 		nowType = 1;
+		if(vPosition.y<MINBOUNDY||vPosition.y>MAXBOUNDY){
+			nowType = 4;
+		}
 		break;
 	case 1:
 		missile_wall_length = vPosition - vBackPosition;
-		if(D3DXVec3Length(&missile_wall_length)>4.0f){setPosition(vPosition+(vBackPosition-vPosition)/4000);}
+		if(D3DXVec3Length(&missile_wall_length)>4.0f){setPosition(vPosition+(vBackPosition-vPosition)/2000);}
 		else{nowType = 2;}
 		break;
 	case 2:

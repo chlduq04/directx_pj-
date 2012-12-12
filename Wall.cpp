@@ -1,5 +1,6 @@
 #include "Wall.h"
 Wall::Wall(){
+	bouncecount = 0;
 	ground = false;
 	hp = 100;
 	type = 0;

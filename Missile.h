@@ -5,7 +5,7 @@
 #include <d3dx9.h>
 #include "Monster.h"
 #include "Ball.h"
-
+#include "Settings.h"
 class Missile{
 private:
 	D3DXVECTOR3 vPosition; //À§Ä¡
@@ -38,7 +38,9 @@ public:
 	void rendValue();
 	void moveMissile(Monster* mon,Ball* cha,float time);
 	inline void start(){nowType = 0;};
+	inline bool nowStart(){return isStart;};
 	inline int getType(){return nowType;};
+
 };
 
 #endif

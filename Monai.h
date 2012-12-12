@@ -7,6 +7,7 @@
 #include "Missile.h"
 #include "Settings.h"
 #include "Moving.h"
+#include "Wall.h"
 class Monai{
 private:
 	D3DXVECTOR3 velocty;
@@ -25,6 +26,7 @@ private:
 	Monster* mon;
 	Ball* cha;
 	Moving* mov;
+	Wall* wall;
 	Missile* msi[10];
 	float speed;
 	float monsize;
@@ -32,6 +34,7 @@ private:
 	int wallPos;
 
 	bool doAction;
+
 	float defStartTime; //¼±5sec
 	float defEndTime; //ÈÄ15sec
 	bool defon;
@@ -51,12 +54,14 @@ private:
 	float msiStartTime; 
 	float msiEndTime; 
 	bool msion;
+	bool msionAll;
 	float norAttStartTime; 
 	float norAttEndTime; 
 	bool naton;
 
+
 public:
-	Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,float time);
+	Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,Wall* createwall,float time);
 	~Monai();
 
 	void Pase0(float time);

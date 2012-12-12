@@ -1,6 +1,10 @@
 #include "Moving.h"
 
-Moving::Moving(){
+Moving::Moving(Ball* myball,Monster* monster,Wall* wallset){
+	cha = myball;
+	mon = monster;
+	wall = wallset;
+
 	bCount = 0;
 	bWallCount = 0;
 	isCrash = false;
@@ -24,7 +28,7 @@ Moving::Moving(){
 	ActionStart = -1.0f;
 }
 
-void Moving::getItem(Ball* cha,ItemsList* itList){
+void Moving::getItem(ItemsList* itList){
 	Items* nowNode = itList->getStart()->getNext(); 
 	if(nowNode!=itList->getEnd()){
 		while(nowNode->getNext()!=itList->getEnd()){
@@ -46,7 +50,7 @@ void Moving::getItem(Ball* cha,ItemsList* itList){
 }
 
 
-void Moving::getPosition(Ball* cha,float speed){
+void Moving::getPosition(float speed){
 	if( (GRAVITY+REVERSE_GRAVITY) * ( (cha->getPosition().y + GROUND - ( MYSIZE * 1.0f ) ) + 0.5f *
 		cha->getVelocity().y * cha->getVelocity().y< THRESHOLD) && cha->isGround()== false)
 	{
@@ -116,55 +120,55 @@ void Moving::getPosition(Ball* cha,float speed){
 
 }
 
-void Moving::getPositionWall(Ball* cha,Wall* mWall,D3DXVECTOR3 wall,float speed){
+void Moving::getPositionWall(D3DXVECTOR3 pos,float speed){
 	monWall = true;
-	if(wall.x!=0){
-		if(cha->getPosition().x>wall.x){
+	if(pos.x!=0){
+		if(cha->getPosition().x>pos.x){
 			monMinWallX = true;
-			minboundx = wall.x;
+			minboundx = pos.x;
 		}
 		else{
 			monMaxWallX = true;
-			maxboundx = wall.x;
+			maxboundx = pos.x;
 		}
 	}
-	else if(wall.y!=0){
-		if(cha->getPosition().y>wall.y){
+	else if(pos.y!=0){
+		if(cha->getPosition().y>pos.y){
 			monMinWallY = true;
-			minboundy = wall.y;
+			minboundy = pos.y;
 		}
 		else{
 			monMaxWallY = true;
-			maxboundy = wall.y;
+			maxboundy = pos.y;
 		}
 	}
-	else if(wall.z!=0){
-		if(cha->getPosition().z>wall.z){
+	else if(pos.z!=0){
+		if(cha->getPosition().z>pos.z){
 			monMinWallZ = true;
-			minboundz = wall.z;
+			minboundz = pos.z;
 		}
 		else{
 			monMaxWallZ = true;
-			maxboundz = wall.z;
+			maxboundz = pos.z;
 		}
 	}
 
-	if( !mWall->isGround() )
+	if( !wall->isGround() )
 	{
-		mWall->setPosition(mWall->getPosition()+mWall->getVelocity()*BALLSPEED*speed);
-		if(mWall->getVelocity().y>0)
-			mWall->setVelocityY(mWall->getVelocity().y-(GRAVITY+REVERSE_GRAVITY)*BALLSPEED*speed*15.0f);
+		wall->setPosition(wall->getPosition()+wall->getVelocity()*BALLSPEED*speed);
+		if(wall->getVelocity().y>0)
+			wall->setVelocityY(wall->getVelocity().y-(GRAVITY+REVERSE_GRAVITY)*BALLSPEED*speed*15.0f);
 		else
-			mWall->setVelocityY(mWall->getVelocity().y-(GRAVITY*BALLSPEED*speed)*5.0f);
+			wall->setVelocityY(wall->getVelocity().y-(GRAVITY*BALLSPEED*speed)*5.0f);
 
-		if( mWall->getPosition().y < -GROUND)
+		if( wall->getPosition().y < -GROUND)
 		{
-			if(bWallCount>7){
-				mWall->isGround(true);
+			if(wall->getBcount()>7){
+				wall->isGround(true);
 			}else{
-				mWall->setPositionY(-GROUND );
-				mWall->setVelocityY(-mWall->getVelocity().y* ( 1 - ABSORBANCE*20 )*speed);
-				bWallCount++;
+				wall->setPositionY(-GROUND );
+				wall->setVelocityY(-wall->getVelocity().y* ( 1 - ABSORBANCE*20 )*speed);
+				wall->setBcount();
 			}
 
 		}
@@ -191,8 +195,9 @@ void Moving::returnWall(){
 		monMinWallZ = false; 
 		minboundz = MINBOUNDZ;
 	}
+	wall->resetPosVel();
 }
-void Moving::crashMon(Ball* cha, Monster* mon,float time){
+void Moving::crashMon(float time){
 	if((time - crashTime > 2.0f)&&(isCrash == true)){
 		mon->setisGoal(false);
 		mon->setOriginType(0);
@@ -233,7 +238,7 @@ void Moving::crashMon(Ball* cha, Monster* mon,float time){
 		}
 	}
 }
-void Moving::crashMissile(Ball* cha,Missile* msi){
+void Moving::crashMissile(Missile* msi){
 	if(msi->getType()!= 4){
 		D3DXVECTOR3 vOneToTwo = cha->getPosition() - msi->getPosition();
 		float DistSq = D3DXVec3LengthSq( &vOneToTwo );
