@@ -6,8 +6,8 @@ Monster::Monster(D3DXVECTOR3 position,D3DXVECTOR3 velocity,D3DXVECTOR3 goal){
 	maxLife = MON_HEALTH;
 	mLife = MON_HEALTH;
 	mWeight = MON_WEIGHT;
-	mAttack = 0;
-	mDefence = 0;
+	mAttack = -5;
+	mDefence = 10;
 	originType = 0;
 	mType = 0;
 	sType = 0;

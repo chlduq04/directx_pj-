@@ -40,6 +40,8 @@ public:
 	void monJump();
 	void monHealing();
 	
+
+	inline float getAttack(){return mAttack;};
 	inline void setisGoal(bool argu){bGoal = argu;};
 	inline bool isGoal(){return bGoal;};
 	inline bool isAlive(){return mAlive;};

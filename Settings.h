@@ -46,8 +46,8 @@
 #define MON_HEALTH 1000.0f
 #define MON_WEIGHT 10
 
-#define MSI_START_DELAY 30
-#define MSI_END_DELAY 30
+#define MSI_START_DELAY 1 //25
+#define MSI_END_DELAY 1 //30
 #define MSI_MOTION_DELAY 2
 
 #define DEF_START_DELAY 5
@@ -73,6 +73,7 @@
 #define NATT_START_DELAY 5
 #define NATT_END_DELAY 10
 #define NATT_MOTION_DELAY 1
+#define NATT_ATT_RANGE 5
 
 //-----------------------------------------------------------------------------
 // Setting

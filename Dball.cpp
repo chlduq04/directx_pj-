@@ -35,12 +35,12 @@
 #endif
 //memory leak check
 HWND					g_hwnd = NULL;
-
 ZCamera*				g_pCamera = NULL;
 DWORD					g_cxHeight = 0;	
 DWORD					g_czHeight = 0;
 DWORD					g_dwMouseX = 0;
 DWORD					g_dwMouseY = 0;
+DWORD VERTEX_FVF = ( D3DFVF_XYZ | D3DFVF_DIFFUSE );
 //-----------------------------------------------------------------------------
 // Drow Animation
 //-----------------------------------------------------------------------------
@@ -129,7 +129,21 @@ LPD3DXMESH				g_pMesh = NULL; // Our mesh object in sysmem
 D3DMATERIAL9*			g_pMeshMaterials = NULL; // Materials for our mesh
 LPDIRECT3DTEXTURE9*		g_pMeshTextures = NULL; // Textures for our mesh
 DWORD					g_dwNumMaterials = 0L;   // Number of mesh materials
-float GSPEED = GAMESPEED;
+
+
+//-----------------------------------------------------------------------------
+// Laser variables
+//-----------------------------------------------------------------------------
+D3DXVECTOR3				ret1;
+D3DXVECTOR3				ret2;
+float					GSPEED = GAMESPEED;
+bool					bWireFrame = true;
+D3DXVECTOR3				curve[4];
+//D3DXVECTOR3				beforeMonPos;
+D3DXVECTOR3				beforeMypos;
+D3DXVECTOR3				laserSpeed;
+bool					setBefore = false;
+float					settime;
 //-----------------------------------------------------------------------------
 // Xfile Draw
 //-----------------------------------------------------------------------------
@@ -163,7 +177,7 @@ inline HRESULT InitD3D( HWND hWnd )
 
 	// Create the D3DDevice
 	if( FAILED( g_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
-		D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+		D3DCREATE_HARDWARE_VERTEXPROCESSING,
 		&d3dpp, &g_pd3dDevice ) ) )
 	{
 		return E_FAIL;
@@ -436,6 +450,37 @@ inline void modelLeader(float time){
 		g_pModel->Draw();
 	}
 }
+inline void RenderPolyLine( LPDIRECT3DDEVICE9 device, UINT count = 100 )
+{
+	if(!setBefore){
+		beforeMypos = myCharacter->getPosition();
+		setBefore = true;
+	}
+	laserSpeed = myCharacter->getPosition() - beforeMypos;
+	D3DXVec3Normalize(&laserSpeed,&laserSpeed);
+	beforeMypos += laserSpeed * 0.5f;
+
+	//for(;;){
+
+	//}
+
+	curve[0] = first_mon->getPosition();
+	curve[1] = first_mon->getPosition();
+	curve[2] = beforeMypos;
+	curve[3] = beforeMypos;
+	D3DXVec3CatmullRom( &ret1, &curve[ 0 ], &curve[ 1 ], &curve[ 2 ], &curve[ 3 ], (float)0 / count );
+	D3DXMatrixScaling(&myScale,BALL_SIZE,BALL_SIZE,BALL_SIZE);
+	for( int i = 0; i < count + 1; i++ )
+	{
+		D3DXMatrixIdentity(&matWorld);
+		D3DXVec3CatmullRom( &ret2, &curve[ 0 ], &curve[ 1 ], &curve[ 2 ], &curve[ 3 ], (float)(i + 1) / count );
+		D3DXMatrixTranslation(&myTrans,ret1.x,ret1.y,ret1.z);
+		matWorld *= myScale;
+		matWorld *= myTrans;
+		drawXfile->DrawMyballShader(matWorld);
+		ret1 = ret2;
+	}
+}
 
 inline VOID Render(float time)
 {
@@ -465,6 +510,7 @@ inline VOID Render(float time)
 			mEye = vLookatPt - vEyePt;
 		}
 
+
 		//-----------------------------------------------------------------------------
 		// View Setting
 		//-----------------------------------------------------------------------------
@@ -483,6 +529,13 @@ inline VOID Render(float time)
 		//	myWorld *= myRotate;
 		myWorld *= myTrans;
 		drawXfile->DrawMyballShader(myWorld);	
+
+
+		RenderPolyLine(g_pd3dDevice);
+
+		//-----------------------------------------------------------------------------
+		// Monster Setting
+		//-----------------------------------------------------------------------------
 
 		//-----------------------------------------------------------------------------
 		// Monster Setting
@@ -551,17 +604,19 @@ inline VOID Render(float time)
 
 		//g_pModel->setBoundingSphereCenter(D3DXVECTOR3(0.0f,0.0f,0.0f));
 		//modelLeader(time);
-
 		mMoving->getItem(itemList);		
 		setItemList(time);
 		itemListDraw(time);
 
 		mMoving->crashMon(time);
-		DrawUi();
+//		DrawUi();
+
 		g_pd3dDevice->EndScene();
+
 	}
 	g_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 }
+
 
 inline VOID afterInitD3D(){
 	m_fStartTime = (float)timeGetTime() * 0.001f;

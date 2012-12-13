@@ -8,5 +8,9 @@ struct MYVERTEX
 	float tu, tv;
 
 };
-
+struct RASERVERTEX
+{
+	D3DXVECTOR3 pos;
+	DWORD diffuse;
+};
 #endif

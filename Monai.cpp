@@ -90,7 +90,7 @@ void Monai::getPositionMon(float time){
 		break;
 	}
 
-	wallMode(time);
+	missileMode(time);
 	//switch(mon->getPase()){
 	//case 0:
 		//Pase0(time);
@@ -362,10 +362,9 @@ bool Monai::normalAtt(float time){
 		naton = true;
 	}
 	if(naton == true){
-		if(time - norAttStartTime < NATT_START_DELAY){
-	//		for(int i=0;i<10;i++){
-	//			msi[i]->moveMissile(mon,cha,time);
-	//		}
+		D3DXVECTOR3 range = mon->getPosition()-cha->getPosition();
+		if((time - norAttStartTime < NATT_START_DELAY)&&(D3DXVec3Length(&range)<NATT_ATT_RANGE)){
+			cha->setLife(mon->getAttack());
 			return true;
 		}
 		else{
