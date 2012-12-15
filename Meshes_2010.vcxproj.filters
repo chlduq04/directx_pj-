@@ -79,6 +79,12 @@
     <ClCompile Include="Wall.cpp">
       <Filter>project</Filter>
     </ClCompile>
+    <ClCompile Include="Pattern.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckAI.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
@@ -145,6 +151,12 @@
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="Wall.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckAI.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="Pattern.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>

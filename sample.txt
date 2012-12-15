@@ -81,3 +81,103 @@ PASE2
 50
 - 2 - 6,7
 - 4 - 5
+
+
+¿¹Àü mode
+bool Monai::missileMode(float time){
+	if((msion == false)&&(time-msiEndTime-MSI_END_DELAY>0)){
+		msiStartTime = time;
+		msion = true;
+		for(int i=0;i<10;i++){
+			msi[i]->start();
+		}
+	}
+	if(msion == true){
+		if((time - msiStartTime < MSI_START_DELAY)){
+			msionAll = true;
+			for(int i=0;i<10;i++){
+				msi[i]->moveMissile(mon,cha,time);
+				if(msionAll&&msi[i]->nowStart()){
+					msionAll = false;
+				}
+			}
+			return true;
+		}
+		else if(msionAll==false){
+			msionAll = true;
+			for(int i=0;i<10;i++){
+				msi[i]->moveMissile(mon,cha,time);
+				if(msi[i]->nowStart()){
+					msionAll = false;
+				}
+			}
+			return true;
+		}
+		else{
+			msionAll = false;
+			msion = false;
+			msiEndTime = time;
+			return false;
+		}
+	}
+	return false;
+
+}
+bool Monai::wallMode(float time){
+	if(!mov->getMonWall()){
+		if((wallon == false)&&(time-wallEndTime-WALL_END_DELAY>0)){
+			wallStartTime = time;
+			wallon = true;
+			wallPos =  rand()%(int)MAXBOUNDX;
+			mov->setMonWall(true);
+		}
+	}else{
+		if(wallon == true){
+			if(time - wallStartTime < WALL_START_DELAY){
+				switch(wallPos%3){
+				case 0:
+					mov->getPositionWall(D3DXVECTOR3(wallPos,0,0),GAMESPEED);
+					break;
+				case 1:
+					//mov->getPositionWall(cha,wall,D3DXVECTOR3(0,wallPos,0),GAMESPEED);
+					//break;
+				case 2:
+					mov->getPositionWall(D3DXVECTOR3(0,0,wallPos),GAMESPEED);
+					break;
+				}
+				return true;
+			}
+			else{
+				wallon = false;
+				wallEndTime = time;
+				mov->returnWall();
+				return false;
+			}
+		}
+		return false;
+	}
+	return false;
+}
+bool Monai::healingMode(float time){
+	if((healon == false)&&(time-healEndTime-HEAL_END_DELAY>0)){
+		healStartTime = time;
+		healEachDelay = time;
+		healon = true;
+	}
+	if(healon == true){
+		if(time - healStartTime < HEAL_START_DELAY){
+			if(time - healEachDelay > 1){
+				healEachDelay = time;
+				mon->monHealing();
+			}
+			return true;
+		}
+		else{
+			healon = false;
+			healEndTime = time;
+			return false;
+		}
+	}
+	return false;
+
+}

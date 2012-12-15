@@ -43,11 +43,12 @@
 #define START_MON_VELOCITYY 0.0f
 #define START_MON_VELOCITYZ 0.0f
 
+#define MON_ATTACK_RANGE 5
 #define MON_HEALTH 1000.0f
 #define MON_WEIGHT 10
 
-#define MSI_START_DELAY 1 //25
-#define MSI_END_DELAY 1 //30
+#define MSI_START_DELAY 1//25
+#define MSI_END_DELAY 1// 30
 #define MSI_MOTION_DELAY 2
 
 #define DEF_START_DELAY 5
@@ -62,9 +63,9 @@
 #define HEAL_END_DELAY 15
 #define HEAL_MOTION_DELAY 5
 
-#define RASER_START_DELAY 5
-#define RASER_END_DELAY 30
-#define RASER_MOTION_DELAY 5
+#define LASER_START_DELAY 5
+#define LASER_END_DELAY 30
+#define LASER_MOTION_DELAY 5
 
 #define RUSH_START_DELAY 5
 #define RUSH_END_DELAY 10
@@ -78,6 +79,22 @@
 //-----------------------------------------------------------------------------
 // Setting
 //-----------------------------------------------------------------------------
+#define NORMAL_MOVE_PATTERN 0
+#define	CONTECT_MOVE_PATTERN 1
+#define DODGE_MOVE_PATTERN 2
+#define STOP_MOVE_PATTERN 3
+#define JUMP_MOVE_PATTERN 4
+
+#define MISSILE_ACTION_PATTERN 0
+#define HEALING_ACTION_PATTERN 1
+#define DEFENCE_ACTION_PATTERN 2
+#define LASER_ACTION_PATTERN 3
+#define NATTACK_ACTION_PATTERN 4
+#define WALL_ACTION_PATTERN 5
+
+#define MOVE_PATTERN_COUNT 5
+#define ACTION_PATTERN_COUNT 6
+
 #define BALL_SIZE 0.02f
 #define MON_SIZE 0.1f
 #define MISSILE_SIZE 0.01f

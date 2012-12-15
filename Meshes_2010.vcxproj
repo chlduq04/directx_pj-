@@ -375,6 +375,7 @@
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="CAllocateHierarchy.cpp" />
     <ClCompile Include="CameraSetting.cpp" />
+    <ClCompile Include="CheckAI.cpp" />
     <ClCompile Include="CModel.cpp" />
     <ClCompile Include="Dball.cpp" />
     <ClCompile Include="DirectInput.cpp" />
@@ -384,6 +385,7 @@
     <ClCompile Include="Monai.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Moving.cpp" />
+    <ClCompile Include="Pattern.cpp" />
     <ClCompile Include="Ui.cpp" />
     <ClCompile Include="Wall.cpp" />
     <ClCompile Include="Xfile.cpp" />
@@ -395,6 +397,7 @@
     <ClInclude Include="Ball.h" />
     <ClInclude Include="CAllocateHierarchy.h" />
     <ClInclude Include="CameraSetting.h" />
+    <ClInclude Include="CheckAI.h" />
     <ClInclude Include="CModel.h" />
     <ClInclude Include="DerivedStructs.h" />
     <ClInclude Include="DirectInput.h" />
@@ -405,6 +408,7 @@
     <ClInclude Include="Monai.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Moving.h" />
+    <ClInclude Include="Pattern.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="Struct.h" />

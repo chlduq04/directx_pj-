@@ -29,7 +29,7 @@
 #include "Monai.h"
 #include "Missile.h"
 #include "Wall.h"
-
+#include "CheckAI.h"
 #ifdef _DEBUG       
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__) 
 #endif
@@ -156,6 +156,11 @@ Xfile* mapBox;
 Monster* first_mon;
 Monai* m_Ai;
 Missile* mMissile[10];
+//-----------------------------------------------------------------------------
+// Monster
+//-----------------------------------------------------------------------------
+Checkai* cResult;
+
 //-----------------------------------------------------------------------------
 // InitD3D
 //-----------------------------------------------------------------------------
@@ -460,16 +465,13 @@ inline void RenderPolyLine( LPDIRECT3DDEVICE9 device, UINT count = 100 )
 	D3DXVec3Normalize(&laserSpeed,&laserSpeed);
 	beforeMypos += laserSpeed * 0.5f;
 
-	//for(;;){
-
-	//}
-
 	curve[0] = first_mon->getPosition();
 	curve[1] = first_mon->getPosition();
 	curve[2] = beforeMypos;
 	curve[3] = beforeMypos;
 	D3DXVec3CatmullRom( &ret1, &curve[ 0 ], &curve[ 1 ], &curve[ 2 ], &curve[ 3 ], (float)0 / count );
 	D3DXMatrixScaling(&myScale,BALL_SIZE,BALL_SIZE,BALL_SIZE);
+
 	for( int i = 0; i < count + 1; i++ )
 	{
 		D3DXMatrixIdentity(&matWorld);
@@ -531,11 +533,7 @@ inline VOID Render(float time)
 		drawXfile->DrawMyballShader(myWorld);	
 
 
-		RenderPolyLine(g_pd3dDevice);
-
-		//-----------------------------------------------------------------------------
-		// Monster Setting
-		//-----------------------------------------------------------------------------
+//		RenderPolyLine(g_pd3dDevice);
 
 		//-----------------------------------------------------------------------------
 		// Monster Setting
@@ -551,14 +549,14 @@ inline VOID Render(float time)
 		//-----------------------------------------------------------------------------
 		// Missile Setting
 		//-----------------------------------------------------------------------------
-		if(mMissile[0]->getStart()){
+		if(m_Ai->getMsionall()){
 			for(int i=0;i<10;i++){
 				D3DXMatrixIdentity(&mMis);
 				D3DXMatrixScaling(&myScale,MISSILE_SIZE,MISSILE_SIZE,MISSILE_SIZE);
 				D3DXMatrixTranslation(&myTrans,mMissile[i]->getPosition().x,mMissile[i]->getPosition().y,mMissile[i]->getPosition().z);
 				mMis *= myScale;
 				mMis *= myTrans;
-				mapBox->DrawMyballShader(mMis);
+				drawXfile->DrawMyballShader(mMis);
 				mMoving->crashMissile(mMissile[i]);
 			}
 		}
@@ -602,14 +600,12 @@ inline VOID Render(float time)
 			mapBox->DrawMyballShader(mBox);
 		}
 
-		//g_pModel->setBoundingSphereCenter(D3DXVECTOR3(0.0f,0.0f,0.0f));
-		//modelLeader(time);
 		mMoving->getItem(itemList);		
 		setItemList(time);
 		itemListDraw(time);
 
 		mMoving->crashMon(time);
-//		DrawUi();
+		DrawUi();
 
 		g_pd3dDevice->EndScene();
 
@@ -631,7 +627,8 @@ inline VOID afterInitD3D(){
 	g_pModel = new CModel(g_pd3dDevice);
 	first_mon = new Monster((D3DXVECTOR3)MonPos,(D3DXVECTOR3)MonVel,(D3DXVECTOR3)MonVel);
 	mMoving = new Moving(myCharacter,first_mon,wWall);
-	m_Ai = new Monai(first_mon,myCharacter,mMissile,mMoving,wWall, m_fStartTime);
+	cResult = new Checkai();
+	m_Ai = new Monai(first_mon,myCharacter,mMissile,mMoving,wWall,cResult, m_fStartTime);
 	m_Ui = new Ui();
 }
 
@@ -647,6 +644,7 @@ inline VOID afterRender(){
 	delete g_pModel;
 	delete first_mon;
 	delete m_Ai;
+	delete cResult;
 	delete m_Ui;
 }
 
@@ -688,9 +686,9 @@ inline HRESULT initLoad(){
 		return E_FAIL;
 	}
 	/*---------init monster.x---------*/
-	//if(!SUCCEEDED(g_pModel->LoadXFile("boxmodel.X"))){
-	//	return E_FAIL;
-	//}
+	if(!SUCCEEDED(g_pModel->LoadXFile("boxmodel.X"))){
+		return E_FAIL;
+	}
 	return S_OK;
 }
 //-----------------------------------------------------------------------------

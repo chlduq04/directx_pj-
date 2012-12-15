@@ -8,8 +8,14 @@
 #include "Settings.h"
 #include "Moving.h"
 #include "Wall.h"
+#include "Pattern.h"
+#include "CheckAI.h"
 class Monai{
 private:
+	int actionNum; 
+	int motionNum;
+	float motiontime;
+
 	D3DXVECTOR3 velocty;
 	D3DXVECTOR3 face;
 	D3DXVECTOR3 zero;
@@ -27,7 +33,9 @@ private:
 	Ball* cha;
 	Moving* mov;
 	Wall* wall;
+	Checkai* checkResult;
 	Missile* msi[10];
+	Pattern* nowAction;
 	float speed;
 	float monsize;
 	float monSpeed;
@@ -61,7 +69,7 @@ private:
 
 
 public:
-	Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,Wall* createwall,float time);
+	Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,Wall* createwall,Checkai* result,float time);
 	~Monai();
 
 	void Pase0(float time);
@@ -89,8 +97,10 @@ public:
 	void stopMove(float time);
 	void jumpMove(float time);
 	void dodgeMove(float time);
-
+	void examType(int type,float time);
 	inline void randPositionMon(){mon->setOriginType(rand()%26);};
+
+	inline bool getMsionall(){return msionAll;};
 
 	D3DXVECTOR3 getNormal();
 	float getRotation();

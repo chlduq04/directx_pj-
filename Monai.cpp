@@ -1,6 +1,6 @@
 #include "Monai.h"
 
-Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,Wall* createwall,float time){
+Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,Wall* createwall,Checkai* result,float time){
 	zero.x = 0.0f;
 	zero.y = 0.0f;
 	zero.z = 0.0f;
@@ -10,6 +10,7 @@ Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,
 	cha = charecter;
 	mov = moving;
 	wall = createwall;
+	checkResult = result;
 	doAction = false;
 	for(int i=0;i<10;i++){
 		msi[i] = missile[i];
@@ -89,8 +90,8 @@ void Monai::getPositionMon(float time){
 		mon->setOriginType(0);
 		break;
 	}
-
-	missileMode(time);
+	examType(0,time);
+//	missileMode(time);
 	//switch(mon->getPase()){
 	//case 0:
 		//Pase0(time);
@@ -216,7 +217,80 @@ void Monai::stopMove(float time){
 		}
 	}
 }
-
+void Monai::examType(int type,float time){
+	if(!defon){
+		defon = true;
+		nowAction = checkResult->doAction(type,time);
+		nowAction->startPlay(time);
+		actionNum = nowAction->getType();
+		switch(actionNum){
+		case 0:
+			msionAll = true;
+			for(int i=0;i<10;i++){msi[i]->start();}
+			break;
+		case 1:
+			healEachDelay = time;
+			break;
+		case 2:
+			mon->monDefence(100);
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		case 5:
+			wallPos =  rand()%(int)MAXBOUNDX;
+			mov->setMonWall(true);
+			break;
+		}
+	}
+	else{
+		if(msionAll || nowAction->isPlay(time)){
+			switch(actionNum){
+			case 0:
+				msionAll = false;
+				for(int i=0;i<10;i++){
+					msi[i]->moveMissile(mon,cha,time);
+					if(!msionAll&&msi[i]->nowStart()){
+						msionAll = true;
+					}
+				}
+			break;
+			case 1:
+				if(time - healEachDelay > 1){
+					healEachDelay = time;
+					mon->monHealing();
+				}
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			case 4:
+				D3DXVECTOR3 dis = cha->getPosition()-mon->getPosition(); 
+				if(D3DXVec3Length(&dis)<MON_REAL_SIZE+BALL_REAL_SIZE+MON_ATTACK_RANGE){
+					cha->setLife(-10);
+				}
+				break;
+			case 5:
+				if(wallPos%2){
+					mov->getPositionWall(D3DXVECTOR3(wallPos,0,0),GAMESPEED);//x
+				}
+				else{
+					mov->getPositionWall(D3DXVECTOR3(0,0,wallPos),GAMESPEED);//z
+				}
+				break;
+			}
+		}
+		else{
+			defon = false;
+			nowAction->endPlay(time);
+			if(actionNum == 5){
+				mov->returnWall();
+			}
+		}
+	}
+}
 bool Monai::defenceMode(float time){
 	if((defon == false)&&(time-defEndTime-DEF_END_DELAY>0)){
 		defStartTime = time;
@@ -238,110 +312,13 @@ bool Monai::defenceMode(float time){
 
 }
 
-bool Monai::missileMode(float time){
-	if((msion == false)&&(time-msiEndTime-MSI_END_DELAY>0)){
-		msiStartTime = time;
-		msion = true;
-		for(int i=0;i<10;i++){
-			msi[i]->start();
-		}
-	}
-	if(msion == true){
-		if((time - msiStartTime < MSI_START_DELAY)){
-			msionAll = true;
-			for(int i=0;i<10;i++){
-				msi[i]->moveMissile(mon,cha,time);
-				if(msionAll&&msi[i]->nowStart()){
-					msionAll = false;
-				}
-			}
-			return true;
-		}
-		else if(msionAll==false){
-			msionAll = true;
-			for(int i=0;i<10;i++){
-				msi[i]->moveMissile(mon,cha,time);
-				if(msi[i]->nowStart()){
-					msionAll = false;
-				}
-			}
-			return true;
-		}
-		else{
-			msionAll = false;
-			msion = false;
-			msiEndTime = time;
-			return false;
-		}
-	}
-	return false;
-
-}
-bool Monai::wallMode(float time){
-	if(!mov->getMonWall()){
-		if((wallon == false)&&(time-wallEndTime-WALL_END_DELAY>0)){
-			wallStartTime = time;
-			wallon = true;
-			wallPos =  rand()%(int)MAXBOUNDX;
-			mov->setMonWall(true);
-		}
-	}else{
-		if(wallon == true){
-			if(time - wallStartTime < WALL_START_DELAY){
-				switch(wallPos%3){
-				case 0:
-					mov->getPositionWall(D3DXVECTOR3(wallPos,0,0),GAMESPEED);
-					break;
-				case 1:
-					//mov->getPositionWall(cha,wall,D3DXVECTOR3(0,wallPos,0),GAMESPEED);
-					//break;
-				case 2:
-					mov->getPositionWall(D3DXVECTOR3(0,0,wallPos),GAMESPEED);
-					break;
-				}
-				return true;
-			}
-			else{
-				wallon = false;
-				wallEndTime = time;
-				mov->returnWall();
-				return false;
-			}
-		}
-		return false;
-	}
-	return false;
-}
-bool Monai::healingMode(float time){
-	if((healon == false)&&(time-healEndTime-HEAL_END_DELAY>0)){
-		healStartTime = time;
-		healEachDelay = time;
-		healon = true;
-	}
-	if(healon == true){
-		if(time - healStartTime < HEAL_START_DELAY){
-			if(time - healEachDelay > 1){
-				healEachDelay = time;
-				mon->monHealing();
-			}
-			return true;
-		}
-		else{
-			healon = false;
-			healEndTime = time;
-			return false;
-		}
-	}
-	return false;
-
-}
 bool Monai::raserMode(float time){
-	if((raseron == false)&&(time-raserEndTime-RASER_END_DELAY>0)){
+	if((raseron == false)&&(time-raserEndTime-LASER_END_DELAY>0)){
 		raserStartTime = time;
 		raseron = true;
 	}
 	if(raseron == true){
-		if(time - raserStartTime < RASER_START_DELAY){
+		if(time - raserStartTime < LASER_START_DELAY){
 	//		for(int i=0;i<10;i++){
 	//			msi[i]->moveMissile(mon,cha,time);
 	//		}
@@ -440,7 +417,7 @@ bool Monai::canHealing(float time){
 	return false;
 }
 bool Monai::canRaser(float time){
-	if(raserEndTime+RASER_END_DELAY<time){return true;}
+	if(raserEndTime+LASER_END_DELAY<time){return true;}
 	return false;
 }
 bool Monai::canRush(float time){
