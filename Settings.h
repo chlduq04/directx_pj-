@@ -47,9 +47,12 @@
 #define MON_HEALTH 1000.0f
 #define MON_WEIGHT 10
 
-#define MSI_START_DELAY 1//25
-#define MSI_END_DELAY 1// 30
-#define MSI_MOTION_DELAY 2
+#define DODGE_DELAY 10
+#define JUMP_DELAY 6
+
+#define MSI_START_DELAY 25//25
+#define MSI_END_DELAY 30// 30
+#define MSI_MOTION_DELAY 4
 
 #define DEF_START_DELAY 5
 #define DEF_END_DELAY 15

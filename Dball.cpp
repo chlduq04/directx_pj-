@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <crtdbg.h>	
+#include <process.h>
 //-----------------------------------------------------------------------------
 // Header Files
 //-----------------------------------------------------------------------------
@@ -46,9 +47,10 @@ DWORD VERTEX_FVF = ( D3DFVF_XYZ | D3DFVF_DIFFUSE );
 //-----------------------------------------------------------------------------
 CModel*					g_pModel = NULL; // A model object to work with
 //-----------------------------------------------------------------------------
-// Drow Wall
+// Draw Wall
 //-----------------------------------------------------------------------------
 Wall*					wWall = NULL;
+bool					bWall = false;
 //-----------------------------------------------------------------------------
 // Drow Billboard
 //-----------------------------------------------------------------------------
@@ -107,6 +109,10 @@ D3DXMATRIXA16			myWorld;
 D3DXMATRIXA16			myScale;
 D3DXMATRIXA16			myTrans;
 D3DXMATRIXA16			myRotate;
+D3DXMATRIXA16			myRotateX;
+D3DXMATRIXA16			myRotateY;
+D3DXMATRIXA16			myRotateZ;
+
 D3DXVECTOR3				mEye;
 
 D3DXVECTOR4 Pos( START_POSITIONX, START_POSITIONY, START_POSITIONZ, 1.0f );
@@ -149,6 +155,8 @@ float					settime;
 //-----------------------------------------------------------------------------
 Xfile* drawXfile;
 Xfile* mapBox;
+Xfile* monDetail[ACTION_PATTERN_COUNT];
+//Xfile* BlackBox;
 
 //-----------------------------------------------------------------------------
 // Monster
@@ -518,7 +526,10 @@ inline VOID Render(float time)
 		//-----------------------------------------------------------------------------
 		drawXfile->set_view(mView);
 		mapBox->set_view(mView);
-
+//		BlackBox->set_view(mView);
+		for(int i=0;i<ACTION_PATTERN_COUNT;i++){
+			monDetail[i]->set_view(mView);
+		}
 		//-----------------------------------------------------------------------------
 		// Character Setting
 		//-----------------------------------------------------------------------------
@@ -526,9 +537,7 @@ inline VOID Render(float time)
 		D3DXMatrixIdentity(&myWorld);
 		D3DXMatrixScaling(&myScale,BALL_SIZE,BALL_SIZE,BALL_SIZE);
 		D3DXMatrixTranslation(&myTrans,myCharacter->getPosition().x,myCharacter->getPosition().y,myCharacter->getPosition().z);
-		//	D3DXMatrixRotationAxis(&myRotate,myCharacter->hisptVelocity(),timeGetTime() / 1000.0f);
 		myWorld *= myScale;
-		//	myWorld *= myRotate;
 		myWorld *= myTrans;
 		drawXfile->DrawMyballShader(myWorld);	
 
@@ -541,10 +550,17 @@ inline VOID Render(float time)
 		m_Ai->getPositionMon(time);
 		D3DXMatrixIdentity(&mBox);
 		D3DXMatrixScaling(&myScale,MON_SIZE,MON_SIZE,MON_SIZE);
+//		D3DXMatrixRotationAxis(&myRotate,&first_mon->getVelocity(),time);
 		D3DXMatrixTranslation(&myTrans,first_mon->getPosition().x,first_mon->getPosition().y,first_mon->getPosition().z);
 		mBox *= myScale;
+		if(m_Ai->getActionNum()==4){
+			D3DXMatrixRotationY(&myRotate,time*GAMESPEED*10);
+			mBox *= myRotate;
+		}
 		mBox *= myTrans;
-		mapBox->DrawMyballShader(mBox);	
+//		mapBox->DrawMyballShader(mBox);
+//		monDetail[0]->DrawMyballShader(mBox);
+		monDetail[m_Ai->getActionNum()]->DrawMyballShader(mBox);
 
 		//-----------------------------------------------------------------------------
 		// Missile Setting
@@ -574,6 +590,7 @@ inline VOID Render(float time)
 
 		if(mMoving->getMonWall())
 		{
+			if(!bWall){
 			D3DXMatrixIdentity(&mBox);
 			if(mMoving->getMonMaxWallX()){
 				D3DXMatrixScaling(&myScale,0.001f,3.2f,3.2f);
@@ -598,6 +615,10 @@ inline VOID Render(float time)
 			mBox *= myScale;
 			mBox *= myTrans;
 			mapBox->DrawMyballShader(mBox);
+			bWall = true;
+			}else{
+				bWall = false;
+			}
 		}
 
 		mMoving->getItem(itemList);		
@@ -622,6 +643,8 @@ inline VOID afterInitD3D(){
 	g_pCamera = new ZCamera;
 	drawXfile = new Xfile();
 	mapBox = new Xfile();
+	for(int i=0;i<ACTION_PATTERN_COUNT;i++){monDetail[i] = new Xfile();}
+//	BlackBox = new Xfile();
 	myCharacter = new Ball(( D3DXVECTOR3 )Pos,( D3DXVECTOR3 )Vel,( D3DXVECTOR3 )Vel);	
 	itemList = new ItemsList();
 	g_pModel = new CModel(g_pd3dDevice);
@@ -638,6 +661,7 @@ inline VOID afterRender(){
 	delete g_pCamera;
 	delete drawXfile;
 	delete mapBox;
+	for(int i=0;i<ACTION_PATTERN_COUNT;i++){delete monDetail[i];};
 	delete myCharacter;
 	delete mMoving;
 	delete itemList;
@@ -652,6 +676,10 @@ inline VOID beforeRender(){
 	InitGeometry();
 	drawXfile->set_viewprojtexture(matProj,gLightColor);
 	mapBox->set_viewprojtexture(matProj,gLightColor);
+	//BlackBox->set_viewprojtexture(matProj,gLightColor);
+	for(int i=0;i<ACTION_PATTERN_COUNT;i++){
+		monDetail[i]->set_viewprojtexture(matProj,gLightColor);
+	}
 
 }
 inline HRESULT initLoad(){
@@ -662,7 +690,27 @@ inline HRESULT initLoad(){
 	if(FAILED(mapBox->InitballMesh(g_pd3dDevice,"FieldstoneNoisy.tga","FieldstoneBumpDOT3.tga","Monster.fx","Monster.x"))){
 		return E_FAIL;
 	}
-
+	//if(FAILED(BlackBox->InitballMesh(g_pd3dDevice,"distortion.tga","cloud.tga","blackBall.fx","Monster.x"))){
+	//	return E_FAIL;
+	//}
+	if(FAILED(monDetail[0]->InitballMesh(g_pd3dDevice,"Spotlight.jpg","noise.tga","MsiBall.fx","Monster.x"))){
+		return E_FAIL;
+	}
+	if(FAILED(monDetail[1]->InitballMesh(g_pd3dDevice,"Corona.tga","Corona.tga","HealBall.fx","Monster.x"))){
+		return E_FAIL;
+	}
+	if(FAILED(monDetail[2]->InitballMesh(g_pd3dDevice,"Hex.dds","FireBase.tga","DefBall.fx","Monster.x"))){
+		return E_FAIL;
+	}
+	if(FAILED(monDetail[3]->InitballMesh(g_pd3dDevice,"quad2.tga","base.tga","AttBall.fx","Monster.x"))){
+		return E_FAIL;
+	}
+	if(FAILED(monDetail[4]->InitballMesh(g_pd3dDevice,"N2d_000.tga","base.tga","LaserBall.fx","Monster.x"))){
+		return E_FAIL;
+	}
+	if(FAILED(monDetail[5]->InitballMesh(g_pd3dDevice,"Cube4.png","Fur.tga","WallBall.fx","Monster.x"))){
+		return E_FAIL;
+	}
 	/*---------init billboard---------*/
 	if(!SUCCEEDED(m_Ui->initBillboard(g_pd3dDevice,"normal_speed.png",&speed_bar[0]))){
 		return E_FAIL;

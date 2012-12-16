@@ -1,10 +1,15 @@
 #include "Monai.h"
 
 Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,Wall* createwall,Checkai* result,float time){
+	firstAction = false;
+	secondAction = false;
+	actionDelay = false;
+	typeCase = 0;
 	zero.x = 0.0f;
 	zero.y = 0.0f;
 	zero.z = 0.0f;
 	monSpeed = 0.0f;
+
 	ActionStart = -1.0f;
 	mon = monster;
 	cha = charecter;
@@ -15,7 +20,11 @@ Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,
 	for(int i=0;i<10;i++){
 		msi[i] = missile[i];
 	}
-
+	motionSpeed = 0.5f;
+	motionSpeedX = 1.0f;
+	motionSpeedY = 1.0f;
+	motionSpeedZ = 1.0f;
+	motionDelay = false;
 	msiStartTime = time; 
 	msiEndTime = time; 
 	defStartTime = time;
@@ -40,168 +49,108 @@ Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,
 	rushon = false;
 	naton = false;
 	msionAll = false;
+	actionNum = 0;
+	nextActionNum = 0;
 }
 Monai::~Monai(){}
 void Monai::getPositionMon(float time){	
-	switch(mon->getOriginType()){
-	case 0:
-	case 1:
-	case 2:
-	case 3:
-	case 4:
-	case 5:
-	case 6:
-	case 7:
-	case 8:
-	case 9:
-		mon->setmType(0);
-		normalMove(time);
-		//subAction(time);
-		break;
-	case 10:
-	case 11:
-	case 12:
-	case 13:
-	case 14:
-		mon->setmType(1);
-		closetoMove(time);
-		break;
-	case 15:
-	case 16:
-	case 17:
-		mon->setmType(2);
-		stopMove(time);
-		break;
-	case 18:
-	case 19:
-	case 20:
-		mon->setmType(3);
-		jumpMove(time);
-		break;
-	case 21:
-	case 22:
-	case 23:
-	case 24:
-	case 25:
-		mon->setmType(4);
-		dodgeMove(time);
-		break;
-	default:
-		mon->setOriginType(0);
-		break;
-	}
-	examType(0,time);
-//	missileMode(time);
-	//switch(mon->getPase()){
-	//case 0:
-		//Pase0(time);
-		//break;
-	//case 1:
-		//Pase0(time);
-		//Pase1(time);
-		//break;
-	//case 2:
-		//Pase0(time);
-		//Pase1(time);
-		//Pase2(time);
-		//break;
-	//}
-
+	getMoveType(time);
+	realType(mon->getmType(),time);
 }
-void Monai::closetoMove(float time){
-	if(!mon->isGoal()){
-		mon->setGoal(D3DXVECTOR3(cha->getPosition().x,1.0f,cha->getPosition().z));
-		velocty = mon->getGoal() - mon->getPosition();
-		D3DXVec3Normalize(&velocty,&velocty);
-		mon->setVelocity(velocty*GAMESPEED*0.5f);
-		mon->setisGoal(true);
+
+void Monai::inhenceMove(int type){
+	mon->setisGoal(false);
+	if(type<MOVE_PATTERN_COUNT){
+		mon->setOriginType(type);
 	}else{
-		mon->setPostion(mon->getPosition()+mon->getVelocity());
+		mon->setOriginType(0);
+	}
+}
+
+void Monai::getMoveType(float time){
+	if(!mon->isGoal()){
+		motionSpeedY = 1.0f;
+		switch(mon->getOriginType()){
+		case 0:
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+		case 5:
+			mon->setmType(0);
+			mon->setGoal(D3DXVECTOR3((rand()%(int)MAXBOUNDX)-MINBOUNDX,0.0f,(rand()%(int)MAXBOUNDZ)-MINBOUNDZ));
+			motionSpeed = 0.2f;
+			velocty = mon->getGoal() - mon->getPosition();
+			D3DXVec3Normalize(&velocty,&velocty);
+			break;
+		case 6:
+		case 7:
+		case 8:
+		case 9:
+		case 10:
+			mon->setmType(1);
+			mon->setGoal(D3DXVECTOR3(cha->getPosition().x,0.0f,cha->getPosition().z));
+			motionSpeed = 0.5f;
+			velocty = mon->getGoal() - mon->getPosition();
+			D3DXVec3Normalize(&velocty,&velocty);
+			break;
+		case 11:
+		case 12:
+			velocty = D3DXVECTOR3(0,0,0);
+			ActionStart = time;
+			break;
+		case 13:
+		case 14:
+		case 15:
+			mon->setGoal(cha->getPosition()+D3DXVECTOR3(rand()%10-5,1.0f,rand()%10-5));
+			motionSpeed = 0.5f;
+			motionSpeedY = 10.0f;
+			velocty = mon->getGoal() - mon->getPosition();
+			D3DXVec3Normalize(&velocty,&velocty);
+			break;
+		case 16:
+		case 17:
+		case 18:
+		case 19:
+			mon->setGoal(D3DXVECTOR3((rand()%(int)MAXBOUNDX)-MINBOUNDX,0.0f,(rand()%(int)MAXBOUNDZ)-MINBOUNDZ));
+			motionSpeed = 0.5f;
+			velocty = mon->getGoal() - mon->getPosition();
+			D3DXVec3Normalize(&velocty,&velocty);
+			break;
+		}
+		velocty.y *= motionSpeedY;
+		mon->setVelocity(velocty*GAMESPEED*motionSpeed);
+		mon->setisGoal(true);
+	}
+	else{
 		if	( abs(mon->getPosition().x-mon->getGoal().x)< (MON_REAL_SIZE/2)*(MON_REAL_SIZE/2) ){
 			mon->setVelocityX(0.0f);
 			mon->setVelocityY(0.0f);
 			mon->setVelocityZ(0.0f);
-			mon->setisGoal(false);
-			randPositionMon();
-		}
-		if((mon->getPosition().x>MAXBOUNDX)||(mon->getPosition().x<MINBOUNDX)||
-			(mon->getPosition().z>MAXBOUNDZ)||(mon->getPosition().z<MINBOUNDZ)){
-			mon->setisGoal(false);
-			randPositionMon();
-		}
-		if(mon->getPosition().y>MAXBOUNDY){
-			mon->setPostionY(MAXBOUNDY);
-		}
-		if(mon->getPosition().y<MINBOUNDY){
-			mon->setPostionY(MINBOUNDY);
-		}
-	}
-}
-void Monai::normalMove(float time){
-	if(!mon->isGoal()){
-		mon->setGoal(D3DXVECTOR3((rand()%(int)MAXBOUNDX)-MINBOUNDX,1.0f,(rand()%(int)MAXBOUNDZ)-MINBOUNDZ));
-		velocty = mon->getGoal() - mon->getPosition();
-		D3DXVec3Normalize(&velocty,&velocty);
-		mon->setVelocity(velocty*GAMESPEED*0.3f);
-		mon->setisGoal(true);
-
-//		D3DXVec3Normalize(&face,&mon->getGoal());
-//		rotate = D3DXVec3Dot(&zero,&mon->getGoal());
-	}else{
-		mon->setPostion(mon->getPosition()+mon->getVelocity());
-		if( abs(mon->getPosition().x-mon->getGoal().x)< (MON_REAL_SIZE/2)*(MON_REAL_SIZE/2) ){
-			mon->setVelocityX(0.0f);
-			mon->setVelocityY(0.0f);
-			mon->setVelocityZ(0.0f);
-			mon->setisGoal(false);
-			randPositionMon();
-		}
-		if((mon->getPosition().x>MAXBOUNDX)||(mon->getPosition().x<MINBOUNDX)||
-			(mon->getPosition().z>MAXBOUNDZ)||(mon->getPosition().z<MINBOUNDZ)){
-			mon->setisGoal(false);
-			randPositionMon();
-		}
-		if(mon->getPosition().y>MAXBOUNDY){
-			mon->setPostionY(MAXBOUNDY);
-		}
-		if(mon->getPosition().y<MINBOUNDY){
-			mon->setPostionY(MINBOUNDY);
-		}
-	}
-}
-void Monai::jumpMove(float time){
-	//delayed
-	randPositionMon();
-}
-void Monai::dodgeMove(float time){
-	if(!mon->isGoal()){
-		mon->setGoal(D3DXVECTOR3((rand()%(int)MAXBOUNDX)-MINBOUNDX,1.0f,(rand()%(int)MAXBOUNDZ)-MINBOUNDZ));
-		velocty = mon->getGoal() - mon->getPosition();
-		D3DXVec3Normalize(&velocty,&velocty);
-		mon->setVelocity(velocty*GAMESPEED);
-		mon->setisGoal(true);
-
-//		D3DXVec3Normalize(&face,&mon->getGoal());
-//		rotate = D3DXVec3Dot(&zero,&mon->getGoal());
-	}else{
-		mon->setPostion(mon->getPosition()+mon->getVelocity());
-		if( abs(mon->getPosition().x-mon->getGoal().x)< (MON_REAL_SIZE/2)*(MON_REAL_SIZE/2) ){
-			mon->setVelocityX(0.0f);
-			mon->setVelocityY(0.0f);
-			mon->setVelocityZ(0.0f);
-			mon->setisGoal(false);
-			randPositionMon();
-		}
-		if((mon->getPosition().x>MAXBOUNDX)||(mon->getPosition().x<MINBOUNDX)||
-			(mon->getPosition().z>MAXBOUNDZ)||(mon->getPosition().z<MINBOUNDZ)){
-			mon->setisGoal(false);
-			randPositionMon();
-		}
-		if(mon->getPosition().y>MAXBOUNDY){
-			mon->setPostionY(MAXBOUNDY);
-		}
-		if(mon->getPosition().y<MINBOUNDY){
-			mon->setPostionY(MINBOUNDY);
+			switch(mon->getOriginType()){
+			case 0:
+				mon->setisGoal(false);
+				randPositionMon();
+				break;
+			case 1:
+				mon->setisGoal(false);
+				randPositionMon();
+				break;
+			case 2:
+				if(time - ActionStart>5.0f){
+					mon->setisGoal(false);
+					randPositionMon();
+				}
+				break;
+			case 3:
+				mon->setisGoal(false);
+				randPositionMon();
+				break;
+			case 4:
+				mon->setisGoal(false);
+				randPositionMon();
+				break;
+			}
 		}
 	}
 }
@@ -217,141 +166,202 @@ void Monai::stopMove(float time){
 		}
 	}
 }
-void Monai::examType(int type,float time){
-	if(!defon){
-		defon = true;
-		nowAction = checkResult->doAction(type,time);
-		nowAction->startPlay(time);
-		actionNum = nowAction->getType();
-		switch(actionNum){
-		case 0:
-			msionAll = true;
-			for(int i=0;i<10;i++){msi[i]->start();}
-			break;
-		case 1:
-			healEachDelay = time;
-			break;
-		case 2:
-			mon->monDefence(100);
-			break;
-		case 3:
-			break;
-		case 4:
-			break;
-		case 5:
-			wallPos =  rand()%(int)MAXBOUNDX;
-			mov->setMonWall(true);
-			break;
-		}
+void Monai::defenceMode(float time){
+	mon->monDefence(100);
+}
+void Monai::laserMode(float time){}
+void Monai::normalAttMode(float time){}
+void Monai::healingMode(float time){
+	healEachDelay = time;
+}
+void Monai::missileMode(float time){
+	msionAll = true;
+	for(int i=0;i<10;i++){msi[i]->start();}
+}
+void Monai::wallMode(float time){
+	wallPos = rand()%2;
+	if(wallPos){
+		wallPos = cha->getPosition().x;
 	}
 	else{
+		wallPos = cha->getPosition().z;
+	}
+	mov->setMonWall(true);
+}
+void Monai::defenceModeStart(){
+}
+void Monai::missileModeStart(float time){
+	msionAll = false;
+	for(int i=0;i<10;i++){
+		msi[i]->moveMissile(mon,cha,time);
+		if(!msionAll&&msi[i]->nowStart()){
+			msionAll = true;
+		}
+	}
+
+}
+void Monai::wallModeStart(){
+	if(wallPos){
+		mov->getPositionWall(D3DXVECTOR3(wallPos,0,0),GAMESPEED);//x
+	}
+	else{
+		mov->getPositionWall(D3DXVECTOR3(0,0,wallPos),GAMESPEED);//z
+	}
+
+}
+void Monai::healingModeStart(float time){
+	if(time - healEachDelay > 1){
+		healEachDelay = time;
+		mon->monHealing();
+	}
+
+}
+void Monai::laserModeStart(){
+}
+void Monai::normalAttModeStart(){
+	mLength = mon->getPosition()-cha->getPosition(); 
+	if(D3DXVec3Length(&mLength)<MON_REAL_SIZE+BALL_REAL_SIZE+MON_ATTACK_RANGE){
+		cha->setLife(-10);
+	}
+}
+
+
+
+void Monai::realType(int type,float time){
+	switch(typeCase){
+	case 0:
+		nowAction = checkResult->doAction(type,time);
+		nextAction = nowAction->getNextPat();
+		actionNum = nowAction->getType();
+		motiontime = time;
+		typeCase = 1;
+		break;
+	case 1:
+		if(time - motiontime > nowAction->getMotionDelay()){
+			nowAction->startPlay(time);
+			switch(actionNum){
+			case 0:
+				missileMode(time);
+				break;
+			case 1:
+				healingMode(time);
+				break;
+			case 2:
+				defenceMode(time);
+				break;
+			case 3:
+				laserMode(time);
+				break;
+			case 4:
+				normalAttMode(time);
+				break;
+			case 5:
+				wallMode(time);
+				break;
+			}
+			typeCase = 2;
+		}
+		break;
+	case 2:
 		if(msionAll || nowAction->isPlay(time)){
 			switch(actionNum){
 			case 0:
-				msionAll = false;
-				for(int i=0;i<10;i++){
-					msi[i]->moveMissile(mon,cha,time);
-					if(!msionAll&&msi[i]->nowStart()){
-						msionAll = true;
-					}
-				}
-			break;
+				missileModeStart(time);
+				break;
 			case 1:
-				if(time - healEachDelay > 1){
-					healEachDelay = time;
-					mon->monHealing();
-				}
+				healingModeStart(time);
 				break;
 			case 2:
+				defenceModeStart();
 				break;
 			case 3:
+				laserModeStart();
 				break;
 			case 4:
-				D3DXVECTOR3 dis = cha->getPosition()-mon->getPosition(); 
-				if(D3DXVec3Length(&dis)<MON_REAL_SIZE+BALL_REAL_SIZE+MON_ATTACK_RANGE){
-					cha->setLife(-10);
-				}
+				normalAttModeStart();
 				break;
 			case 5:
-				if(wallPos%2){
-					mov->getPositionWall(D3DXVECTOR3(wallPos,0,0),GAMESPEED);//x
-				}
-				else{
-					mov->getPositionWall(D3DXVECTOR3(0,0,wallPos),GAMESPEED);//z
-				}
+				wallModeStart();
 				break;
 			}
 		}
 		else{
-			defon = false;
-			nowAction->endPlay(time);
-			if(actionNum == 5){
-				mov->returnWall();
+			typeCase = 3;
+		}
+		break;
+	case 3:
+		if(nextAction != NULL){
+			nextActionNum = nextAction->getType();
+			switch(nextActionNum){
+			case 0:
+				missileMode(time);
+				break;
+			case 1:
+				healingMode(time);
+				break;
+			case 2:
+				defenceMode(time);
+				break;
+			case 3:
+				laserMode(time);
+				break;
+			case 4:
+				normalAttMode(time);
+				break;
+			case 5:
+				wallMode(time);
+				break;
+			}
+			nextAction->startPlay(time);
+			typeCase = 4;
+		}
+		else{
+			typeCase = 6;
+		}
+		break;
+	case 4:
+		if(msion||nextAction->isPlay(time)){
+			switch(nextActionNum){
+			case 0:
+				missileModeStart(time);
+				break;
+			case 1:
+				healingModeStart(time);
+				break;
+			case 2:
+				defenceModeStart();
+				break;
+			case 3:
+				laserModeStart();
+				break;
+			case 4:
+				normalAttModeStart();
+				break;
+			case 5:
+				wallModeStart();
+				break;
 			}
 		}
-	}
-}
-bool Monai::defenceMode(float time){
-	if((defon == false)&&(time-defEndTime-DEF_END_DELAY>0)){
-		defStartTime = time;
-		defon = true;
-	}
-	if(defon == true){
-		if(time - defStartTime < DEF_START_DELAY){
-			mon->monDefence(100);
-			return true;
-		}
 		else{
-			defon = false;
-			defEndTime = time;
-			mon->monDefence(20);
-			return false;
+			typeCase = 5;
 		}
-	}
-	return false;
-
-}
-
-bool Monai::raserMode(float time){
-	if((raseron == false)&&(time-raserEndTime-LASER_END_DELAY>0)){
-		raserStartTime = time;
-		raseron = true;
-	}
-	if(raseron == true){
-		if(time - raserStartTime < LASER_START_DELAY){
-	//		for(int i=0;i<10;i++){
-	//			msi[i]->moveMissile(mon,cha,time);
-	//		}
-			return true;
+		break;
+	case 5:
+		nextAction->endPlay(time);
+		nowAction->endPlay(time);
+		if((nextActionNum == 5)||(actionNum == 5)){
+			mov->returnWall();
 		}
-		else{
-			raseron = false;
-			raserEndTime = time;
-			return false;
+		typeCase = 0;
+		break;
+	case 6:
+		nowAction->endPlay(time);
+		if(actionNum == 5){
+			mov->returnWall();
 		}
+		typeCase = 0;
+		break;
 	}
-	return false;
-
-}
-bool Monai::normalAtt(float time){
-	if((naton == false)&&(time-norAttEndTime-NATT_END_DELAY>0)){
-		norAttStartTime = time;
-		naton = true;
-	}
-	if(naton == true){
-		D3DXVECTOR3 range = mon->getPosition()-cha->getPosition();
-		if((time - norAttStartTime < NATT_START_DELAY)&&(D3DXVec3Length(&range)<NATT_ATT_RANGE)){
-			cha->setLife(mon->getAttack());
-			return true;
-		}
-		else{
-			naton = false;
-			norAttEndTime = time;
-			return false;
-		}
-		return false;
-	}
-	return false;
 }
 
 bool Monai::rushMode(float time){
@@ -361,9 +371,9 @@ bool Monai::rushMode(float time){
 	}
 	if(rushon == true){
 		if(time - rushStartTime < RUSH_START_DELAY){
-	//		for(int i=0;i<10;i++){
-	//			msi[i]->moveMissile(mon,cha,time);
-	//		}
+			//		for(int i=0;i<10;i++){
+			//			msi[i]->moveMissile(mon,cha,time);
+			//		}
 			return true;
 		}
 		else{
@@ -374,28 +384,6 @@ bool Monai::rushMode(float time){
 	}
 	return false;
 
-}
-
-void Monai::subAction(float time){
-	switch(mon->getsType()){
-	case 0:
-		missileMode(time);
-		break;
-	case 1:
-		wallMode(time);
-		break;
-	case 2:
-		healingMode(time);
-		break;
-	case 3:
-		raserMode(time);
-		break;
-	case 4:
-		rushMode(time);
-		break;
-	default:
-		break;
-	}
 }
 
 D3DXVECTOR3 Monai::getNormal(){
@@ -429,97 +417,6 @@ bool Monai::canNorAtt(float time){
 	return false;
 }
 
-
-void Monai::Pase0(float time){
-	switch(mon->getmType()){
-	case 0:
-		if(canMissile(time)){
-			missileMode(time);
-		}
-		//else if(canNorAtt(time)){
-		//	normalAtt(time);
-		//}
-		//else if(canHealing(time)){
-		//	healingMode(time);
-		//}
-		break;
-	case 1:
-		//if(canNorAtt(time)){
-		//	normalAtt(time);
-		//}
-		//else if(canRush(time)){
-		//	rushMode(time);
-		//}
-		break;
-	case 2:
-		//if(canMissile(time)){
-		//	missileMode(time);
-		//}
-		//else if(canRaser(time)){
-		//	raserMode(time);
-		//}
-		//else if(canHealing(time)){
-		//	healingMode(time);
-		//}
-		break;
-	case 3:
-		//if(canDef(time)){defenceMode(time);}
-		//else if(canMissile(time)){missileMode(time);}
-		break;
-	case 4:
-		//if(canRush(time)){rushMode(time);}
-		//else if(canNorAtt(time)){normalAtt(time);}
-		break;
-	}
-}
-void Monai::Pase1(float time){
-	switch(mon->getmType()){
-	case 0: 
-		if(wallMode(time)&&missileMode(time)){}
-		else if(wallMode(time)&&raserMode(time)){}
-		else if(defenceMode(time)&&healingMode(time)){}
-		else if(wallMode(time)&&healingMode(time)){}
-		else if(defenceMode(time)&&raserMode(time)){}
-		else if(defenceMode(time)&&rushMode(time)){}
-		break;
-	case 1:
-		break;
-	case 2:
-		if(wallMode(time)&&missileMode(time)){}
-		else if(wallMode(time)&&raserMode(time)){}
-		else if(wallMode(time)&&rushMode(time)){}
-		else if(defenceMode(time)&&healingMode(time)){}
-		else if(defenceMode(time)&&rushMode(time)){}
-		break;
-	case 3:
-		if(wallMode(time)&&healingMode(time)){}
-		break;
-	case 4:
-		break;
-	}
-}
-void Monai::Pase2(float time){
-	switch(mon->getmType()){
-	case 0:
-		if(missileMode(time)&&normalAtt(time)){}
-		else if(wallMode(time)&&rushMode(time)){}
-		break;
-	case 1:
-		if(defenceMode(time)&&raserMode(time)){}
-		break;
-	case 2:
-		if(healingMode(time)&&missileMode(time)){}
-		break;
-	case 3:
-		if(wallMode(time)&&missileMode(time)){}
-		else if(wallMode(time)&&raserMode(time)){}
-		else if(raserMode(time)){}
-		else if(defenceMode(time)&&raserMode(time)){}
-		break;
-	case 4:
-		if(defenceMode(time)&&rushMode(time)){}
-		else if(defenceMode(time)&&normalAtt(time)){}
-		else if(missileMode(time)&&raserMode(time)){}
-		break;
-	}
+void Monai::checkChangePattern(){
+	
 }

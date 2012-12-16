@@ -54,10 +54,10 @@ public:
 	inline void setGoalZ(float goal){vGoal.z = goal;};
 	inline D3DXVECTOR3 getGoal(){return vGoal;};
 
-	inline void setPostion(D3DXVECTOR3 position){vPosition = position;};
-	inline void setPostionX(float position){vPosition.x = position;};
-	inline void setPostionY(float position){vPosition.y = position;};
-	inline void setPostionZ(float position){vPosition.z = position;};
+	inline void setPosition(D3DXVECTOR3 position){vPosition = position;};
+	inline void setPositionX(float position){vPosition.x = position;};
+	inline void setPositionY(float position){vPosition.y = position;};
+	inline void setPositionZ(float position){vPosition.z = position;};
 	inline D3DXVECTOR3 getPosition(){return vPosition;};
 
 	inline void setMove(bool argu){bMove = argu;};

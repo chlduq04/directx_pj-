@@ -13,8 +13,20 @@ private:
 	int nextPattern[6];
 
 	bool start;
+
+	float rate;
+
+	int nextPatternCount;
+	Pattern* nextPat;
+	Pattern* prevPat;
 public:
+	Pattern();
 	Pattern(int type);
+	Pattern(int type, Pattern* nextpat1);
+	~Pattern();
+	Pattern* getNextPat();
+
+	inline float getMotionDelay(){return motionDelay;};
 	inline int getType(){return actionType;};
 	void playAction(float time);
 	inline void startPlay(float time){startTime = time; start = true;};
@@ -24,6 +36,7 @@ public:
 
 	bool canPlay(float time);
 	bool isPlay(float time);
+
 	void ActionPlay(float time);
 };
 #endif

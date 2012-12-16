@@ -181,3 +181,119 @@ bool Monai::healingMode(float time){
 	return false;
 
 }
+
+void Monai::Pase0(float time){
+	switch(mon->getmType()){
+	case 0:
+		if(canMissile(time)){
+			missileMode(time);
+		}
+		//else if(canNorAtt(time)){
+		//	normalAtt(time);
+		//}
+		//else if(canHealing(time)){
+		//	healingMode(time);
+		//}
+		break;
+	case 1:
+		//if(canNorAtt(time)){
+		//	normalAtt(time);
+		//}
+		//else if(canRush(time)){
+		//	rushMode(time);
+		//}
+		break;
+	case 2:
+		//if(canMissile(time)){
+		//	missileMode(time);
+		//}
+		//else if(canRaser(time)){
+		//	raserMode(time);
+		//}
+		//else if(canHealing(time)){
+		//	healingMode(time);
+		//}
+		break;
+	case 3:
+		//if(canDef(time)){defenceMode(time);}
+		//else if(canMissile(time)){missileMode(time);}
+		break;
+	case 4:
+		//if(canRush(time)){rushMode(time);}
+		//else if(canNorAtt(time)){normalAtt(time);}
+		break;
+	}
+}
+void Monai::Pase1(float time){
+	switch(mon->getmType()){
+	case 0: 
+		if(wallMode(time)&&missileMode(time)){}
+		else if(wallMode(time)&&raserMode(time)){}
+		else if(defenceMode(time)&&healingMode(time)){}
+		else if(wallMode(time)&&healingMode(time)){}
+		else if(defenceMode(time)&&raserMode(time)){}
+		else if(defenceMode(time)&&rushMode(time)){}
+		break;
+	case 1:
+		break;
+	case 2:
+		if(wallMode(time)&&missileMode(time)){}
+		else if(wallMode(time)&&raserMode(time)){}
+		else if(wallMode(time)&&rushMode(time)){}
+		else if(defenceMode(time)&&healingMode(time)){}
+		else if(defenceMode(time)&&rushMode(time)){}
+		break;
+	case 3:
+		if(wallMode(time)&&healingMode(time)){}
+		break;
+	case 4:
+		break;
+	}
+}
+void Monai::Pase2(float time){
+	switch(mon->getmType()){
+	case 0:
+		if(missileMode(time)&&normalAtt(time)){}
+		else if(wallMode(time)&&rushMode(time)){}
+		break;
+	case 1:
+		if(defenceMode(time)&&raserMode(time)){}
+		break;
+	case 2:
+		if(healingMode(time)&&missileMode(time)){}
+		break;
+	case 3:
+		if(wallMode(time)&&missileMode(time)){}
+		else if(wallMode(time)&&raserMode(time)){}
+		else if(raserMode(time)){}
+		else if(defenceMode(time)&&raserMode(time)){}
+		break;
+	case 4:
+		if(defenceMode(time)&&rushMode(time)){}
+		else if(defenceMode(time)&&normalAtt(time)){}
+		else if(missileMode(time)&&raserMode(time)){}
+		break;
+	}
+}
+void Monai::subAction(float time){
+	switch(mon->getsType()){
+	case 0:
+		missileMode(time);
+		break;
+	case 1:
+		wallMode(time);
+		break;
+	case 2:
+		healingMode(time);
+		break;
+	case 3:
+		raserMode(time);
+		break;
+	case 4:
+		rushMode(time);
+		break;
+	default:
+		break;
+	}
+}
+

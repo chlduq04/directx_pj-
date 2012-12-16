@@ -49,7 +49,6 @@ void Moving::getItem(ItemsList* itList){
 	}
 }
 
-
 void Moving::getPosition(float speed){
 	if( (GRAVITY+REVERSE_GRAVITY) * ( (cha->getPosition().y + GROUND - ( MYSIZE * 1.0f ) ) + 0.5f *
 		cha->getVelocity().y * cha->getVelocity().y< THRESHOLD) && cha->isGround()== false)
@@ -66,6 +65,39 @@ void Moving::getPosition(float speed){
 		cha->setGround(true);
 		bCount=0;
 	}
+
+	if(	!mon->isbGround()){
+		mon->setPosition(mon->getPosition()+mon->getVelocity()*speed);
+		if(mon->getVelocity().y>0)
+			mon->setVelocityY(mon->getVelocity().y-(GRAVITY+REVERSE_GRAVITY)*BALLSPEED*speed);
+		else
+			mon->setVelocityY(mon->getVelocity().y-(GRAVITY*BALLSPEED*speed/10));
+
+		if( mon->getPosition().y < -GROUND + ( MON_SIZE* 0.5f ) )
+		{
+			mon->setPositionY(-GROUND + ( MON_SIZE * 0.5f ));
+			mon->setVelocityY(-mon->getVelocity().y* ( 1 - ABSORBANCE )*speed);
+		}
+	}
+	if(mon->getPosition().x>MAXBOUNDX){
+		mon->setPositionX(MAXBOUNDX);
+	}
+	if(mon->getPosition().x<MINBOUNDX){
+		mon->setPositionX(MINBOUNDX);
+	}
+	if(mon->getPosition().z>MAXBOUNDZ){
+		mon->setPositionZ(MAXBOUNDZ);
+	}
+	if(mon->getPosition().z<MINBOUNDZ){
+		mon->setPositionZ(MINBOUNDZ);
+	}
+	if(mon->getPosition().y>MAXBOUNDY){
+		mon->setPositionY(MAXBOUNDY);
+	}
+	if(mon->getPosition().y<MINBOUNDY){
+		mon->setPositionY(MINBOUNDY);
+	}
+
 
 	if( !cha->isGround() )
 	{
@@ -228,12 +260,9 @@ void Moving::crashMon(float time){
 				cha->setVelocity(vVelocityTwoT - vVelocityTwoN * ( 1 - BOUNCE_TRANSFER ) + vVelocityOneN * BOUNCE_TRANSFER);
 
 				float fDistanceToMove = ( MON_REAL_SIZE - sqrtf( DistSq ) ) * 0.5f;
-				mon->setPostion(mon->getPosition()-vOneToTwo * fDistanceToMove);
+				mon->setPosition(mon->getPosition()-vOneToTwo * fDistanceToMove);
 				cha->setPosition(cha->getPosition()+vOneToTwo * fDistanceToMove);
-
-				if(D3DXVec3LengthSq(&cha->getVelocity())>5.0f)
-				{
-				}
+				
 			}
 		}
 	}

@@ -16,7 +16,7 @@ Monster::Monster(D3DXVECTOR3 position,D3DXVECTOR3 velocity,D3DXVECTOR3 goal){
 	vPosition = position; 
 	vVelocity = velocity;
 	vGoal = goal;
-	bGround = true;
+	bGround = false;
 	bMove = false;
 	bJump = false;
 	bGoal = false;

@@ -12,14 +12,24 @@
 #include "CheckAI.h"
 class Monai{
 private:
+	int typeCase;
+	bool firstAction;
+	bool secondAction;
 	int actionNum; 
+	int nextActionNum;
 	int motionNum;
 	float motiontime;
-
+	bool actionDelay;
+	D3DXVECTOR3 mLength;
+	bool motionDelay;
 	D3DXVECTOR3 velocty;
 	D3DXVECTOR3 face;
 	D3DXVECTOR3 zero;
 	float rotate;
+	float motionSpeed;
+	float motionSpeedX;
+	float motionSpeedY;
+	float motionSpeedZ;
 
 	int maxBoundx;
 	int maxBoundy;
@@ -36,6 +46,7 @@ private:
 	Checkai* checkResult;
 	Missile* msi[10];
 	Pattern* nowAction;
+	Pattern* nextAction;
 	float speed;
 	float monsize;
 	float monSpeed;
@@ -76,15 +87,24 @@ public:
 	void Pase1(float time);
 	void Pase2(float time);
 
-
+	inline int getActionNum(){return actionNum;};
 	void subAction(float time);
-	bool defenceMode(float time);
-	bool missileMode(float time);
-	bool wallMode(float time);
-	bool healingMode(float time);
-	bool raserMode(float time);
+
+	void defenceMode(float time);
+	void missileMode(float time);
+	void wallMode(float time);
+	void healingMode(float time);
+	void laserMode(float time);
+	void normalAttMode(float time);
+
+	void defenceModeStart();
+	void missileModeStart(float time);
+	void wallModeStart();
+	void healingModeStart(float time);
+	void laserModeStart();
+	void normalAttModeStart();
+
 	bool rushMode(float time);
-	bool normalAtt(float time);
 	bool canDef(float time);
 	bool canMissile(float time);
 	bool canHealing(float time);
@@ -97,12 +117,17 @@ public:
 	void stopMove(float time);
 	void jumpMove(float time);
 	void dodgeMove(float time);
-	void examType(int type,float time);
-	inline void randPositionMon(){mon->setOriginType(rand()%26);};
-
+	void realType(int type,float time);
+	inline void randPositionMon(){mon->setOriginType(rand()%20);};
+	inline void setPositionMon(int type){mon->setOriginType(type);};
+	inline int getRandType(){return rand()%5;};
 	inline bool getMsionall(){return msionAll;};
 
+	void checkChangePattern();
 	D3DXVECTOR3 getNormal();
 	float getRotation();
+	void getMoveType(float time);
+	inline void inhenceMove(int type);
+
 };
 #endif

@@ -16,6 +16,7 @@ public:
 	inline void duringPlay(int move,int type,float time){checkResult[move][type]->duringPlay(time);};
 	inline void notDuringPlay(int move,int type){checkResult[move][type]->notDuringPlay();}
 	inline int getType(int move,int type){return checkResult[type][type]->getType();};
+	void changePattern(int motionNum,int actionNum);
 	//void Pattern* getDetailAction(int move,int action){return checkResult[move][action]};
 };
 #endif
