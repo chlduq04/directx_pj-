@@ -85,6 +85,9 @@
     <ClCompile Include="CheckAI.cpp">
       <Filter>project</Filter>
     </ClCompile>
+    <ClCompile Include="GAudio.cpp">
+      <Filter>project</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
@@ -157,6 +160,9 @@
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="Pattern.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="GAudio.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>
