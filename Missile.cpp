@@ -36,7 +36,7 @@ void Missile::moveMissile(Monster* mon,Ball* cha,float time){
 		vGoal = cha->getPosition()+cha->getVelocity()*3;
 		missile_my_length = vGoal - vPosition;
 		D3DXVec3Normalize(&missile_my_length,&missile_my_length);
-		vVelocity = missile_my_length*2;
+		vVelocity = missile_my_length*3;
 		nowType = 3;
 		break;
 	case 3:

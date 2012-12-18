@@ -72,6 +72,12 @@ MYVERTEX mapVtx[4] = {
 	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/5, 0, 1, 1},
 	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2, 0, 1, 0}
 };
+MYVERTEX monHp[4] = {
+	{WINDOW_WIDTH/2-WINDOW_WIDTH/5, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/5, 0, 0, 1},
+	{WINDOW_WIDTH/2-WINDOW_WIDTH/5, -WINDOW_HEIGHT/2, 0, 0, 0 },
+	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/5, 0, 1, 1},
+	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2, 0, 1, 0}
+};
 LPDIRECT3DTEXTURE9		speed_bar[10] = { NULL, NULL, NULL };// 빌보드로 사용할 텍스처
 D3DXMATRIX				matBillboard;
 //-----------------------------------------------------------------------------
@@ -155,7 +161,7 @@ float					settime;
 //-----------------------------------------------------------------------------
 Xfile* drawXfile;
 Xfile* mapBox;
-Xfile* monDetail[ACTION_PATTERN_COUNT];
+Xfile* monDetail[ACTION_PATTERN_COUNT+1];
 //Xfile* BlackBox;
 
 //-----------------------------------------------------------------------------
@@ -454,6 +460,10 @@ inline VOID DrawUi(){
 		m_Ui->drawBillboard(g_pd3dDevice,speed_bar[5],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/20*3,12.0f*i,0.0f,hpVtx);
 	}
 
+	for(int i=0;i<first_mon->hisLife()/50;i++){
+		m_Ui->drawBillboard(g_pd3dDevice,speed_bar[3],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/20*i,WINDOW_HEIGHT/2,0.0f,hpVtx);
+	}
+
 
 }
 
@@ -527,7 +537,7 @@ inline VOID Render(float time)
 		drawXfile->set_view(mView);
 		mapBox->set_view(mView);
 //		BlackBox->set_view(mView);
-		for(int i=0;i<ACTION_PATTERN_COUNT;i++){
+		for(int i=0;i<ACTION_PATTERN_COUNT+1;i++){
 			monDetail[i]->set_view(mView);
 		}
 		//-----------------------------------------------------------------------------
@@ -643,7 +653,7 @@ inline VOID afterInitD3D(){
 	g_pCamera = new ZCamera;
 	drawXfile = new Xfile();
 	mapBox = new Xfile();
-	for(int i=0;i<ACTION_PATTERN_COUNT;i++){monDetail[i] = new Xfile();}
+	for(int i=0;i<ACTION_PATTERN_COUNT+1;i++){monDetail[i] = new Xfile();}
 //	BlackBox = new Xfile();
 	myCharacter = new Ball(( D3DXVECTOR3 )Pos,( D3DXVECTOR3 )Vel,( D3DXVECTOR3 )Vel);	
 	itemList = new ItemsList();
@@ -661,7 +671,7 @@ inline VOID afterRender(){
 	delete g_pCamera;
 	delete drawXfile;
 	delete mapBox;
-	for(int i=0;i<ACTION_PATTERN_COUNT;i++){delete monDetail[i];};
+	for(int i=0;i<ACTION_PATTERN_COUNT+1;i++){delete monDetail[i];};
 	delete myCharacter;
 	delete mMoving;
 	delete itemList;
@@ -677,7 +687,7 @@ inline VOID beforeRender(){
 	drawXfile->set_viewprojtexture(matProj,gLightColor);
 	mapBox->set_viewprojtexture(matProj,gLightColor);
 	//BlackBox->set_viewprojtexture(matProj,gLightColor);
-	for(int i=0;i<ACTION_PATTERN_COUNT;i++){
+	for(int i=0;i<ACTION_PATTERN_COUNT+1;i++){
 		monDetail[i]->set_viewprojtexture(matProj,gLightColor);
 	}
 
@@ -709,6 +719,9 @@ inline HRESULT initLoad(){
 		return E_FAIL;
 	}
 	if(FAILED(monDetail[5]->InitballMesh(g_pd3dDevice,"Cube4.png","Fur.tga","WallBall.fx","Monster.x"))){
+		return E_FAIL;
+	}
+	if(FAILED(monDetail[6]->InitballMesh(g_pd3dDevice,"nhk_16.tga","FireBase.tga","ChangeBall.fx","Monster.x"))){
 		return E_FAIL;
 	}
 	/*---------init billboard---------*/

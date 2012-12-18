@@ -74,6 +74,7 @@ private:
 	float msiEndTime; 
 	bool msion;
 	bool msionAll;
+	bool msionNext;
 	float norAttStartTime; 
 	float norAttEndTime; 
 	bool naton;
@@ -118,6 +119,7 @@ public:
 	void jumpMove(float time);
 	void dodgeMove(float time);
 	void realType(int type,float time);
+	void realMixType(int type,float time);
 	inline void randPositionMon(){mon->setOriginType(rand()%20);};
 	inline void setPositionMon(int type){mon->setOriginType(type);};
 	inline int getRandType(){return rand()%5;};

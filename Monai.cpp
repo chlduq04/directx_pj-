@@ -49,6 +49,7 @@ Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,
 	rushon = false;
 	naton = false;
 	msionAll = false;
+	msionNext = false;
 	actionNum = 0;
 	nextActionNum = 0;
 }
@@ -176,6 +177,7 @@ void Monai::healingMode(float time){
 }
 void Monai::missileMode(float time){
 	msionAll = true;
+	msionNext = true;
 	for(int i=0;i<10;i++){msi[i]->start();}
 }
 void Monai::wallMode(float time){
@@ -192,10 +194,12 @@ void Monai::defenceModeStart(){
 }
 void Monai::missileModeStart(float time){
 	msionAll = false;
+	msionNext = false;
 	for(int i=0;i<10;i++){
 		msi[i]->moveMissile(mon,cha,time);
 		if(!msionAll&&msi[i]->nowStart()){
 			msionAll = true;
+			msionNext = true;
 		}
 	}
 
@@ -225,9 +229,7 @@ void Monai::normalAttModeStart(){
 	}
 }
 
-
-
-void Monai::realType(int type,float time){
+void Monai::realMixType(int type,float time){
 	switch(typeCase){
 	case 0:
 		nowAction = checkResult->doAction(type,time);
@@ -238,7 +240,6 @@ void Monai::realType(int type,float time){
 		break;
 	case 1:
 		if(time - motiontime > nowAction->getMotionDelay()){
-			nowAction->startPlay(time);
 			switch(actionNum){
 			case 0:
 				missileMode(time);
@@ -259,37 +260,11 @@ void Monai::realType(int type,float time){
 				wallMode(time);
 				break;
 			}
+			nowAction->startPlay(time);
 			typeCase = 2;
 		}
 		break;
 	case 2:
-		if(msionAll || nowAction->isPlay(time)){
-			switch(actionNum){
-			case 0:
-				missileModeStart(time);
-				break;
-			case 1:
-				healingModeStart(time);
-				break;
-			case 2:
-				defenceModeStart();
-				break;
-			case 3:
-				laserModeStart();
-				break;
-			case 4:
-				normalAttModeStart();
-				break;
-			case 5:
-				wallModeStart();
-				break;
-			}
-		}
-		else{
-			typeCase = 3;
-		}
-		break;
-	case 3:
 		if(nextAction != NULL){
 			nextActionNum = nextAction->getType();
 			switch(nextActionNum){
@@ -313,13 +288,203 @@ void Monai::realType(int type,float time){
 				break;
 			}
 			nextAction->startPlay(time);
-			typeCase = 4;
+			typeCase = 3;
 		}
 		else{
-			typeCase = 6;
+			typeCase = 4;
+		}
+		break;
+	case 3:
+		if(msionAll || nowAction->isPlay(time)){
+			switch(actionNum){
+			case 0:
+				missileModeStart(time);
+				break;
+			case 1:
+				healingModeStart(time);
+				break;
+			case 2:
+				defenceModeStart();
+				break;
+			case 3:
+				laserModeStart();
+				break;
+			case 4:
+				normalAttModeStart();
+				break;
+			case 5:
+				wallModeStart();
+				break;
+			}
+		}else{
+			nowAction->endPlay(time);
+		}
+		if(msionNext||nextAction->isPlay(time)){
+			switch(nextActionNum){
+			case 0:
+				missileModeStart(time);
+				break;
+			case 1:
+				healingModeStart(time);
+				break;
+			case 2:
+				defenceModeStart();
+				break;
+			case 3:
+				laserModeStart();
+				break;
+			case 4:
+				normalAttModeStart();
+				break;
+			case 5:
+				wallModeStart();
+				break;
+			}
+		}else{
+			nextAction->endPlay(time);
+		}
+		if(!msionNext&&!nextAction->isPlay(time)&&!msionAll&&!nowAction->isPlay(time)){
+			typeCase = 5;
 		}
 		break;
 	case 4:
+		if(msionAll || nowAction->isPlay(time)){
+			switch(actionNum){
+			case 0:
+				missileModeStart(time);
+				break;
+			case 1:
+				healingModeStart(time);
+				break;
+			case 2:
+				defenceModeStart();
+				break;
+			case 3:
+				laserModeStart();
+				break;
+			case 4:
+				normalAttModeStart();
+				break;
+			case 5:
+				wallModeStart();
+				break;
+			}
+		}
+		else{
+			nowAction->endPlay(time);
+			typeCase = 5;
+		}
+		break;
+	case 5:
+		if(actionNum == 5||nextActionNum == 5){
+			mov->returnWall();
+		}
+		nextActionNum = 0;
+		typeCase = 0;
+		break;
+	}
+}
+
+
+void Monai::realType(int type,float time){
+	switch(typeCase){
+	case 0:
+		nowAction = checkResult->doAction(type,time);
+		nextAction = nowAction->getNextPat();
+		motiontime = time;
+		actionNum = CHANGE_ACTION_NUM;
+		typeCase = 1;
+		break;
+	case 1:
+		typeCase = 2;
+		actionNum = nowAction->getType();
+		break;
+	case 2:
+		if(time - motiontime > nowAction->getMotionDelay()){
+			nowAction->startPlay(time);
+			switch(actionNum){
+			case 0:
+				missileMode(time);
+				break;
+			case 1:
+				healingMode(time);
+				break;
+			case 2:
+				defenceMode(time);
+				break;
+			case 3:
+				laserMode(time);
+				break;
+			case 4:
+				normalAttMode(time);
+				break;
+			case 5:
+				wallMode(time);
+				break;
+			}
+			typeCase = 3;
+		}
+		break;
+	case 3:
+		if(msionAll || nowAction->isPlay(time)){
+			switch(actionNum){
+			case 0:
+				missileModeStart(time);
+				break;
+			case 1:
+				healingModeStart(time);
+				break;
+			case 2:
+				defenceModeStart();
+				break;
+			case 3:
+				laserModeStart();
+				break;
+			case 4:
+				normalAttModeStart();
+				break;
+			case 5:
+				wallModeStart();
+				break;
+			}
+		}
+		else{
+			typeCase = 4;
+		}
+		break;
+	case 4:
+		if(nextAction != NULL){
+			nextActionNum = nextAction->getType();
+			switch(nextActionNum){
+			case 0:
+				missileMode(time);
+				break;
+			case 1:
+				healingMode(time);
+				break;
+			case 2:
+				defenceMode(time);
+				break;
+			case 3:
+				laserMode(time);
+				break;
+			case 4:
+				normalAttMode(time);
+				break;
+			case 5:
+				wallMode(time);
+				break;
+			}
+			nowAction->endPlay(time);
+			nextAction->startPlay(time);
+			typeCase = 5;
+		}
+		else{		
+			nowAction->endPlay(time);
+			typeCase = 6;
+		}
+		break;
+	case 5:
 		if(msion||nextAction->isPlay(time)){
 			switch(nextActionNum){
 			case 0:
@@ -343,20 +508,12 @@ void Monai::realType(int type,float time){
 			}
 		}
 		else{
-			typeCase = 5;
+			nextAction->endPlay(time);
+			typeCase = 6;
 		}
-		break;
-	case 5:
-		nextAction->endPlay(time);
-		nowAction->endPlay(time);
-		if((nextActionNum == 5)||(actionNum == 5)){
-			mov->returnWall();
-		}
-		typeCase = 0;
 		break;
 	case 6:
-		nowAction->endPlay(time);
-		if(actionNum == 5){
+		if((nextActionNum == 5)||(actionNum == 5)){
 			mov->returnWall();
 		}
 		typeCase = 0;

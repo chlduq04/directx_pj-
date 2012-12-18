@@ -1,6 +1,7 @@
 #ifndef _GAUDIO_H_
 #define	_GAUDIO_H_
 #include <xact3.h>
+#include <atlbase.h>
 #include <strsafe.h>
 class GAudio{
 private:
@@ -25,6 +26,6 @@ public:
 	bool DoesCommandLineContainAuditionSwitch();
 	HRESULT FindMediaFileCch( WCHAR* strDestPath, int cchDest, LPCWSTR strFilename );
 	VOID CleanupXACT();
-
+	LPCSTR ConvertLPWSTCToLPCSTR(wchar_t* pStr,int* length);
 };
 #endif

@@ -1,80 +1,58 @@
-﻿빌드 시작: 2012-12-17 오후 1:54:46
+﻿빌드 시작: 2012-12-18 오후 10:04:30
      1>2 노드의 "C:\Users\ouchoi\Documents\Visual Studio 2010\Projects\DirectXSamples\Meshes\Meshes_2010.vcxproj" 프로젝트(build 대상)입니다.
      1>InitializeBuildStatus:
          "AlwaysCreate"이(가) 지정되었기 때문에 "Debug\Meshes.unsuccessfulbuild"을(를) 만들고 있습니다.
        ClCompile:
-         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IDXUT\Core /IDXUT\Optional /ZI /nologo /W4 /WX- /Od /Oi /Oy- /D WIN32 /D _DEBUG /D DEBUG /D PROFILE /D _WINDOWS /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt CheckAI.cpp Dball.cpp GAudio.cpp Monai.cpp Pattern.cpp  
-         CheckAI.cpp
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\checkai.h(18): warning C4100: 'move' : 참조되지 않은 정식 매개 변수입니다.
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IDXUT\Core /IDXUT\Optional /ZI /nologo /W4 /WX- /Od /Oi /Oy- /D WIN32 /D _DEBUG /D DEBUG /D PROFILE /D _WINDOWS /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Dball.cpp  
          Dball.cpp
      1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\zcamera.h(21): warning C4324: 'ZCamera' : __declspec(align()) 때문에 구조체가 채워졌습니다.
      1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\checkai.h(18): warning C4100: 'move' : 참조되지 않은 정식 매개 변수입니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(254): warning C4244: '+=' : 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(255): warning C4244: '+=' : 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(366): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(366): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(366): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(413): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(483): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(466): warning C4100: 'device' : 참조되지 않은 정식 매개 변수입니다.
-         GAudio.cpp
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(46): error C2664: 'CreateFileA' : 매개 변수 1을(를) 'WCHAR [260]'에서 'LPCSTR'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(74): error C2664: 'CreateFileA' : 매개 변수 1을(를) 'WCHAR [260]'에서 'LPCSTR'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(148): error C2664: 'GetModuleFileNameA' : 매개 변수 2을(를) 'WCHAR [260]'에서 'LPSTR'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(153): error C2664: 'StringCchCopyA' : 매개 변수 1을(를) 'WCHAR [260]'에서 'STRSAFE_LPSTR'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(164): error C2664: 'StringCchCopyA' : 매개 변수 1을(를) 'WCHAR *'에서 'STRSAFE_LPSTR'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(165): error C2664: 'GetFileAttributesA' : 매개 변수 1을(를) 'WCHAR *'에서 'LPCSTR'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(170): error C2664: 'StringCchCopyA' : 매개 변수 1을(를) 'WCHAR [260]'에서 'STRSAFE_LPSTR'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(177): error C2664: 'GetFullPathNameA' : 매개 변수 1을(를) 'const wchar_t [2]'에서 'LPCSTR'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(183): error C2664: 'StringCchPrintfA' : 매개 변수 1을(를) 'WCHAR [260]'에서 'STRSAFE_LPSTR'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(184): error C2664: 'GetFileAttributesA' : 매개 변수 1을(를) 'WCHAR [260]'에서 'LPCSTR'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(186): error C2664: 'StringCchCopyA' : 매개 변수 1을(를) 'WCHAR *'에서 'STRSAFE_LPSTR'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(191): error C2664: 'StringCchPrintfA' : 매개 변수 1을(를) 'WCHAR [260]'에서 'STRSAFE_LPSTR'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(192): error C2664: 'GetFileAttributesA' : 매개 변수 1을(를) 'WCHAR [260]'에서 'LPCSTR'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(194): error C2664: 'StringCchCopyA' : 매개 변수 1을(를) 'WCHAR *'에서 'STRSAFE_LPSTR'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(199): error C2664: 'StringCchPrintfA' : 매개 변수 1을(를) 'WCHAR [260]'에서 'STRSAFE_LPSTR'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(200): error C2664: 'GetFullPathNameA' : 매개 변수 1을(를) 'WCHAR [260]'에서 'LPCSTR'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(206): error C2664: 'StringCchCopyA' : 매개 변수 1을(를) 'WCHAR *'에서 'STRSAFE_LPSTR'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(216): error C2664: 'CommandLineToArgvW' : 매개 변수 1을(를) 'LPSTR'에서 'LPCWSTR'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\gaudio.cpp(219): error C2664: 'StringCchLengthA' : 매개 변수 1을(를) 'LPWSTR'에서 'STRSAFE_PCNZCH'(으)로 변환할 수 없습니다.
-                 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
-         Monai.cpp
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\checkai.h(18): warning C4100: 'move' : 참조되지 않은 정식 매개 변수입니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(105): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(105): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(169): warning C4100: 'time' : 참조되지 않은 정식 매개 변수입니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(172): warning C4100: 'time' : 참조되지 않은 정식 매개 변수입니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(173): warning C4100: 'time' : 참조되지 않은 정식 매개 변수입니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(177): warning C4100: 'time' : 참조되지 않은 정식 매개 변수입니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(184): warning C4244: '=' : 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(187): warning C4244: '=' : 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(181): warning C4100: 'time' : 참조되지 않은 정식 매개 변수입니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(205): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(208): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-         Pattern.cpp
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\pattern.cpp(145): warning C4100: 'time' : 참조되지 않은 정식 매개 변수입니다.
-         코드를 생성하고 있습니다...
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(382): warning C4701: 초기화되지 않았을 수 있는 'item' 지역 변수를 사용했습니다.
-     1>"C:\Users\ouchoi\Documents\Visual Studio 2010\Projects\DirectXSamples\Meshes\Meshes_2010.vcxproj" 프로젝트를 빌드했습니다(build 대상). - 실패
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(260): warning C4244: '+=' : 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(261): warning C4244: '+=' : 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(372): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(372): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(372): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(419): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(464): warning C4244: '인수' : 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(493): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(476): warning C4100: 'device' : 참조되지 않은 정식 매개 변수입니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(388): warning C4701: 초기화되지 않았을 수 있는 'item' 지역 변수를 사용했습니다.
+       ResourceCompile:
+         모든 출력이 최신 상태입니다.
+       ManifestResourceCompile:
+         모든 출력이 최신 상태입니다.
+       Link:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\ouchoi\Documents\Visual Studio 2010\Projects\DirectXSamples\Meshes\Debug\Meshes.exe" /INCREMENTAL /NOLOGO d3d9.lib d3dx10d.lib d3dx9d.lib dxerr.lib dxguid.lib winmm.lib comctl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Meshes.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\ouchoi\Documents\Visual Studio 2010\Projects\DirectXSamples\Meshes\Debug\Meshes.pdb" /SUBSYSTEM:WINDOWS /LARGEADDRESSAWARE:NO /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\ouchoi\Documents\Visual Studio 2010\Projects\DirectXSamples\Meshes\Debug\Meshes.lib" /MACHINE:X86 Debug\Meshes.res
+         Debug\Meshes.exe.embed.manifest.res
+         Debug\Ball.obj
+         Debug\CAllocateHierarchy.obj
+         Debug\CameraSetting.obj
+         Debug\CheckAI.obj
+         Debug\CModel.obj
+         Debug\Dball.obj
+         Debug\DirectInput.obj
+         Debug\Items.obj
+         Debug\ItemsList.obj
+         Debug\Missile.obj
+         Debug\Monai.obj
+         Debug\Monster.obj
+         Debug\Moving.obj
+         Debug\Pattern.obj
+         Debug\Ui.obj
+         Debug\Wall.obj
+         Debug\Xfile.obj
+         Debug\ZCamera.obj  
+       Manifest:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\Meshes.exe.embed.manifest" /manifest Debug\Meshes.exe.intermediate.manifest "C:\Program Files\Microsoft Visual Studio 10.0\VC\Include\Manifest\dpiaware.manifest"
+         모든 출력이 최신 상태입니다.
+       LinkEmbedManifest:
+         모든 출력이 최신 상태입니다.
+         Meshes_2010.vcxproj -> C:\Users\ouchoi\Documents\Visual Studio 2010\Projects\DirectXSamples\Meshes\Debug\Meshes.exe
+       FinalizeBuildStatus:
+         "Debug\Meshes.unsuccessfulbuild" 파일을 삭제하고 있습니다.
+         "Debug\Meshes.lastbuildstate"에 연결(touching)하고 있습니다.
+     1>"C:\Users\ouchoi\Documents\Visual Studio 2010\Projects\DirectXSamples\Meshes\Meshes_2010.vcxproj" 프로젝트를 빌드했습니다(build 대상).
 
-빌드하지 못했습니다.
+빌드했습니다.
 
-경과 시간: 00:00:05.21
+경과 시간: 00:00:02.63

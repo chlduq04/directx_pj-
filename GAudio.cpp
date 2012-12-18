@@ -43,7 +43,7 @@ HRESULT GAudio::PrepareXACT()
     // Memory mapped files tend to be the fastest for most situations assuming you 
     // have enough virtual address space for a full map of the file
     hr = E_FAIL; // assume failure
-    hFile = CreateFile( str, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL );
+	hFile = CreateFile((LPCSTR)str, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL );
     if( hFile != INVALID_HANDLE_VALUE )
     {
         dwFileSize = GetFileSize( hFile, NULL );
@@ -71,7 +71,7 @@ HRESULT GAudio::PrepareXACT()
     if( FAILED( hr = FindMediaFileCch( str, MAX_PATH, L"sounds.xsb" ) ) )
         return hr;
     hr = E_FAIL; // assume failure
-    hFile = CreateFile( str, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL );
+    hFile = CreateFile( (LPCSTR)str, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL );
     if( hFile != INVALID_HANDLE_VALUE )
     {
         dwFileSize = GetFileSize( hFile, NULL );
@@ -145,12 +145,12 @@ HRESULT GAudio::FindMediaFileCch( WCHAR* strDestPath, int cchDest, LPCWSTR strFi
     WCHAR strExePath[MAX_PATH] = {0};
     WCHAR strExeName[MAX_PATH] = {0};
     WCHAR* strLastSlash = NULL;
-    GetModuleFileName( NULL, strExePath, MAX_PATH );
+	GetModuleFileName( NULL, (LPSTR)strExePath, MAX_PATH );
     strExePath[MAX_PATH - 1] = 0;
     strLastSlash = wcsrchr( strExePath, TEXT( '\\' ) );
     if( strLastSlash )
     {
-        StringCchCopy( strExeName, MAX_PATH, &strLastSlash[1] );
+        StringCchCopy( (LPSTR)strExeName, MAX_PATH, &strLastSlash[1] );
 
         // Chop the exe name from the exe path
         *strLastSlash = 0;
@@ -161,49 +161,49 @@ HRESULT GAudio::FindMediaFileCch( WCHAR* strDestPath, int cchDest, LPCWSTR strFi
             *strLastSlash = 0;
     }
 
-    StringCchCopy( strDestPath, cchDest, strFilename );
-    if( GetFileAttributes( strDestPath ) != 0xFFFFFFFF )
+	StringCchCopy( (STRSAFE_LPSTR)strDestPath, cchDest, (STRSAFE_LPCSTR)strFilename );
+    if( GetFileAttributes( (STRSAFE_LPSTR)strDestPath ) != 0xFFFFFFFF )
         return S_OK;
 
     // Search all parent directories starting at .\ and using strFilename as the leaf name
     WCHAR strLeafName[MAX_PATH] = {0};
-    StringCchCopy( strLeafName, MAX_PATH, strFilename );
+    StringCchCopy( (STRSAFE_LPSTR)strLeafName, MAX_PATH, (STRSAFE_LPSTR)strFilename );
 
     WCHAR strFullPath[MAX_PATH] = {0};
     WCHAR strFullFileName[MAX_PATH] = {0};
     WCHAR strSearch[MAX_PATH] = {0};
     WCHAR* strFilePart = NULL;
 
-    GetFullPathName( L".", MAX_PATH, strFullPath, &strFilePart );
+	GetFullPathName( ".", MAX_PATH, (LPSTR)strFullPath, (LPSTR*)strFilePart );
     if( strFilePart == NULL )
         return E_FAIL;
 
     while( strFilePart != NULL && *strFilePart != '\0' )
     {
-        StringCchPrintf( strFullFileName, MAX_PATH, L"%s\\%s", strFullPath, strLeafName );
-        if( GetFileAttributes( strFullFileName ) != 0xFFFFFFFF )
+        StringCchPrintf( (STRSAFE_LPCSTR)strFullFileName, MAX_PATH, "%s\\%s", strFullPath, strLeafName );
+        if( GetFileAttributes( (STRSAFE_LPCSTR)strFullFileName ) != 0xFFFFFFFF )
         {
-            StringCchCopy( strDestPath, cchDest, strFullFileName );
+			StringCchCopy( (STRSAFE_LPSTR)strDestPath, cchDest, (STRSAFE_LPCSTR)strFullFileName );
             bFound = true;
             break;
         }
 
-        StringCchPrintf( strFullFileName, MAX_PATH, L"%s\\Tutorials\\%s\\%s", strFullPath, strExeName, strLeafName );
-        if( GetFileAttributes( strFullFileName ) != 0xFFFFFFFF )
+        StringCchPrintf( (STRSAFE_LPSTR)strFullFileName, MAX_PATH,"%s\\Tutorials\\%s\\%s", strFullPath, strExeName, strLeafName );
+        if( GetFileAttributes( (STRSAFE_LPSTR)strFullFileName ) != 0xFFFFFFFF )
         {
-            StringCchCopy( strDestPath, cchDest, strFullFileName );
+            StringCchCopy( (STRSAFE_LPSTR)strDestPath, cchDest, (STRSAFE_LPCSTR)strFullFileName );
             bFound = true;
             break;
         }
 
-        StringCchPrintf( strSearch, MAX_PATH, L"%s\\..", strFullPath );
-        GetFullPathName( strSearch, MAX_PATH, strFullPath, &strFilePart );
+        StringCchPrintf( (STRSAFE_LPSTR)strSearch, MAX_PATH, "%s\\..", strFullPath );
+        GetFullPathName( (LPCSTR)strSearch, MAX_PATH, (LPSTR)strFullPath, &strFilePart );
     }
     if( bFound )
         return S_OK;
 
     // On failure, return the file as the path but also return an error code
-    StringCchCopy( strDestPath, cchDest, strFilename );
+    StringCchCopy( (STRSAFE_LPSTR)strDestPath, cchDest, (STRSAFE_LPCSTR)strFilename );
 
     return HRESULT_FROM_WIN32( ERROR_FILE_NOT_FOUND );
 }
@@ -213,10 +213,10 @@ HRESULT GAudio::FindMediaFileCch( WCHAR* strDestPath, int cchDest, LPCWSTR strFi
 bool GAudio::DoesCommandLineContainAuditionSwitch()
 {
     const WCHAR* strAuditioning = L"-audition"; size_t nArgLen; int nNumArgs;
-    LPWSTR* pstrArgList = CommandLineToArgvW( GetCommandLine(), &nNumArgs );
+    LPWSTR* pstrArgList = CommandLineToArgvW( (LPCWSTR)GetCommandLine(), &nNumArgs );
     for( int iArg = 1; iArg < nNumArgs; iArg++ )
     {
-        StringCchLength( pstrArgList[iArg], 256, &nArgLen );
+		StringCchLength( (STRSAFE_PCNZCH)pstrArgList[iArg], 256, &nArgLen );
         if( _wcsnicmp( pstrArgList[iArg], strAuditioning, nArgLen ) == 0 && nArgLen == 9 )
             return true;
     }
@@ -224,3 +224,22 @@ bool GAudio::DoesCommandLineContainAuditionSwitch()
     return false;
 }
 
+
+LPCSTR GAudio::ConvertLPWSTCToLPCSTR(wchar_t* pStr,int* length)
+{
+ LPCSTR pszOut = NULL;
+ int nOutputStrLen = 0;
+ if(pStr != NULL)
+ {
+  int nInputStrLen = wcslen(pStr);
+  nOutputStrLen = WideCharToMultiByte(CP_ACP,0,pStr,nInputStrLen,NULL,0,0,0);
+  pszOut = new char[nOutputStrLen];
+  if(pszOut)
+  {
+   memset((void*)pszOut,0x00,sizeof(CHAR)*nOutputStrLen);
+   WideCharToMultiByte(CP_ACP,0,pStr,nInputStrLen,(LPSTR)pszOut,nOutputStrLen,0,0);
+  }
+ }
+ *length = nOutputStrLen;
+ return pszOut;
+}
