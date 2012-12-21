@@ -1,7 +1,7 @@
 #include "Missile.h"
 
 Missile::Missile(){
-	vDemage = -10;
+	vDemage = -1;
 	nowType = 0;
 	isStart = false;
 }

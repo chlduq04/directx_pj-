@@ -52,7 +52,6 @@ public:
 
 	void move();
 
-	
 	inline bool isAlive(){return alive;};
 	inline void setAlive(bool argu){alive = argu;};
 	inline int hisLife(){return life;};

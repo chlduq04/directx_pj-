@@ -7,13 +7,14 @@
 #include "Settings.h"
 class Ui{
 private:
+	LPDIRECT3DDEVICE9 d3dDevice;
 	float win_width;
 	float win_height;
 public:
-	Ui();
-	VOID setUI(LPDIRECT3DDEVICE9 device);
-	VOID setCenUI(LPDIRECT3DDEVICE9 device);
-	VOID drawBillboard(LPDIRECT3DDEVICE9 device,LPDIRECT3DTEXTURE9 texture,D3DXMATRIX* matworld,float tranx, float trany, float tranz, MYVERTEX* vtx);
-	HRESULT initBillboard(LPDIRECT3DDEVICE9 device, const char* image_name,LPDIRECT3DTEXTURE9* texture);
+	Ui(LPDIRECT3DDEVICE9 device);
+	VOID setUI();
+	VOID setCenUI();
+	VOID drawBillboard(LPDIRECT3DTEXTURE9 texture,D3DXMATRIX* matworld,float tranx, float trany, float tranz, MYVERTEX* vtx);
+	HRESULT initBillboard(const char* image_name,LPDIRECT3DTEXTURE9* texture);
 };
 #endif

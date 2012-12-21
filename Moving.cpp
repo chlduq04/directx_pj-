@@ -97,6 +97,7 @@ void Moving::getPosition(float speed){
 	if(mon->getPosition().y<MINBOUNDY){
 		mon->setPositionY(MINBOUNDY);
 	}
+	
 
 
 	if( !cha->isGround() )
@@ -237,7 +238,9 @@ void Moving::crashMon(float time){
 	}
 	if(mon->isAlive()==true)//is alive?
 	{
-		D3DXVECTOR3 vOneToTwo = cha->getPosition() - mon->getPosition();
+		D3DXVECTOR3 monRealPosition = mon->getPosition();
+		monRealPosition.y += MON_REAL_SIZE/2;
+		D3DXVECTOR3 vOneToTwo = cha->getPosition() - monRealPosition;
 		float DistSq = D3DXVec3LengthSq( &vOneToTwo );
 
 		if( DistSq < (MON_REAL_SIZE+MYSIZE) * (MON_REAL_SIZE+MYSIZE) )
@@ -248,6 +251,7 @@ void Moving::crashMon(float time){
 			if( fImpact > 0.0f )
 			{
 				isCrash = true;
+
 				crashTime = time;
 
 				D3DXVECTOR3 vVelocityOneN = ( 1 - BOUNCE_LOST ) * D3DXVec3Dot( &vOneToTwo, &mon->getVelocity() ) * vOneToTwo;
@@ -261,8 +265,9 @@ void Moving::crashMon(float time){
 
 				float fDistanceToMove = ( MON_REAL_SIZE - sqrtf( DistSq ) ) * 0.5f;
 				mon->setPosition(mon->getPosition()-vOneToTwo * fDistanceToMove);
-				cha->setPosition(cha->getPosition()+vOneToTwo * fDistanceToMove);
+				cha->setPosition(cha->getPosition()+vOneToTwo * fDistanceToMove);	
 				
+				mon->setLife(-abs((int)D3DXVec3Length(&cha->getVelocity())));
 			}
 		}
 	}

@@ -74,3 +74,5 @@ void Checkai::changePattern(int motionNum,int actionNum){
 		checkResult[motionNum][actionNum-1] = origin;
 	}
 }
+void Checkai::mixPattern(){
+}

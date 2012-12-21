@@ -97,12 +97,14 @@ void Monai::getMoveType(float time){
 			break;
 		case 11:
 		case 12:
+			mon->setmType(2);
 			velocty = D3DXVECTOR3(0,0,0);
 			ActionStart = time;
 			break;
 		case 13:
 		case 14:
 		case 15:
+			mon->setmType(3);
 			mon->setGoal(cha->getPosition()+D3DXVECTOR3(rand()%10-5,1.0f,rand()%10-5));
 			motionSpeed = 0.5f;
 			motionSpeedY = 10.0f;
@@ -113,6 +115,7 @@ void Monai::getMoveType(float time){
 		case 17:
 		case 18:
 		case 19:
+			mon->setmType(4);
 			mon->setGoal(D3DXVECTOR3((rand()%(int)MAXBOUNDX)-MINBOUNDX,0.0f,(rand()%(int)MAXBOUNDZ)-MINBOUNDZ));
 			motionSpeed = 0.5f;
 			velocty = mon->getGoal() - mon->getPosition();
@@ -121,37 +124,27 @@ void Monai::getMoveType(float time){
 		}
 		velocty.y *= motionSpeedY;
 		mon->setVelocity(velocty*GAMESPEED*motionSpeed);
+		mon->setRotate(velocty);
 		mon->setisGoal(true);
 	}
 	else{
-		if	( abs(mon->getPosition().x-mon->getGoal().x)< (MON_REAL_SIZE/2)*(MON_REAL_SIZE/2) ){
-			mon->setVelocityX(0.0f);
-			mon->setVelocityY(0.0f);
-			mon->setVelocityZ(0.0f);
-			switch(mon->getOriginType()){
-			case 0:
+		switch (mon->getmType()){
+		case 2:
+			if(time - ActionStart>3.0f){
 				mon->setisGoal(false);
 				randPositionMon();
-				break;
-			case 1:
-				mon->setisGoal(false);
-				randPositionMon();
-				break;
-			case 2:
-				if(time - ActionStart>5.0f){
-					mon->setisGoal(false);
-					randPositionMon();
-				}
-				break;
-			case 3:
-				mon->setisGoal(false);
-				randPositionMon();
-				break;
-			case 4:
-				mon->setisGoal(false);
-				randPositionMon();
-				break;
 			}
+			break;
+		default:
+			if	( abs(mon->getPosition().x-mon->getGoal().x)< (MON_REAL_SIZE/2)*(MON_REAL_SIZE/2) ){
+				mon->setVelocityX(0.0f);
+				mon->setVelocityY(0.0f);
+				mon->setVelocityZ(0.0f);
+
+				mon->setisGoal(false);
+				randPositionMon();
+			}
+			break;
 		}
 	}
 }
@@ -376,15 +369,10 @@ void Monai::realMixType(int type,float time){
 		}
 		break;
 	case 5:
-		if(actionNum == 5||nextActionNum == 5){
-			mov->returnWall();
-		}
-		nextActionNum = 0;
-		typeCase = 0;
+		setActionReset();
 		break;
 	}
 }
-
 
 void Monai::realType(int type,float time){
 	switch(typeCase){
@@ -513,13 +501,19 @@ void Monai::realType(int type,float time){
 		}
 		break;
 	case 6:
-		if((nextActionNum == 5)||(actionNum == 5)){
-			mov->returnWall();
-		}
-		typeCase = 0;
+		setActionReset();
 		break;
 	}
 }
+void Monai::setActionReset(){
+	mon->monDefence(10);
+	if(actionNum == 5||nextActionNum == 5){
+		mov->returnWall();
+	}
+	nextActionNum = 0;
+	typeCase = 0;
+}
+
 
 bool Monai::rushMode(float time){
 	if((rushon == false)&&(time-rushEndTime-RUSH_END_DELAY>0)){

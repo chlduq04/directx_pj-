@@ -16,6 +16,7 @@ private:
 
 	float rate;
 
+
 	int nextPatternCount;
 	Pattern* nextPat;
 	Pattern* prevPat;
@@ -38,5 +39,7 @@ public:
 	bool isPlay(float time);
 
 	void ActionPlay(float time);
+	inline float getRate(){return rate;};
+
 };
 #endif

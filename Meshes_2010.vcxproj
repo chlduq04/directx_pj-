@@ -374,7 +374,6 @@
   <ItemGroup>
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="CAllocateHierarchy.cpp" />
-    <ClCompile Include="CameraSetting.cpp" />
     <ClCompile Include="CheckAI.cpp" />
     <ClCompile Include="CModel.cpp" />
     <ClCompile Include="Dball.cpp" />

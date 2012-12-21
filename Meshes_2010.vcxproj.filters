@@ -34,9 +34,6 @@
     <ClCompile Include="ZCamera.cpp">
       <Filter>project</Filter>
     </ClCompile>
-    <ClCompile Include="CameraSetting.cpp">
-      <Filter>project</Filter>
-    </ClCompile>
     <ClCompile Include="Ball.cpp">
       <Filter>project</Filter>
     </ClCompile>

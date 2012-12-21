@@ -10,6 +10,7 @@ public:
 	Checkai();
 	~Checkai();
 	Pattern* doAction(int type,float time);
+	void mixPattern();
 	inline void patternStart(int move,int type,float time){checkResult[move][type]->startPlay(time);};
 	inline void patternEnd(int move,int type,float time){checkResult[move][type]->endPlay(time);};
 	inline bool isPlay(int move,int type,float time){return checkResult[move][type]->isPlay(time);};

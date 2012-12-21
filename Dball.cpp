@@ -203,7 +203,7 @@ inline HRESULT InitD3D( HWND hWnd )
 	}
 
 	g_pd3dDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE);
-	g_pd3dDevice->SetRenderState( D3DRS_LIGHTING,TRUE );
+	g_pd3dDevice->SetRenderState( D3DRS_LIGHTING,FALSE );
 	g_pd3dDevice->SetRenderState( D3DRS_ZENABLE, TRUE );
 	g_pd3dDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
 	g_pd3dDevice->SetRenderState( D3DRS_SRCBLEND,   D3DBLEND_SRCALPHA );
@@ -415,61 +415,64 @@ inline VOID itemListDraw(float time){
 }
 
 inline VOID DrawUi(){
-	m_Ui->setUI(g_pd3dDevice);
+	m_Ui->setUI();
+
 	int velocity = abs((int)D3DXVec3Length(&myCharacter->getVelocity()));
 	if(velocity>50){
 		velocity = 50;
 	}
 	switch(velocity){
-	case 50 : case 49 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[1],&matBillboard,-10.5f,120.0f,0.0f,vtx);
-	case 48 : case 47 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[1],&matBillboard,-10.5f,115.0f,0.0f,vtx);
-	case 46 : case 45 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[1],&matBillboard,-10.5f,110.0f,0.0f,vtx);
-	case 44 : case 43 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[1],&matBillboard,-10.5f,105.0f,0.0f,vtx);
-	case 42 : case 41 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,100.0f,0.0f,vtx);
-	case 40 : case 39 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,95.0f,0.0f,vtx);
-	case 38 : case 37 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,90.0f,0.0f,vtx);
-	case 36 : case 35 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,85.0f,0.0f,vtx);
-	case 34 : case 33 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,80.0f,0.0f,vtx);
-	case 32 : case 31 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,75.0f,0.0f,vtx);
-	case 30 : case 29 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,70.0f,0.0f,vtx);
-	case 28 : case 27 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[2],&matBillboard,-10.5f,65.0f,0.0f,vtx);
-	case 26 : case 25 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,60.0f,0.0f,vtx);
-	case 24 : case 23 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,55.0f,0.0f,vtx);
-	case 22 : case 21 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,50.0f,0.0f,vtx);
-	case 20 : case 19 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,45.0f,0.0f,vtx);
-	case 18 : case 17 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,40.0f,0.0f,vtx);
-	case 16 : case 15 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,35.0f,0.0f,vtx);
-	case 14 : case 13 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,30.0f,0.0f,vtx);
-	case 12 : case 11 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,25.0f,0.0f,vtx);
-	case 10 : case 9 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,20.0f,0.0f,vtx);
-	case 8 : case 7 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,15.0f,0.0f,vtx);
-	case 6 : case 5 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,10.0f,0.0f,vtx);
-	case 4 : case 3 : m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,5.0f,0.0f,vtx);
-	case 2 : case 1: m_Ui->drawBillboard(g_pd3dDevice,speed_bar[0],&matBillboard,-10.5f,0.0f,0.0f,vtx);
+	case 50 : case 49 : m_Ui->drawBillboard(speed_bar[1],&matBillboard,-10.5f,120.0f,0.0f,vtx);
+	case 48 : case 47 : m_Ui->drawBillboard(speed_bar[1],&matBillboard,-10.5f,115.0f,0.0f,vtx);
+	case 46 : case 45 : m_Ui->drawBillboard(speed_bar[1],&matBillboard,-10.5f,110.0f,0.0f,vtx);
+	case 44 : case 43 : m_Ui->drawBillboard(speed_bar[1],&matBillboard,-10.5f,105.0f,0.0f,vtx);
+	case 42 : case 41 : m_Ui->drawBillboard(speed_bar[2],&matBillboard,-10.5f,100.0f,0.0f,vtx);
+	case 40 : case 39 : m_Ui->drawBillboard(speed_bar[2],&matBillboard,-10.5f,95.0f,0.0f,vtx);
+	case 38 : case 37 : m_Ui->drawBillboard(speed_bar[2],&matBillboard,-10.5f,90.0f,0.0f,vtx);
+	case 36 : case 35 : m_Ui->drawBillboard(speed_bar[2],&matBillboard,-10.5f,85.0f,0.0f,vtx);
+	case 34 : case 33 : m_Ui->drawBillboard(speed_bar[2],&matBillboard,-10.5f,80.0f,0.0f,vtx);
+	case 32 : case 31 : m_Ui->drawBillboard(speed_bar[2],&matBillboard,-10.5f,75.0f,0.0f,vtx);
+	case 30 : case 29 : m_Ui->drawBillboard(speed_bar[2],&matBillboard,-10.5f,70.0f,0.0f,vtx);
+	case 28 : case 27 : m_Ui->drawBillboard(speed_bar[2],&matBillboard,-10.5f,65.0f,0.0f,vtx);
+	case 26 : case 25 : m_Ui->drawBillboard(speed_bar[0],&matBillboard,-10.5f,60.0f,0.0f,vtx);
+	case 24 : case 23 : m_Ui->drawBillboard(speed_bar[0],&matBillboard,-10.5f,55.0f,0.0f,vtx);
+	case 22 : case 21 : m_Ui->drawBillboard(speed_bar[0],&matBillboard,-10.5f,50.0f,0.0f,vtx);
+	case 20 : case 19 : m_Ui->drawBillboard(speed_bar[0],&matBillboard,-10.5f,45.0f,0.0f,vtx);
+	case 18 : case 17 : m_Ui->drawBillboard(speed_bar[0],&matBillboard,-10.5f,40.0f,0.0f,vtx);
+	case 16 : case 15 : m_Ui->drawBillboard(speed_bar[0],&matBillboard,-10.5f,35.0f,0.0f,vtx);
+	case 14 : case 13 : m_Ui->drawBillboard(speed_bar[0],&matBillboard,-10.5f,30.0f,0.0f,vtx);
+	case 12 : case 11 : m_Ui->drawBillboard(speed_bar[0],&matBillboard,-10.5f,25.0f,0.0f,vtx);
+	case 10 : case 9 : m_Ui->drawBillboard(speed_bar[0],&matBillboard,-10.5f,20.0f,0.0f,vtx);
+	case 8 : case 7 : m_Ui->drawBillboard(speed_bar[0],&matBillboard,-10.5f,15.0f,0.0f,vtx);
+	case 6 : case 5 : m_Ui->drawBillboard(speed_bar[0],&matBillboard,-10.5f,10.0f,0.0f,vtx);
+	case 4 : case 3 : m_Ui->drawBillboard(speed_bar[0],&matBillboard,-10.5f,5.0f,0.0f,vtx);
+	case 2 : case 1: m_Ui->drawBillboard(speed_bar[0],&matBillboard,-10.5f,0.0f,0.0f,vtx);
 		break;
 	}
-	m_Ui->drawBillboard(g_pd3dDevice,speed_bar[6],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/5,0,0,mapVtx);
+//	m_Ui->drawBillboard(speed_bar[6],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/5,0,0,mapVtx);
 
 	for(int i=0;i<myCharacter->hisLife()/10;i++){
-		m_Ui->drawBillboard(g_pd3dDevice,speed_bar[3],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/20,12.0f*i,0.0f,hpVtx);
+		m_Ui->drawBillboard(speed_bar[3],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/20,12.0f*i,0.0f,hpVtx);
 	}
 	for(int i=0;i<myCharacter->hisMana()/10;i++){
-		m_Ui->drawBillboard(g_pd3dDevice,speed_bar[4],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/20*2,12.0f*i,0.0f,hpVtx);
+		m_Ui->drawBillboard(speed_bar[4],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/20*2,12.0f*i,0.0f,hpVtx);
 	}
 	for(int i=0;i<myCharacter->hisDef()/10;i++){
-		m_Ui->drawBillboard(g_pd3dDevice,speed_bar[5],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/20*3,12.0f*i,0.0f,hpVtx);
+		m_Ui->drawBillboard(speed_bar[5],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/20*3,12.0f*i,0.0f,hpVtx);
 	}
 
-	for(int i=0;i<first_mon->hisLife()/50;i++){
-		m_Ui->drawBillboard(g_pd3dDevice,speed_bar[3],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/20*i,WINDOW_HEIGHT/2,0.0f,hpVtx);
+	int m = first_mon->hisLife()/50;
+	for(int i=0;i<m;i++){
+		m_Ui->drawBillboard(speed_bar[3],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/20*i,WINDOW_HEIGHT-m,0.0f,hpVtx);
 	}
 
-
+	g_pd3dDevice->SetTransform(D3DTS_PROJECTION, &matProj);// return to origin prog=
 }
 
-inline void modelLeader(float time){
+
+inline void modelLeader(){
 	if(g_pModel){
-		g_pModel->Update(time);
+		g_pModel->Update(0.02f);
 		g_pModel->Draw();
 	}
 }
@@ -505,23 +508,23 @@ inline void RenderPolyLine( LPDIRECT3DDEVICE9 device, UINT count = 100 )
 inline VOID Render(float time)
 {
 	g_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB( 0, 0, 0 ), 1.0f, 0 );
-	SetupLight();
+//	SetupLight();
 	if( SUCCEEDED( g_pd3dDevice->BeginScene() ) )
 	{
 
 		//-----------------------------------------------------------------------------
 		// Camera Setting
 		//-----------------------------------------------------------------------------
-
+		
 		if(cameraCase == 1){
 			D3DXVECTOR3 vLookatPt(myWorld._41,myWorld._42, myWorld._43);
-			D3DXMatrixLookAtLH(&mView,g_pCamera->GetEye(),&vLookatPt,g_pCamera->GetUp());
+			D3DXMatrixLookAtLH(&mView,g_pCamera->GetEye(),g_pCamera->GetLookat(),g_pCamera->GetUp());
 		}
 		else if(cameraCase == 2){			
-			if(Mouse_Y<-20)
-				Mouse_Y = -20;
-			if(Mouse_Y>20)
-				Mouse_Y = 20;
+			if(Mouse_Y<-25)
+				Mouse_Y = -25;
+			if(Mouse_Y>25)
+				Mouse_Y = 25;
 
 			D3DXVECTOR3 vEyePt(myWorld._41+10*cos(Mouse_X),myWorld._42+Mouse_Y,myWorld._43+10*sin(Mouse_X));
 			D3DXVECTOR3 vLookatPt(myWorld._41,myWorld._42, myWorld._43);						
@@ -529,7 +532,7 @@ inline VOID Render(float time)
 			D3DXMatrixLookAtLH( &mView, &vEyePt, &vLookatPt, &vUpVec );
 			mEye = vLookatPt - vEyePt;
 		}
-
+		
 
 		//-----------------------------------------------------------------------------
 		// View Setting
@@ -544,6 +547,7 @@ inline VOID Render(float time)
 		// Character Setting
 		//-----------------------------------------------------------------------------
 		mMoving->getPosition(GSPEED);	
+		
 		D3DXMatrixIdentity(&myWorld);
 		D3DXMatrixScaling(&myScale,BALL_SIZE,BALL_SIZE,BALL_SIZE);
 		D3DXMatrixTranslation(&myTrans,myCharacter->getPosition().x,myCharacter->getPosition().y,myCharacter->getPosition().z);
@@ -560,7 +564,7 @@ inline VOID Render(float time)
 		m_Ai->getPositionMon(time);
 		D3DXMatrixIdentity(&mBox);
 		D3DXMatrixScaling(&myScale,MON_SIZE,MON_SIZE,MON_SIZE);
-//		D3DXMatrixRotationAxis(&myRotate,&first_mon->getVelocity(),time);
+//		D3DXMatrixTranslation(&myTrans,100.0f,0,0);
 		D3DXMatrixTranslation(&myTrans,first_mon->getPosition().x,first_mon->getPosition().y,first_mon->getPosition().z);
 		mBox *= myScale;
 		if(m_Ai->getActionNum()==4){
@@ -568,9 +572,19 @@ inline VOID Render(float time)
 			mBox *= myRotate;
 		}
 		mBox *= myTrans;
-//		mapBox->DrawMyballShader(mBox);
-//		monDetail[0]->DrawMyballShader(mBox);
-		monDetail[m_Ai->getActionNum()]->DrawMyballShader(mBox);
+//		monDetail[m_Ai->getActionNum()]->DrawMyballShader(mBox);	
+		if(cameraCase == 1){
+			g_pd3dDevice->SetTransform( D3DTS_WORLD, &mBox );
+			D3DXMATRIXA16*	pmatView = g_pCamera->GetViewMatrix();		// 카메라 행렬을 얻는다.
+			g_pd3dDevice->SetTransform( D3DTS_VIEW, pmatView );			// 카메라 행렬 셋팅
+		}
+		else if(cameraCase == 2){
+			g_pd3dDevice->SetTransform( D3DTS_WORLD, &mBox );
+			D3DXMATRIXA16*	pmatView = g_pCamera->GetViewMatrix();		// 카메라 행렬을 얻는다.
+			g_pd3dDevice->SetTransform( D3DTS_VIEW, &mView);			// 카메라 행렬 셋팅
+		}
+		modelLeader();
+		
 
 		//-----------------------------------------------------------------------------
 		// Missile Setting
@@ -636,8 +650,8 @@ inline VOID Render(float time)
 		itemListDraw(time);
 
 		mMoving->crashMon(time);
-		DrawUi();
 
+		DrawUi();
 		g_pd3dDevice->EndScene();
 
 	}
@@ -662,7 +676,7 @@ inline VOID afterInitD3D(){
 	mMoving = new Moving(myCharacter,first_mon,wWall);
 	cResult = new Checkai();
 	m_Ai = new Monai(first_mon,myCharacter,mMissile,mMoving,wWall,cResult, m_fStartTime);
-	m_Ui = new Ui();
+	m_Ui = new Ui(g_pd3dDevice);
 }
 
 inline VOID afterRender(){
@@ -725,25 +739,25 @@ inline HRESULT initLoad(){
 		return E_FAIL;
 	}
 	/*---------init billboard---------*/
-	if(!SUCCEEDED(m_Ui->initBillboard(g_pd3dDevice,"normal_speed.png",&speed_bar[0]))){
+	if(!SUCCEEDED(m_Ui->initBillboard("normal_speed.png",&speed_bar[0]))){
 		return E_FAIL;
 	}
-	if(!SUCCEEDED(m_Ui->initBillboard(g_pd3dDevice,"red_speed.png",&speed_bar[1]))){
+	if(!SUCCEEDED(m_Ui->initBillboard("red_speed.png",&speed_bar[1]))){
 		return E_FAIL;
 	}
-	if(!SUCCEEDED(m_Ui->initBillboard(g_pd3dDevice,"yellow_speed.png",&speed_bar[2]))){
+	if(!SUCCEEDED(m_Ui->initBillboard("yellow_speed.png",&speed_bar[2]))){
 		return E_FAIL;
 	}
-	if(!SUCCEEDED(m_Ui->initBillboard(g_pd3dDevice,"hp.png",&speed_bar[3]))){
+	if(!SUCCEEDED(m_Ui->initBillboard("hp.png",&speed_bar[3]))){
 		return E_FAIL;
 	}
-	if(!SUCCEEDED(m_Ui->initBillboard(g_pd3dDevice,"mp.png",&speed_bar[4]))){
+	if(!SUCCEEDED(m_Ui->initBillboard("mp.png",&speed_bar[4]))){
 		return E_FAIL;
 	}
-	if(!SUCCEEDED(m_Ui->initBillboard(g_pd3dDevice,"def.png",&speed_bar[5]))){
+	if(!SUCCEEDED(m_Ui->initBillboard("def.png",&speed_bar[5]))){
 		return E_FAIL;
 	}
-	if(!SUCCEEDED(m_Ui->initBillboard(g_pd3dDevice,"black_rec.png",&speed_bar[6]))){
+	if(!SUCCEEDED(m_Ui->initBillboard("black_rec.png",&speed_bar[6]))){
 		return E_FAIL;
 	}
 	/*---------init monster.x---------*/
@@ -849,7 +863,7 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 	RegisterClassEx( &wc );
 
 	// Create the application's window
-	HWND hWnd = CreateWindow( "D3D Tutorial", "D3D Tutorial 06: Meshes",
+	HWND hWnd = CreateWindow( "D3D Tutorial", "GongGong",
 		WS_OVERLAPPEDWINDOW, 100, 100, WINDOW_WIDTH, WINDOW_HEIGHT,
 		NULL, NULL, wc.hInstance, NULL );
 

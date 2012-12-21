@@ -144,4 +144,3 @@ Pattern* Pattern::getNextPat(){
 
 void Pattern::playAction(float time){
 }
-

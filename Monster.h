@@ -18,10 +18,12 @@ private:
 	float maxLife;
 	
 	int mMotion;
+
 	bool mAlive;
 	D3DXVECTOR3 vPosition; 
 	D3DXVECTOR3 vVelocity;
 	D3DXVECTOR3 vGoal;
+	D3DXVECTOR3 vRotate;
 	bool bGround;
 	bool bMove;
 	bool bJump;
@@ -83,5 +85,13 @@ public:
 	inline float getDefTime(){return defendTime;};
 	inline int getPase(){return pase;};
 	inline bool isAction(){return doAction;};
+
+	inline int getDef(){return mDefence;};
+	inline float getLife(){return mLife;};
+	inline void setLife(float dmg){
+		dmg * (100-mDefence)/100 + mLife;
+	};
+	inline void setRotate(D3DXVECTOR3 rotation){vRotate = rotation;};
+	inline D3DXVECTOR3 getRotation(){return vRotate;};
 };
 #endif

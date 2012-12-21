@@ -103,7 +103,7 @@
 #define MON_SIZE 0.1f
 #define MISSILE_SIZE 0.01f
 
-#define MON_REAL_SIZE 3.0f
+#define MON_REAL_SIZE 7.0f
 #define BALL_REAL_SIZE 5.0f
 #define ITEM_REAL_SIZE 10.0f
 #define MISSILE_REAL_SIZE 1.0f
@@ -121,8 +121,8 @@
 
 #define MOUSE_SENSITIVE 0.001f
 
-#define WINDOW_WIDTH 600
-#define WINDOW_HEIGHT 600
+#define WINDOW_WIDTH 700
+#define WINDOW_HEIGHT 700
 #define BOUNCE_LOST 0.1f
 #define BOUNCE_TRANSFER 0.05f
 

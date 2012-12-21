@@ -130,6 +130,6 @@ public:
 	float getRotation();
 	void getMoveType(float time);
 	inline void inhenceMove(int type);
-
+	void setActionReset();
 };
 #endif
