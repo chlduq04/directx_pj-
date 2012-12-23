@@ -23,9 +23,6 @@ void Missile::moveMissile(Monster* mon,Ball* cha,float time){
 		rendValue();
 		rendGoal(cha);
 		nowType = 1;
-//		if(vPosition.y<MINBOUNDY||vPosition.y>MAXBOUNDY){
-//			nowType = 4;
-//		}
 		break;
 	case 1:
 		missile_wall_length = vPosition - vBackPosition;
@@ -36,7 +33,7 @@ void Missile::moveMissile(Monster* mon,Ball* cha,float time){
 		vGoal = cha->getPosition()+cha->getVelocity()*3;
 		missile_my_length = vGoal - vPosition;
 		D3DXVec3Normalize(&missile_my_length,&missile_my_length);
-		vVelocity = missile_my_length*3;
+		vVelocity = missile_my_length*4;
 		nowType = 3;
 		break;
 	case 3:

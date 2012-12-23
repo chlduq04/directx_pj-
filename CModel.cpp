@@ -60,7 +60,6 @@ HRESULT CModel::LoadXFile(char* strFileName)
 {
 	//Allocation class
 	CAllocateHierarchy Alloc;
-	
 	//Load the mesh
 	if(FAILED(D3DXLoadMeshHierarchyFromX(strFileName,		// File load
 										D3DXMESH_MANAGED,	// Load Options
@@ -166,8 +165,7 @@ void CModel::Draw()
 	while(pMesh)
 	{
 		//Select the mesh to draw
-		LPD3DXMESH pDrawMesh = (pMesh->pSkinInfo)
-			? pMesh->pSkinMesh: pMesh->MeshData.pMesh;
+		LPD3DXMESH pDrawMesh = (pMesh->pSkinInfo) ? pMesh->pSkinMesh: pMesh->MeshData.pMesh;
 		
 		//Draw each mesh subset with correct materials and texture
 		for (DWORD i = 0; i < pMesh->NumMaterials; ++i)
@@ -223,7 +221,6 @@ void CModel::Update(double dElapsedTime)
 	//Set the time for animation
 	if(m_pAnimController && m_dwCurrentAnimation != -1)
 		m_pAnimController->AdvanceTime(dElapsedTime, NULL);
-
 	//Update the frame hierarchy
 	if(m_pFrameRoot)
 	{
@@ -237,12 +234,7 @@ void CModel::Update(double dElapsedTime)
 				UINT Bones = pMesh->pSkinInfo->GetNumBones();
 				for (UINT i = 0; i < Bones; ++i)
 				{	
-					D3DXMatrixMultiply
-					(
-						&m_pBoneMatrices[i],//out
-						&pMesh->pBoneOffsets[i], 
-						pMesh->ppFrameMatrices[i]
-					);
+					D3DXMatrixMultiply(&m_pBoneMatrices[i],&pMesh->pBoneOffsets[i], pMesh->ppFrameMatrices[i]);
 				}
 
 				// Lock the meshes' vertex buffers

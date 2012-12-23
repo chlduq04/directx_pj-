@@ -71,15 +71,12 @@ pError: 컴파일러 에러 메시지를 가리킬 포인터
 LPD3DXMESH Xfile::LoadModel(LPDIRECT3DDEVICE9 g_pd3dDevice,const char * filename)
 {
 	LPD3DXMESH ret = NULL;
-	if ( FAILED(D3DXLoadMeshFromX(filename,D3DXMESH_SYSTEMMEM, g_pd3dDevice,
-		NULL,NULL,NULL,NULL, &ret)) )
+	if ( FAILED(D3DXLoadMeshFromX(filename,D3DXMESH_SYSTEMMEM, g_pd3dDevice, NULL,NULL,NULL,NULL, &ret)) )
 	{
-		OutputDebugString("모델 로딩 실패: ");
+		OutputDebugString("모델 로딩 실패 : ");
 		OutputDebugString(filename);
 		OutputDebugString("\n");
 	};
-
-
 	return ret;
 }
 
@@ -153,15 +150,15 @@ VOID Xfile::DrawMyballShader(D3DXMATRIX world)
 	Xfile::SetMatrix(gpTextureMappingShader,"gWorldMatrix",&world);
 	UINT numPasses = 0;
 	Xfile::gpTextureMappingShader->Begin(&numPasses, NULL);
+
+	for (UINT i = 0; i < numPasses; ++i )
 	{
-		for (UINT i = 0; i < numPasses; ++i )
+		Xfile::gpTextureMappingShader->BeginPass(i);
 		{
-			Xfile::gpTextureMappingShader->BeginPass(i);
-			{
-				Xfile::gpSphere->DrawSubset(0);
-			}
-			Xfile::gpTextureMappingShader->EndPass();
+			Xfile::gpSphere->DrawSubset(0);
 		}
+		Xfile::gpTextureMappingShader->EndPass();
 	}
+
 	Xfile::gpTextureMappingShader->End();
 }

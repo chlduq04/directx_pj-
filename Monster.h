@@ -89,7 +89,7 @@ public:
 	inline int getDef(){return mDefence;};
 	inline float getLife(){return mLife;};
 	inline void setLife(float dmg){
-		dmg * (100-mDefence)/100 + mLife;
+		mLife = dmg * (100-mDefence)/100 + mLife;
 	};
 	inline void setRotate(D3DXVECTOR3 rotation){vRotate = rotation;};
 	inline D3DXVECTOR3 getRotation(){return vRotate;};

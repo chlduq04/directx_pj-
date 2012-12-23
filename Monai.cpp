@@ -1,6 +1,6 @@
 #include "Monai.h"
 
-Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,Wall* createwall,Checkai* result,float time){
+Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,Wall* createwall,Checkai* result,CModel* model,float time){
 	firstAction = false;
 	secondAction = false;
 	actionDelay = false;
@@ -9,6 +9,8 @@ Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,
 	zero.y = 0.0f;
 	zero.z = 0.0f;
 	monSpeed = 0.0f;
+	
+	aniMotionTime = 0.02f;
 
 	ActionStart = -1.0f;
 	mon = monster;
@@ -16,6 +18,7 @@ Monai::Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,
 	mov = moving;
 	wall = createwall;
 	checkResult = result;
+	aniModel = model;
 	doAction = false;
 	for(int i=0;i<10;i++){
 		msi[i] = missile[i];
@@ -83,6 +86,8 @@ void Monai::getMoveType(float time){
 			motionSpeed = 0.2f;
 			velocty = mon->getGoal() - mon->getPosition();
 			D3DXVec3Normalize(&velocty,&velocty);
+			aniModel->SetCurrentAnimation(9);
+			aniMotionTime = 0.01f;
 			break;
 		case 6:
 		case 7:
@@ -94,12 +99,16 @@ void Monai::getMoveType(float time){
 			motionSpeed = 0.5f;
 			velocty = mon->getGoal() - mon->getPosition();
 			D3DXVec3Normalize(&velocty,&velocty);
+			aniModel->SetCurrentAnimation(9);
+			aniMotionTime = 0.02f;
 			break;
 		case 11:
 		case 12:
 			mon->setmType(2);
 			velocty = D3DXVECTOR3(0,0,0);
 			ActionStart = time;
+			aniModel->SetCurrentAnimation(6);
+			aniMotionTime = 0.001f;
 			break;
 		case 13:
 		case 14:
@@ -110,6 +119,8 @@ void Monai::getMoveType(float time){
 			motionSpeedY = 10.0f;
 			velocty = mon->getGoal() - mon->getPosition();
 			D3DXVec3Normalize(&velocty,&velocty);
+			aniModel->SetCurrentAnimation(7);
+			aniMotionTime = 0.0001f;
 			break;
 		case 16:
 		case 17:
@@ -120,7 +131,12 @@ void Monai::getMoveType(float time){
 			motionSpeed = 0.5f;
 			velocty = mon->getGoal() - mon->getPosition();
 			D3DXVec3Normalize(&velocty,&velocty);
+			aniModel->SetCurrentAnimation(8);
+			aniMotionTime = 0.001f;			
 			break;
+		}
+		if(naton){
+			aniModel->SetCurrentAnimation(1);
 		}
 		velocty.y *= motionSpeedY;
 		mon->setVelocity(velocty*GAMESPEED*motionSpeed);
@@ -161,17 +177,27 @@ void Monai::stopMove(float time){
 	}
 }
 void Monai::defenceMode(float time){
+	aniModel->SetCurrentAnimation(5);
 	mon->monDefence(100);
+	aniMotionTime = 0.001f;
 }
 void Monai::laserMode(float time){}
-void Monai::normalAttMode(float time){}
+void Monai::normalAttMode(float time){
+	aniModel->SetCurrentAnimation(1);
+	aniMotionTime = 0.001f;
+	naton = true;
+}
 void Monai::healingMode(float time){
 	healEachDelay = time;
+	aniModel->SetCurrentAnimation(2);
+	aniMotionTime = 0.001f;
 }
 void Monai::missileMode(float time){
 	msionAll = true;
 	msionNext = true;
 	for(int i=0;i<10;i++){msi[i]->start();}
+	aniModel->SetCurrentAnimation(4);
+	aniMotionTime = 0.005f;
 }
 void Monai::wallMode(float time){
 	wallPos = rand()%2;
@@ -181,9 +207,13 @@ void Monai::wallMode(float time){
 	else{
 		wallPos = cha->getPosition().z;
 	}
+	aniModel->SetCurrentAnimation(3);
 	mov->setMonWall(true);
+	aniMotionTime = 0.001f;
 }
 void Monai::defenceModeStart(){
+	aniModel->SetCurrentAnimation(5);
+	aniMotionTime = 0.001f;
 }
 void Monai::missileModeStart(float time){
 	msionAll = false;
@@ -510,6 +540,13 @@ void Monai::setActionReset(){
 	if(actionNum == 5||nextActionNum == 5){
 		mov->returnWall();
 	}
+	msion = false;
+	defon = false;
+	wallon = false;
+	healon = false;
+	raseron = false;
+	rushon = false;
+	naton = false;
 	nextActionNum = 0;
 	typeCase = 0;
 }

@@ -10,8 +10,10 @@
 #include "Wall.h"
 #include "Pattern.h"
 #include "CheckAI.h"
+#include "CModel.h"
 class Monai{
 private:
+	float aniMotionTime;
 	int typeCase;
 	bool firstAction;
 	bool secondAction;
@@ -47,6 +49,7 @@ private:
 	Missile* msi[10];
 	Pattern* nowAction;
 	Pattern* nextAction;
+	CModel* aniModel;
 	float speed;
 	float monsize;
 	float monSpeed;
@@ -81,7 +84,7 @@ private:
 
 
 public:
-	Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,Wall* createwall,Checkai* result,float time);
+	Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,Wall* createwall,Checkai* result,CModel* model,float time);
 	~Monai();
 
 	void Pase0(float time);
@@ -131,5 +134,7 @@ public:
 	void getMoveType(float time);
 	inline void inhenceMove(int type);
 	void setActionReset();
+
+	inline float getMotionTime(){return aniMotionTime;};
 };
 #endif

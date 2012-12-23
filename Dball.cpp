@@ -46,6 +46,7 @@ DWORD VERTEX_FVF = ( D3DFVF_XYZ | D3DFVF_DIFFUSE );
 // Drow Animation
 //-----------------------------------------------------------------------------
 CModel*					g_pModel = NULL; // A model object to work with
+bool					checkModelAnimation = false;
 //-----------------------------------------------------------------------------
 // Draw Wall
 //-----------------------------------------------------------------------------
@@ -470,9 +471,9 @@ inline VOID DrawUi(){
 }
 
 
-inline void modelLeader(){
+inline void modelLeader(float time){
 	if(g_pModel){
-		g_pModel->Update(0.02f);
+		g_pModel->Update(time);
 		g_pModel->Draw();
 	}
 }
@@ -563,12 +564,20 @@ inline VOID Render(float time)
 		//-----------------------------------------------------------------------------
 		m_Ai->getPositionMon(time);
 		D3DXMatrixIdentity(&mBox);
-		D3DXMatrixScaling(&myScale,MON_SIZE,MON_SIZE,MON_SIZE);
 //		D3DXMatrixTranslation(&myTrans,100.0f,0,0);
+		D3DXMatrixScaling(&myScale,MON_SIZE,MON_SIZE,MON_SIZE);
 		D3DXMatrixTranslation(&myTrans,first_mon->getPosition().x,first_mon->getPosition().y,first_mon->getPosition().z);
 		mBox *= myScale;
 		if(m_Ai->getActionNum()==4){
 			D3DXMatrixRotationY(&myRotate,time*GAMESPEED*10);
+			mBox *= myRotate;
+		}else{
+			D3DXVECTOR3 monRotationX = D3DXVECTOR3(1,0,1);
+			D3DXVECTOR3	monRotationZ = D3DXVECTOR3(first_mon->getVelocity().x,0,first_mon->getVelocity().z);
+			D3DXVec3Normalize(&monRotationX,&monRotationX);
+			D3DXVec3Normalize(&monRotationZ,&monRotationZ);
+			float angle=acos(D3DXVec3Dot(&monRotationX,&monRotationZ))*180/D3DX_PI;
+			D3DXMatrixRotationY(&myRotate,angle);
 			mBox *= myRotate;
 		}
 		mBox *= myTrans;
@@ -583,8 +592,7 @@ inline VOID Render(float time)
 			D3DXMATRIXA16*	pmatView = g_pCamera->GetViewMatrix();		// 카메라 행렬을 얻는다.
 			g_pd3dDevice->SetTransform( D3DTS_VIEW, &mView);			// 카메라 행렬 셋팅
 		}
-		modelLeader();
-		
+		modelLeader(m_Ai->getMotionTime());
 
 		//-----------------------------------------------------------------------------
 		// Missile Setting
@@ -668,14 +676,13 @@ inline VOID afterInitD3D(){
 	drawXfile = new Xfile();
 	mapBox = new Xfile();
 	for(int i=0;i<ACTION_PATTERN_COUNT+1;i++){monDetail[i] = new Xfile();}
-//	BlackBox = new Xfile();
 	myCharacter = new Ball(( D3DXVECTOR3 )Pos,( D3DXVECTOR3 )Vel,( D3DXVECTOR3 )Vel);	
 	itemList = new ItemsList();
 	g_pModel = new CModel(g_pd3dDevice);
 	first_mon = new Monster((D3DXVECTOR3)MonPos,(D3DXVECTOR3)MonVel,(D3DXVECTOR3)MonVel);
 	mMoving = new Moving(myCharacter,first_mon,wWall);
 	cResult = new Checkai();
-	m_Ai = new Monai(first_mon,myCharacter,mMissile,mMoving,wWall,cResult, m_fStartTime);
+	m_Ai = new Monai(first_mon,myCharacter,mMissile,mMoving,wWall,cResult,g_pModel, m_fStartTime);
 	m_Ui = new Ui(g_pd3dDevice);
 }
 
@@ -761,7 +768,7 @@ inline HRESULT initLoad(){
 		return E_FAIL;
 	}
 	/*---------init monster.x---------*/
-	if(!SUCCEEDED(g_pModel->LoadXFile("boxmodel.X"))){
+	if(!SUCCEEDED(g_pModel->LoadXFile("boxmodel"))){
 		return E_FAIL;
 	}
 	return S_OK;

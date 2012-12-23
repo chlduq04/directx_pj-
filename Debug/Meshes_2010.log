@@ -1,71 +1,25 @@
-﻿빌드 시작: 2012-12-21 오후 3:49:12
+﻿빌드 시작: 2012-12-23 오후 1:02:56
      1>2 노드의 "C:\Users\ouchoi\Documents\Visual Studio 2010\Projects\DirectXSamples\Meshes\Meshes_2010.vcxproj" 프로젝트(build 대상)입니다.
      1>InitializeBuildStatus:
          "AlwaysCreate"이(가) 지정되었기 때문에 "Debug\Meshes.unsuccessfulbuild"을(를) 만들고 있습니다.
        ClCompile:
-         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IDXUT\Core /IDXUT\Optional /ZI /nologo /W4 /WX- /Od /Oi /Oy- /D WIN32 /D _DEBUG /D DEBUG /D PROFILE /D _WINDOWS /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Ball.cpp CheckAI.cpp Dball.cpp Missile.cpp Monai.cpp Monster.cpp Moving.cpp Pattern.cpp Ui.cpp Wall.cpp  
-         Ball.cpp
-         CheckAI.cpp
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\checkai.h(19): warning C4100: 'move' : 참조되지 않은 정식 매개 변수입니다.
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IDXUT\Core /IDXUT\Optional /ZI /nologo /W4 /WX- /Od /Oi /Oy- /D WIN32 /D _DEBUG /D DEBUG /D PROFILE /D _WINDOWS /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Dball.cpp  
          Dball.cpp
      1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\zcamera.h(21): warning C4324: 'ZCamera' : __declspec(align()) 때문에 구조체가 채워졌습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monster.h(92): warning C4552: '+' : 의미 없는 연산자입니다. 파생 작업이 있는 연산자여야 합니다.
      1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\checkai.h(19): warning C4100: 'move' : 참조되지 않은 정식 매개 변수입니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(260): warning C4244: '+=' : 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
      1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(261): warning C4244: '+=' : 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(372): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(372): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(372): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(420): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(464): warning C4244: '초기화 중' : 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(466): warning C4244: '인수' : 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(466): warning C4244: '인수' : 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(496): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(479): warning C4100: 'device' : 참조되지 않은 정식 매개 변수입니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(583): warning C4189: 'pmatView' : 지역 변수가 초기화되었으나 참조되지 않았습니다.
-         Missile.cpp
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monster.h(92): warning C4552: '+' : 의미 없는 연산자입니다. 파생 작업이 있는 연산자여야 합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(10): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(10): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(13): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(13): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(13): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(16): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(16): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\missile.cpp(18): warning C4100: 'time' : 참조되지 않은 정식 매개 변수입니다.
-         Monai.cpp
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monster.h(92): warning C4552: '+' : 의미 없는 연산자입니다. 파생 작업이 있는 연산자여야 합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\checkai.h(19): warning C4100: 'move' : 참조되지 않은 정식 매개 변수입니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(108): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(108): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(163): warning C4100: 'time' : 참조되지 않은 정식 매개 변수입니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(166): warning C4100: 'time' : 참조되지 않은 정식 매개 변수입니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(167): warning C4100: 'time' : 참조되지 않은 정식 매개 변수입니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(171): warning C4100: 'time' : 참조되지 않은 정식 매개 변수입니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(179): warning C4244: '=' : 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(182): warning C4244: '=' : 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(176): warning C4100: 'time' : 참조되지 않은 정식 매개 변수입니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(202): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monai.cpp(205): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-         Monster.cpp
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monster.h(92): warning C4552: '+' : 의미 없는 연산자입니다. 파생 작업이 있는 연산자여야 합니다.
-         Moving.cpp
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\monster.h(92): warning C4552: '+' : 의미 없는 연산자입니다. 파생 작업이 있는 연산자여야 합니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\moving.cpp(249): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\moving.cpp(249): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\moving.cpp(257): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\moving.cpp(260): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\moving.cpp(270): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\moving.cpp(270): warning C4244: '인수' : 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-         Pattern.cpp
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\pattern.cpp(145): warning C4100: 'time' : 참조되지 않은 정식 매개 변수입니다.
-         Ui.cpp
-         Wall.cpp
-         코드를 생성하고 있습니다...
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(388): warning C4701: 초기화되지 않았을 수 있는 'item' 지역 변수를 사용했습니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\ball.cpp(58): warning C4702: 접근할 수 없는 코드입니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\ball.cpp(86): warning C4702: 접근할 수 없는 코드입니다.
-     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\ball.cpp(115): warning C4702: 접근할 수 없는 코드입니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(262): warning C4244: '+=' : 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(373): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(373): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(373): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(421): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(465): warning C4244: '초기화 중' : 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(467): warning C4244: '인수' : 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(467): warning C4244: '인수' : 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(497): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(480): warning C4100: 'device' : 참조되지 않은 정식 매개 변수입니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(522): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(592): warning C4189: 'pmatView' : 지역 변수가 초기화되었으나 참조되지 않았습니다.
        ResourceCompile:
          모든 출력이 최신 상태입니다.
        ManifestResourceCompile:
@@ -103,4 +57,4 @@
 
 빌드했습니다.
 
-경과 시간: 00:00:10.85
+경과 시간: 00:00:04.19
