@@ -26,15 +26,15 @@ Monster::Monster(D3DXVECTOR3 position,D3DXVECTOR3 velocity,D3DXVECTOR3 goal){
 
 
 
-void Monster::monDefence(int def){
+void Monster::MonDefence(int def){
 	mDefence = def;
 }
-void Monster::monAttack(){
+void Monster::MonAttack(){
 	mAttack = 20;
 }
-void Monster::monMissile(){}
-void Monster::monJump(){}
-void Monster::monHealing(){
+void Monster::MonMissile(){}
+void Monster::MonJump(){}
+void Monster::MonHealing(){
 	if(mLife<maxLife){
 		mLife += 50;
 	}

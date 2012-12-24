@@ -2,21 +2,21 @@
 
 Ui::Ui(LPDIRECT3DDEVICE9 device){
 	d3dDevice = device;
-	win_width = WINDOW_WIDTH;
-	win_height = WINDOW_HEIGHT;
+	fWinWidth = WINDOW_WIDTH;
+	fWinHeight = WINDOW_HEIGHT;
 }
 
 
-HRESULT Ui::initBillboard(const char* image_name,LPDIRECT3DTEXTURE9* texture){
+HRESULT Ui::InitBillboard(const char* image_name,LPDIRECT3DTEXTURE9* texture){
 	D3DXCreateTextureFromFile( d3dDevice, image_name, texture );
 	return S_OK;
 }
-VOID Ui::setUI()
+VOID Ui::SetUI()
 {
 	D3DXMATRIX mat_Ortho;
 	D3DXMatrixIdentity(&mat_Ortho);
 	d3dDevice->SetTransform(D3DTS_VIEW, &mat_Ortho);	
-	D3DXMatrixOrthoLH (&mat_Ortho,win_width,win_height,0,10);
+	D3DXMatrixOrthoLH (&mat_Ortho,fWinWidth,fWinHeight,0,10);
 	d3dDevice->SetTransform(D3DTS_PROJECTION, &mat_Ortho);
 
 	d3dDevice->SetRenderState( D3DRS_ALPHABLENDENABLE,   TRUE );
@@ -28,7 +28,7 @@ VOID Ui::setUI()
 	d3dDevice->SetTexture( 1, NULL );
 	d3dDevice->SetFVF( MYVERTEX::FVF );
 }
-VOID Ui::setCenUI()
+VOID Ui::SetCenUI()
 {
 	D3DXMATRIX mat_Ortho;
 	D3DXMatrixIdentity(&mat_Ortho);
@@ -45,7 +45,7 @@ VOID Ui::setCenUI()
 	d3dDevice->SetTexture( 1, NULL );
 	d3dDevice->SetFVF( MYVERTEX::FVF );
 }
-VOID Ui::drawBillboard(LPDIRECT3DTEXTURE9 texture,D3DXMATRIX* matworld,float tranx, float trany, float tranz, MYVERTEX* vtx){
+VOID Ui::DrawBillboard(LPDIRECT3DTEXTURE9 texture,D3DXMATRIX* matworld,float tranx, float trany, float tranz, MYVERTEX* vtx){
 	
 	D3DXMatrixIdentity( matworld );
 	D3DXMATRIXA16	matbill_tran;

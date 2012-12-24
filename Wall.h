@@ -7,45 +7,45 @@ class Wall{
 private:
 	D3DXVECTOR3 vPosition;
 	D3DXVECTOR3 vVelocity;
-	float hp;
-	float type;
-	bool ground;
-	int bouncecount;
+	float fHp;
+	float fType;
+	bool bGround;
+	int nBouncecount;
 public:
 	Wall();
-	inline int getBcount(){return bouncecount;};
-	inline void setBcount(){bouncecount++;};
-	inline float getHp(){return hp;};
-	inline void setHp(float argu){hp = argu;};
-	inline float getType(){return type;};
-	inline void setType(float argu){type = argu;};
+	inline int GetBcount(){return nBouncecount;};
+	inline void SetBcount(){nBouncecount++;};
+	inline float GetHp(){return fHp;};
+	inline void SetHp(float argu){fHp = argu;};
+	inline float GetType(){return fType;};
+	inline void SetType(float argu){fType = argu;};
 
-	inline void setPosition(D3DXVECTOR3 argu){vPosition = argu;};
-	inline D3DXVECTOR3 getPosition(){return vPosition;};
-	inline void setVelocity(D3DXVECTOR3 argu){vVelocity = argu;};
-	inline D3DXVECTOR3 getVelocity(){return vVelocity;};
+	inline void SetPosition(D3DXVECTOR3 argu){vPosition = argu;};
+	inline D3DXVECTOR3 GetPosition(){return vPosition;};
+	inline void SetVelocity(D3DXVECTOR3 argu){vVelocity = argu;};
+	inline D3DXVECTOR3 GetVelocity(){return vVelocity;};
 
-	inline void setPositionX(float argu){vPosition.x = argu;};
-	inline void setPositionY(float argu){vPosition.y = argu;};
-	inline void setPositionZ(float argu){vPosition.z = argu;};
-	inline float getPositionX(){return vPosition.x;};
-	inline float getPositionY(){return vPosition.y;};
-	inline float getPositionZ(){return vPosition.z;};
-	inline void setVelocityX(float argu){vVelocity.x = argu;};
-	inline void setVelocityY(float argu){vVelocity.y = argu;};
-	inline void setVelocityZ(float argu){vVelocity.z = argu;};
-	inline float getVelocityX(){return vVelocity.x;};
-	inline float getVelocityY(){return vVelocity.y;};
-	inline float getVelocityZ(){return vVelocity.z;};
+	inline void SetPositionX(float argu){vPosition.x = argu;};
+	inline void SetPositionY(float argu){vPosition.y = argu;};
+	inline void SetPositionZ(float argu){vPosition.z = argu;};
+	inline float GetPositionX(){return vPosition.x;};
+	inline float GetPositionY(){return vPosition.y;};
+	inline float GetPositionZ(){return vPosition.z;};
+	inline void SetVelocityX(float argu){vVelocity.x = argu;};
+	inline void SetVelocityY(float argu){vVelocity.y = argu;};
+	inline void SetVelocityZ(float argu){vVelocity.z = argu;};
+	inline float GetVelocityX(){return vVelocity.x;};
+	inline float GetVelocityY(){return vVelocity.y;};
+	inline float GetVelocityZ(){return vVelocity.z;};
 	
-	inline bool isGround(){return ground;};
-	inline void isGround(bool argu){ground = argu;};
+	inline bool IsGround(){return bGround;};
+	inline void IsGround(bool argu){bGround = argu;};
 
-	inline void resetPosVel(){
+	inline void ResetPosVel(){
 		vPosition = D3DXVECTOR3(0,MAXBOUNDY,0);
 		vVelocity = D3DXVECTOR3(0,0,0);
-		ground = false;
-		bouncecount = 0;
+		bGround = false;
+		nBouncecount = 0;
 	};
 };
 #endif

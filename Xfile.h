@@ -6,10 +6,10 @@
 class Xfile
 {
 private:
-	LPD3DXEFFECT            gpTextureMappingShader;
-	LPDIRECT3DTEXTURE9		texDM;	
-	LPDIRECT3DTEXTURE9		texSM;
-	LPD3DXMESH				gpSphere;
+	LPD3DXEFFECT            pTextureMappingShader;
+	LPDIRECT3DTEXTURE9		pTexDM;	
+	LPDIRECT3DTEXTURE9		pTexSM;
+	LPD3DXMESH				pSphere;
 public:
 	~Xfile();
 	VOID SetMatrix(LPD3DXEFFECT xfile,D3DXHANDLE parameter,D3DXMATRIX *matrix);
@@ -19,7 +19,7 @@ public:
 	LPD3DXMESH LoadModel(LPDIRECT3DDEVICE9 g_pd3dDevice,const char * filename);
 	HRESULT InitballMesh(LPDIRECT3DDEVICE9 g_pd3dDevice,const char * texDM,const char * texSM,const char * shader,const char * model);
 	VOID DrawMyballShader(D3DXMATRIX world);
-	VOID set_viewprojtexture(D3DXMATRIX projection,D3DXVECTOR4 light);
-	VOID set_view(D3DXMATRIX view);
+	VOID SetViewprojtexture(D3DXMATRIX projection,D3DXVECTOR4 light);
+	VOID SetView(D3DXMATRIX view);
 };
 #endif

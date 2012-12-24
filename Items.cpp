@@ -1,41 +1,39 @@
 #include "Items.h"
-Items::Items(){
-	iprev = NULL;
-	inext = NULL;
-	itNum = NULL;
-	iprev = NULL;
-	inext = NULL;
-	mTime = 0;
-	hp = 0;
-	mp = 0;
-	defence = 0;
-	speed = 0;
-	ptPosition = D3DXVECTOR3(0,0,0);
 
+Items::Items(){
+	pPrev = NULL;
+	pNext = NULL;
+	nItemNum = NULL;
+	fTime = 0;
+	nHp = 0;
+	nMp = 0;
+	nDefence = 0;
+	nSpeed = 0;
+	vPosition = D3DXVECTOR3(0,0,0);
 }
 
-Items::Items(char* type,int level,D3DXVECTOR3 position,int static_item_number,float time){
-	itNum = static_item_number;
-	iprev = NULL;
-	inext = NULL;
-	mTime = time;
-	hp = 0;
-	mp = 0;
-	defence = 0;
-	speed = 0;
-	ptPosition = position;
+Items::Items(int type,int level,D3DXVECTOR3 position,int static_item_number,float time){
+	nItemNum = static_item_number;
+	pPrev = NULL;
+	pNext = NULL;
+	fTime = time;
+	nHp = 0;
+	nMp = 0;
+	nDefence = 0;
+	nSpeed = 0;
+	vPosition = position;
 
-	if(!strcmp(type,"hp")){
-		hp = level*50;
+	switch(type){
+	case 0:
+		nHp = level*50;
+		break;
+	case 1:
+		nMp = level*25;
+		break;
+	case 2:
+		nDefence = level*20;
+		break;
+	default:
+		break;
 	}
-	if(!strcmp(type,"mp")){
-		mp = level*25;
-	}
-	if(!strcmp(type,"def")){
-		defence = level*20;
-	}
-	if(!strcmp(type,"spd")){
-		speed = level*0.5;
-	}
-
 }

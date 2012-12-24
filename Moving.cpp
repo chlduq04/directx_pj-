@@ -1,283 +1,283 @@
 #include "Moving.h"
 
-Moving::Moving(Ball* myball,Monster* monster,Wall* wallset){
-	cha = myball;
-	mon = monster;
-	wall = wallset;
+Moving::Moving(Ball* myball,Monster* pMonster,Wall* pWallSet){
+	pCha = myball;
+	pMon = pMonster;
+	pWall = pWallSet;
 
-	bCount = 0;
-	bWallCount = 0;
-	isCrash = false;
+	nCount = 0;
+	nWallCount = 0;
+	bCrash = false;
 
-	maxboundx = MAXBOUNDX;
-	maxboundy = MAXBOUNDY;
-	maxboundz = MAXBOUNDZ;
-	minboundx = MINBOUNDX;
-	minboundy = MINBOUNDY;
-	minboundz = MINBOUNDZ;
+	fMaxboundx = MAXBOUNDX;
+	fMaxboundy = MAXBOUNDY;
+	fMaxboundz = MAXBOUNDZ;
+	fMinboundx = MINBOUNDX;
+	fMinboundy = MINBOUNDY;
+	fMinboundz = MINBOUNDZ;
 
-	monWall = false;
-	monMaxWallX = false;
-	monMaxWallY = false;
-	monMaxWallZ = false;
-	monMinWallX = false;
-	monMinWallY = false;
-	monMinWallZ = false;
-	wall_bounce = 0;
-	crashTime = 0;
-	ActionStart = -1.0f;
+	bMonWall = false;
+	bMonMaxWallX = false;
+	bMonMaxWallY = false;
+	bMonMaxWallZ = false;
+	bMonMinWallX = false;
+	bMonMinWallY = false;
+	bMonMinWallZ = false;
+	fWallBounce = 0;
+	fCrashTime = 0;
+	fActionStart = -1.0f;
 }
 
-void Moving::getItem(ItemsList* itList){
-	Items* nowNode = itList->getStart()->getNext(); 
-	if(nowNode!=itList->getEnd()){
-		while(nowNode->getNext()!=itList->getEnd()){
-			D3DXVECTOR3 vOneToTwo = cha->getPosition() - nowNode->getPosition();
+void Moving::GetItem(ItemsList* itList){
+	Items* nowNode = itList->GetStart()->GetNext(); 
+	if(nowNode!=itList->GetEnd()){
+		while(nowNode->GetNext()!=itList->GetEnd()){
+			D3DXVECTOR3 vOneToTwo = pCha->GetPosition() - nowNode->GetPosition();
 			float DistSq = D3DXVec3LengthSq( &vOneToTwo );
 			if( DistSq < (MYSIZE+ITEM_REAL_SIZE) * (MYSIZE+ITEM_REAL_SIZE) )
 			{
 				Items* deleteNode = nowNode;
-				cha->setLife(nowNode->getHp());
-				cha->setMana(nowNode->getMp());
-				cha->setDefence(nowNode->getDef());
-				nowNode = nowNode->getNext();
-				itList->delNode(deleteNode);
+				pCha->SetLife(nowNode->GetHp());
+				pCha->SetMana(nowNode->GetMp());
+				pCha->SetDefence(nowNode->GetDef());
+				nowNode = nowNode->GetNext();
+				itList->DelNode(deleteNode);
 			}else{
-				nowNode = nowNode->getNext();
+				nowNode = nowNode->GetNext();
 			}
 		}
 	}
 }
 
-void Moving::getPosition(float speed){
-	if( (GRAVITY+REVERSE_GRAVITY) * ( (cha->getPosition().y + GROUND - ( MYSIZE * 1.0f ) ) + 0.5f *
-		cha->getVelocity().y * cha->getVelocity().y< THRESHOLD) && cha->isGround()== false)
+void Moving::GetPosition(float speed){
+	if( (GRAVITY+REVERSE_GRAVITY) * ( (pCha->GetPosition().y + GROUND - ( MYSIZE * 1.0f ) ) + 0.5f *
+		pCha->GetVelocity().y * pCha->GetVelocity().y< THRESHOLD) && pCha->IsGround()== false)
 	{
-		bCount++;
+		nCount++;
 	}
 
-	if( (GRAVITY+REVERSE_GRAVITY) * ( (cha->getPosition().y + GROUND - ( MYSIZE * 1.0f ) ) + 0.5f *
-		cha->getVelocity().y * cha->getVelocity().y
-		< THRESHOLD) && bCount>5)
+	if( (GRAVITY+REVERSE_GRAVITY) * ( (pCha->GetPosition().y + GROUND - ( MYSIZE * 1.0f ) ) + 0.5f *
+		pCha->GetVelocity().y * pCha->GetVelocity().y
+		< THRESHOLD) && nCount>5)
 	{
-		cha->setPositionY(-GROUND +  MYSIZE * 0.5f );
-		cha->setVelocityY(0.0f);
-		cha->setGround(true);
-		bCount=0;
+		pCha->SetPositionY(-GROUND +  MYSIZE * 0.5f );
+		pCha->SetVelocityY(0.0f);
+		pCha->SetGround(true);
+		nCount=0;
 	}
 
-	if(	!mon->isbGround()){
-		mon->setPosition(mon->getPosition()+mon->getVelocity()*speed);
-		if(mon->getVelocity().y>0)
-			mon->setVelocityY(mon->getVelocity().y-(GRAVITY+REVERSE_GRAVITY)*BALLSPEED*speed);
+	if(	!pMon->IsbGround()){
+		pMon->SetPosition(pMon->GetPosition()+pMon->GetVelocity()*speed);
+		if(pMon->GetVelocity().y>0)
+			pMon->SetVelocityY(pMon->GetVelocity().y-(GRAVITY+REVERSE_GRAVITY)*BALLSPEED*speed);
 		else
-			mon->setVelocityY(mon->getVelocity().y-(GRAVITY*BALLSPEED*speed/10));
+			pMon->SetVelocityY(pMon->GetVelocity().y-(GRAVITY*BALLSPEED*speed/10));
 
-		if( mon->getPosition().y < -GROUND + ( MON_SIZE* 0.5f ) )
+		if( pMon->GetPosition().y < -GROUND + ( MON_SIZE* 0.5f ) )
 		{
-			mon->setPositionY(-GROUND + ( MON_SIZE * 0.5f ));
-			mon->setVelocityY(-mon->getVelocity().y* ( 1 - ABSORBANCE )*speed);
+			pMon->SetPositionY(-GROUND + ( MON_SIZE * 0.5f ));
+			pMon->SetVelocityY(-pMon->GetVelocity().y* ( 1 - ABSORBANCE )*speed);
 		}
 	}
-	if(mon->getPosition().x>MAXBOUNDX){
-		mon->setPositionX(MAXBOUNDX);
+	if(pMon->GetPosition().x>MAXBOUNDX){
+		pMon->SetPositionX(MAXBOUNDX);
 	}
-	if(mon->getPosition().x<MINBOUNDX){
-		mon->setPositionX(MINBOUNDX);
+	if(pMon->GetPosition().x<MINBOUNDX){
+		pMon->SetPositionX(MINBOUNDX);
 	}
-	if(mon->getPosition().z>MAXBOUNDZ){
-		mon->setPositionZ(MAXBOUNDZ);
+	if(pMon->GetPosition().z>MAXBOUNDZ){
+		pMon->SetPositionZ(MAXBOUNDZ);
 	}
-	if(mon->getPosition().z<MINBOUNDZ){
-		mon->setPositionZ(MINBOUNDZ);
+	if(pMon->GetPosition().z<MINBOUNDZ){
+		pMon->SetPositionZ(MINBOUNDZ);
 	}
-	if(mon->getPosition().y>MAXBOUNDY){
-		mon->setPositionY(MAXBOUNDY);
+	if(pMon->GetPosition().y>MAXBOUNDY){
+		pMon->SetPositionY(MAXBOUNDY);
 	}
-	if(mon->getPosition().y<MINBOUNDY){
-		mon->setPositionY(MINBOUNDY);
+	if(pMon->GetPosition().y<MINBOUNDY){
+		pMon->SetPositionY(MINBOUNDY);
 	}
 	
 
 
-	if( !cha->isGround() )
+	if( !pCha->IsGround() )
 	{
-		cha->setPosition(cha->getPosition()+cha->getVelocity()*BALLSPEED*speed);
-		if(cha->getVelocity().y>0)
-			cha->setVelocityY(cha->getVelocity().y-(GRAVITY+REVERSE_GRAVITY)*BALLSPEED*speed);
+		pCha->SetPosition(pCha->GetPosition()+pCha->GetVelocity()*BALLSPEED*speed);
+		if(pCha->GetVelocity().y>0)
+			pCha->SetVelocityY(pCha->GetVelocity().y-(GRAVITY+REVERSE_GRAVITY)*BALLSPEED*speed);
 		else
-			cha->setVelocityY(cha->getVelocity().y-(GRAVITY*BALLSPEED*speed));
+			pCha->SetVelocityY(pCha->GetVelocity().y-(GRAVITY*BALLSPEED*speed));
 
-		if( cha->getPosition().y < -GROUND + ( MYSIZE * 0.5f ) )
+		if( pCha->GetPosition().y < -GROUND + ( MYSIZE * 0.5f ) )
 		{
-			cha->setPositionY(-GROUND + ( MYSIZE * 0.5f ));
-			cha->setVelocityY(-cha->getVelocity().y* ( 1 - ABSORBANCE )*speed);
-			cha->setVelocityX(cha->getVelocity().x*0.5f*speed);
-			cha->setVelocityZ(cha->getVelocity().z*0.5f*speed);
+			pCha->SetPositionY(-GROUND + ( MYSIZE * 0.5f ));
+			pCha->SetVelocityY(-pCha->GetVelocity().y* ( 1 - ABSORBANCE )*speed);
+			pCha->SetVelocityX(pCha->GetVelocity().x*0.5f*speed);
+			pCha->SetVelocityZ(pCha->GetVelocity().z*0.5f*speed);
 		}
 	}
 	else
 	{
-		cha->setVelocityX(cha->getVelocity().x*0.5f*speed);
-		cha->setVelocityZ(cha->getVelocity().z*0.5f*speed);
+		pCha->SetVelocityX(pCha->GetVelocity().x*0.5f*speed);
+		pCha->SetVelocityZ(pCha->GetVelocity().z*0.5f*speed);
 	}
 
 
-	if( cha->getPosition().y > CEILING - ( MYSIZE * 0.5f ) )
+	if( pCha->GetPosition().y > CEILING - ( MYSIZE * 0.5f ) )
 	{
-		cha->setPositionY(CEILING - ( MYSIZE * 0.5f ));
-		cha->setVelocityY(-cha->getVelocity().y * ( 1 - ABSORBANCE )*speed);
-		cha->setVelocityX(cha->getVelocity().x*0.5f*speed);
-		cha->setVelocityZ(cha->getVelocity().z*0.5f*speed);
+		pCha->SetPositionY(CEILING - ( MYSIZE * 0.5f ));
+		pCha->SetVelocityY(-pCha->GetVelocity().y * ( 1 - ABSORBANCE )*speed);
+		pCha->SetVelocityX(pCha->GetVelocity().x*0.5f*speed);
+		pCha->SetVelocityZ(pCha->GetVelocity().z*0.5f*speed);
 	}
-	if( cha->getPosition().z < minboundz + ( MYSIZE * 0.5f ) )
+	if( pCha->GetPosition().z < fMinboundz + ( MYSIZE * 0.5f ) )
 	{
-		cha->setPositionZ(minboundz + ( MYSIZE * 0.5f ));
-		cha->setVelocityZ(-(cha->getVelocity().z) * ( 1 - ABSORBANCE )*speed);
+		pCha->SetPositionZ(fMinboundz + ( MYSIZE * 0.5f ));
+		pCha->SetVelocityZ(-(pCha->GetVelocity().z) * ( 1 - ABSORBANCE )*speed);
 	}
-	if( cha->getPosition().x < minboundx + ( MYSIZE * 0.5f ) )
+	if( pCha->GetPosition().x < fMinboundx + ( MYSIZE * 0.5f ) )
 	{
-		cha->setPositionX(minboundx + ( MYSIZE * 0.5f ));
-		cha->setVelocityX(-(cha->getVelocity().x) * ( 1 - ABSORBANCE )*speed);
+		pCha->SetPositionX(fMinboundx + ( MYSIZE * 0.5f ));
+		pCha->SetVelocityX(-(pCha->GetVelocity().x) * ( 1 - ABSORBANCE )*speed);
 	}
-	if( cha->getPosition().z > maxboundz - ( MYSIZE * 0.5f ) )
+	if( pCha->GetPosition().z > fMaxboundz - ( MYSIZE * 0.5f ) )
 	{
-		cha->setPositionZ(maxboundz - ( MYSIZE * 0.5f ));
-		cha->setVelocityZ(-(cha->getVelocity().z) * ( 1 - ABSORBANCE )*speed);
+		pCha->SetPositionZ(fMaxboundz - ( MYSIZE * 0.5f ));
+		pCha->SetVelocityZ(-(pCha->GetVelocity().z) * ( 1 - ABSORBANCE )*speed);
 	}
-	if( cha->getPosition().x > maxboundx - ( MYSIZE * 0.5f ) )
+	if( pCha->GetPosition().x > fMaxboundx - ( MYSIZE * 0.5f ) )
 	{
-		cha->setPositionX(maxboundx - ( MYSIZE * 0.5f ));
-		cha->setVelocityX(-(cha->getVelocity().x) * ( 1 - ABSORBANCE )*speed);
+		pCha->SetPositionX(fMaxboundx - ( MYSIZE * 0.5f ));
+		pCha->SetVelocityX(-(pCha->GetVelocity().x) * ( 1 - ABSORBANCE )*speed);
 	}
 
 }
 
-void Moving::getPositionWall(D3DXVECTOR3 pos,float speed){
-	monWall = true;
+void Moving::GetPositionWall(D3DXVECTOR3 pos,float speed){
+	bMonWall = true;
 	if(pos.x!=0){
-		if(cha->getPosition().x>pos.x){
-			monMinWallX = true;
-			minboundx = pos.x;
+		if(pCha->GetPosition().x>pos.x){
+			bMonMinWallX = true;
+			fMinboundx = pos.x;
 		}
 		else{
-			monMaxWallX = true;
-			maxboundx = pos.x;
+			bMonMaxWallX = true;
+			fMaxboundx = pos.x;
 		}
 	}
 	else if(pos.y!=0){
-		if(cha->getPosition().y>pos.y){
-			monMinWallY = true;
-			minboundy = pos.y;
+		if(pCha->GetPosition().y>pos.y){
+			bMonMinWallY = true;
+			fMinboundy = pos.y;
 		}
 		else{
-			monMaxWallY = true;
-			maxboundy = pos.y;
+			bMonMaxWallY = true;
+			fMaxboundy = pos.y;
 		}
 	}
 	else if(pos.z!=0){
-		if(cha->getPosition().z>pos.z){
-			monMinWallZ = true;
-			minboundz = pos.z;
+		if(pCha->GetPosition().z>pos.z){
+			bMonMinWallZ = true;
+			fMinboundz = pos.z;
 		}
 		else{
-			monMaxWallZ = true;
-			maxboundz = pos.z;
+			bMonMaxWallZ = true;
+			fMaxboundz = pos.z;
 		}
 	}
 
-	if( !wall->isGround() )
+	if( !pWall->IsGround() )
 	{
-		wall->setPosition(wall->getPosition()+wall->getVelocity()*BALLSPEED*speed);
-		if(wall->getVelocity().y>0)
-			wall->setVelocityY(wall->getVelocity().y-(GRAVITY+REVERSE_GRAVITY)*BALLSPEED*speed*15.0f);
+		pWall->SetPosition(pWall->GetPosition()+pWall->GetVelocity()*BALLSPEED*speed);
+		if(pWall->GetVelocity().y>0)
+			pWall->SetVelocityY(pWall->GetVelocity().y-(GRAVITY+REVERSE_GRAVITY)*BALLSPEED*speed*15.0f);
 		else
-			wall->setVelocityY(wall->getVelocity().y-(GRAVITY*BALLSPEED*speed)*5.0f);
+			pWall->SetVelocityY(pWall->GetVelocity().y-(GRAVITY*BALLSPEED*speed)*5.0f);
 
-		if( wall->getPosition().y < -GROUND)
+		if( pWall->GetPosition().y < -GROUND)
 		{
-			if(wall->getBcount()>7){
-				wall->isGround(true);
+			if(pWall->GetBcount()>7){
+				pWall->IsGround(true);
 			}else{
-				wall->setPositionY(-GROUND );
-				wall->setVelocityY(-wall->getVelocity().y* ( 1 - ABSORBANCE*20 )*speed);
-				wall->setBcount();
+				pWall->SetPositionY(-GROUND );
+				pWall->SetVelocityY(-pWall->GetVelocity().y* ( 1 - ABSORBANCE*20 )*speed);
+				pWall->SetBcount();
 			}
 
 		}
 	}
 }
-void Moving::returnWall(){
-	monWall = false;
-	if(monMaxWallX){
-		monMaxWallX = false; 
-		maxboundx = MAXBOUNDX;
-	}else if(monMinWallX){
-		monMinWallX = false; 
-		minboundx = MINBOUNDX;
-	}else if(monMaxWallY){
-		monMaxWallY = false; 
-		maxboundy = MAXBOUNDY;
-	}else if(monMinWallY){
-		monMinWallY = false; 
-		minboundy = MINBOUNDY;
-	}else if(monMaxWallZ){
-		monMaxWallZ = false; 
-		maxboundz = MAXBOUNDZ;
-	}else if(monMinWallZ){
-		monMinWallZ = false; 
-		minboundz = MINBOUNDZ;
+void Moving::ReturnWall(){
+	bMonWall = false;
+	if(bMonMaxWallX){
+		bMonMaxWallX = false; 
+		fMaxboundx = MAXBOUNDX;
+	}else if(bMonMinWallX){
+		bMonMinWallX = false; 
+		fMinboundx = MINBOUNDX;
+	}else if(bMonMaxWallY){
+		bMonMaxWallY = false; 
+		fMaxboundy = MAXBOUNDY;
+	}else if(bMonMinWallY){
+		bMonMinWallY = false; 
+		fMinboundy = MINBOUNDY;
+	}else if(bMonMaxWallZ){
+		bMonMaxWallZ = false; 
+		fMaxboundz = MAXBOUNDZ;
+	}else if(bMonMinWallZ){
+		bMonMinWallZ = false; 
+		fMinboundz = MINBOUNDZ;
 	}
-	wall->resetPosVel();
+	pWall->ResetPosVel();
 }
-void Moving::crashMon(float time){
-	if((time - crashTime > 2.0f)&&(isCrash == true)){
-		mon->setisGoal(false);
-		mon->setOriginType(0);
-		isCrash = false;
+void Moving::CrashMon(float time){
+	if((time - fCrashTime > 2.0f)&&(bCrash == true)){
+		pMon->SetisGoal(false);
+		pMon->SetOriginType(0);
+		bCrash = false;
 	}
-	if(mon->isAlive()==true)//is alive?
+	if(pMon->IsAlive()==true)//is alive?
 	{
-		D3DXVECTOR3 monRealPosition = mon->getPosition();
-		monRealPosition.y += MON_REAL_SIZE/2;
-		D3DXVECTOR3 vOneToTwo = cha->getPosition() - monRealPosition;
+		D3DXVECTOR3 pMonRealPosition = pMon->GetPosition();
+		pMonRealPosition.y += MON_REAL_SIZE/2;
+		D3DXVECTOR3 vOneToTwo = pCha->GetPosition() - pMonRealPosition;
 		float DistSq = D3DXVec3LengthSq( &vOneToTwo );
 
 		if( DistSq < (MON_REAL_SIZE+MYSIZE) * (MON_REAL_SIZE+MYSIZE) )
 		{
 			D3DXVec3Normalize( &vOneToTwo, &vOneToTwo );
-			float fImpact = D3DXVec3Dot( &vOneToTwo, &mon->getVelocity() ) - D3DXVec3Dot( &vOneToTwo, &cha->getVelocity());	
+			float fImpact = D3DXVec3Dot( &vOneToTwo, &pMon->GetVelocity() ) - D3DXVec3Dot( &vOneToTwo, &pCha->GetVelocity());	
 
 			if( fImpact > 0.0f )
 			{
-				isCrash = true;
+				bCrash = true;
 
-				crashTime = time;
+				fCrashTime = time;
 
-				D3DXVECTOR3 vVelocityOneN = ( 1 - BOUNCE_LOST ) * D3DXVec3Dot( &vOneToTwo, &mon->getVelocity() ) * vOneToTwo;
-				D3DXVECTOR3 vVelocityOneT = ( 1 - BOUNCE_LOST ) * mon->getVelocity() - vVelocityOneN;
+				D3DXVECTOR3 vVelocityOneN = ( 1 - BOUNCE_LOST ) * D3DXVec3Dot( &vOneToTwo, &pMon->GetVelocity() ) * vOneToTwo;
+				D3DXVECTOR3 vVelocityOneT = ( 1 - BOUNCE_LOST ) * pMon->GetVelocity() - vVelocityOneN;
 
-				D3DXVECTOR3 vVelocityTwoN = ( 1 - BOUNCE_LOST ) * D3DXVec3Dot( &vOneToTwo, &cha->getVelocity()) * vOneToTwo;
-				D3DXVECTOR3 vVelocityTwoT = ( 1 - BOUNCE_LOST ) * cha->getVelocity() - vVelocityTwoN;
+				D3DXVECTOR3 vVelocityTwoN = ( 1 - BOUNCE_LOST ) * D3DXVec3Dot( &vOneToTwo, &pCha->GetVelocity()) * vOneToTwo;
+				D3DXVECTOR3 vVelocityTwoT = ( 1 - BOUNCE_LOST ) * pCha->GetVelocity() - vVelocityTwoN;
 
-				mon->setVelocity(vVelocityOneT - vVelocityOneN * ( 1 - BOUNCE_TRANSFER ) + vVelocityTwoN * BOUNCE_TRANSFER);
-				cha->setVelocity(vVelocityTwoT - vVelocityTwoN * ( 1 - BOUNCE_TRANSFER ) + vVelocityOneN * BOUNCE_TRANSFER);
+				pMon->SetVelocity(vVelocityOneT - vVelocityOneN * ( 1 - BOUNCE_TRANSFER ) + vVelocityTwoN * BOUNCE_TRANSFER);
+				pCha->SetVelocity(vVelocityTwoT - vVelocityTwoN * ( 1 - BOUNCE_TRANSFER ) + vVelocityOneN * BOUNCE_TRANSFER);
 
 				float fDistanceToMove = ( MON_REAL_SIZE - sqrtf( DistSq ) ) * 0.5f;
-				mon->setPosition(mon->getPosition()-vOneToTwo * fDistanceToMove);
-				cha->setPosition(cha->getPosition()+vOneToTwo * fDistanceToMove);	
+				pMon->SetPosition(pMon->GetPosition()-vOneToTwo * fDistanceToMove);
+				pCha->SetPosition(pCha->GetPosition()+vOneToTwo * fDistanceToMove);	
 				
-				mon->setLife(-abs((int)D3DXVec3Length(&cha->getVelocity())));
+				pMon->SetLife(-abs((int)D3DXVec3Length(&pCha->GetVelocity())));
 			}
 		}
 	}
 }
-void Moving::crashMissile(Missile* msi){
-	if(msi->getType()!= 4){
-		D3DXVECTOR3 vOneToTwo = cha->getPosition() - msi->getPosition();
+void Moving::CrashMissile(Missile* msi){
+	if(msi->GetType()!= 4){
+		D3DXVECTOR3 vOneToTwo = pCha->GetPosition() - msi->GetPosition();
 		float DistSq = D3DXVec3LengthSq( &vOneToTwo );
 		if( DistSq < (MON_REAL_SIZE+MYSIZE) * (MON_REAL_SIZE+MYSIZE) ){
-			cha->setLife(msi->getDemage());
+			pCha->SetLife(msi->GetDemage());
 		}
 	}
 }

@@ -1,14 +1,14 @@
 #include "Xfile.h"
 
 Xfile::~Xfile(){
-	if( gpTextureMappingShader != NULL )
-		gpTextureMappingShader->Release();
-	if( texDM != NULL )
-		texDM->Release();
-	if( texSM != NULL )
-		texSM->Release();
-	if( gpSphere != NULL )
-		gpSphere->Release();
+	if( pTextureMappingShader != NULL )
+		pTextureMappingShader->Release();
+	if( pTexDM != NULL )
+		pTexDM->Release();
+	if( pTexSM != NULL )
+		pTexSM->Release();
+	if( pSphere != NULL )
+		pSphere->Release();
 }
 LPDIRECT3DTEXTURE9 Xfile::LoadTexture(LPDIRECT3DDEVICE9 g_pd3dDevice,const char * filename)
 {
@@ -102,28 +102,28 @@ ret: 로딩해온 메쉬를 저장할 포인터
 HRESULT Xfile::InitballMesh(LPDIRECT3DDEVICE9 g_pd3dDevice,const char * texD,const char * texS,const char * shader,const char * model)
 {
 	// 텍스처 로딩
-	texDM = Xfile::LoadTexture(g_pd3dDevice,texD);
-	if (!texDM)
+	pTexDM = Xfile::LoadTexture(g_pd3dDevice,texD);
+	if (!pTexDM)
 	{
 		return E_FAIL;
 	}
 
-	texSM = Xfile::LoadTexture(g_pd3dDevice,texS);
-	if (!texSM)	
+	pTexSM = Xfile::LoadTexture(g_pd3dDevice,texS);
+	if (!pTexSM)	
 	{
 		return E_FAIL;
 	}
 
 	// 쉐이더 로딩
-	gpTextureMappingShader = Xfile::LoadShader(g_pd3dDevice,shader);
-	if (!gpTextureMappingShader)
+	pTextureMappingShader = Xfile::LoadShader(g_pd3dDevice,shader);
+	if (!pTextureMappingShader)
 	{
 		return E_FAIL;
 	}
 
 	// 모델 로딩
-	gpSphere = Xfile::LoadModel(g_pd3dDevice,model);
-	if (!gpSphere)
+	pSphere = Xfile::LoadModel(g_pd3dDevice,model);
+	if (!pSphere)
 	{
 		return E_FAIL;
 	}
@@ -132,33 +132,33 @@ HRESULT Xfile::InitballMesh(LPDIRECT3DDEVICE9 g_pd3dDevice,const char * texD,con
 }
 
 
-VOID Xfile::set_viewprojtexture(D3DXMATRIX projection,D3DXVECTOR4 light)
+VOID Xfile::SetViewprojtexture(D3DXMATRIX projection,D3DXVECTOR4 light)
 {
 	
-	Xfile::SetMatrix(gpTextureMappingShader,"gProjectionMatrix",  &projection);
-	Xfile::gpTextureMappingShader->SetVector("gLightColor", &light);
-	Xfile::gpTextureMappingShader->SetTexture("DiffuseMap_Tex", texDM);
-	Xfile::gpTextureMappingShader->SetTexture("SpecularMap_Tex", texSM);
+	Xfile::SetMatrix(pTextureMappingShader,"gProjectionMatrix",  &projection);
+	Xfile::pTextureMappingShader->SetVector("gLightColor", &light);
+	Xfile::pTextureMappingShader->SetTexture("DiffuseMap_Tex", pTexDM);
+	Xfile::pTextureMappingShader->SetTexture("SpecularMap_Tex", pTexSM);
 }
-VOID Xfile::set_view(D3DXMATRIX view)
+VOID Xfile::SetView(D3DXMATRIX view)
 {
-	Xfile::SetMatrix(gpTextureMappingShader,"gViewMatrix",  &view);
+	Xfile::SetMatrix(pTextureMappingShader,"gViewMatrix",  &view);
 }
 
 VOID Xfile::DrawMyballShader(D3DXMATRIX world)
 {
-	Xfile::SetMatrix(gpTextureMappingShader,"gWorldMatrix",&world);
+	Xfile::SetMatrix(pTextureMappingShader,"gWorldMatrix",&world);
 	UINT numPasses = 0;
-	Xfile::gpTextureMappingShader->Begin(&numPasses, NULL);
+	Xfile::pTextureMappingShader->Begin(&numPasses, NULL);
 
 	for (UINT i = 0; i < numPasses; ++i )
 	{
-		Xfile::gpTextureMappingShader->BeginPass(i);
+		Xfile::pTextureMappingShader->BeginPass(i);
 		{
-			Xfile::gpSphere->DrawSubset(0);
+			Xfile::pSphere->DrawSubset(0);
 		}
-		Xfile::gpTextureMappingShader->EndPass();
+		Xfile::pTextureMappingShader->EndPass();
 	}
 
-	Xfile::gpTextureMappingShader->End();
+	Xfile::pTextureMappingShader->End();
 }

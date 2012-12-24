@@ -377,7 +377,6 @@
     <ClCompile Include="CheckAI.cpp" />
     <ClCompile Include="CModel.cpp" />
     <ClCompile Include="Dball.cpp" />
-    <ClCompile Include="DirectInput.cpp" />
     <ClCompile Include="Items.cpp" />
     <ClCompile Include="ItemsList.cpp" />
     <ClCompile Include="Missile.cpp" />
@@ -399,7 +398,6 @@
     <ClInclude Include="CheckAI.h" />
     <ClInclude Include="CModel.h" />
     <ClInclude Include="DerivedStructs.h" />
-    <ClInclude Include="DirectInput.h" />
     <ClInclude Include="Items.h" />
     <ClInclude Include="ItemsList.h" />
     <ClInclude Include="Macros.h" />

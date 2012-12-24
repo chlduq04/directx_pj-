@@ -1,118 +1,118 @@
 #include "Pattern.h"
 Pattern::Pattern(){
-	nextPatternCount = 0;
-	nextPat = NULL;
-	prevPat= NULL;
-	actionType = rand()%ACTION_PATTERN_COUNT;
-	switch(actionType){
+	nNextPatternCount = 0;
+	pNextPat = NULL;
+	pPrevPat= NULL;
+	nActionType = rand()%ACTION_PATTERN_COUNT;
+	switch(nActionType){
 	case 0:
-		startDelay = MSI_START_DELAY;
-		endDelay = MSI_END_DELAY;
-		motionDelay = MSI_MOTION_DELAY;
+		fStartDelay = MSI_START_DELAY;
+		fEndDelay = MSI_END_DELAY;
+		fMotionDelay = MSI_MOTION_DELAY;
 		break;
 	case 1:
-		startDelay = HEAL_START_DELAY;
-		endDelay = HEAL_END_DELAY;
-		motionDelay = HEAL_MOTION_DELAY;
+		fStartDelay = HEAL_START_DELAY;
+		fEndDelay = HEAL_END_DELAY;
+		fMotionDelay = HEAL_MOTION_DELAY;
 		break;
 	case 2:
-		startDelay = DEF_START_DELAY;
-		endDelay = DEF_END_DELAY;
-		motionDelay = DEF_MOTION_DELAY;
+		fStartDelay = DEF_START_DELAY;
+		fEndDelay = DEF_END_DELAY;
+		fMotionDelay = DEF_MOTION_DELAY;
 		break;
 	case 3:
-		startDelay = LASER_START_DELAY;
-		endDelay = LASER_END_DELAY;
-		motionDelay = LASER_MOTION_DELAY;
+		fStartDelay = LASER_START_DELAY;
+		fEndDelay = LASER_END_DELAY;
+		fMotionDelay = LASER_MOTION_DELAY;
 		break;
 	case 4:
-		startDelay = NATT_START_DELAY;
-		endDelay = NATT_END_DELAY;
-		motionDelay = NATT_MOTION_DELAY;
+		fStartDelay = NATT_START_DELAY;
+		fEndDelay = NATT_END_DELAY;
+		fMotionDelay = NATT_MOTION_DELAY;
 		break;
 	case 5:
-		startDelay = WALL_START_DELAY;
-		endDelay = WALL_END_DELAY;
-		motionDelay = WALL_MOTION_DELAY;
+		fStartDelay = WALL_START_DELAY;
+		fEndDelay = WALL_END_DELAY;
+		fMotionDelay = WALL_MOTION_DELAY;
 		break;
 	default:
 		break;
 	}
 }
 Pattern::Pattern(int type){
-	nextPatternCount = 0;
-	nextPat = NULL;
-	prevPat = NULL;
-	actionType = type;
-	switch(actionType){
+	nNextPatternCount = 0;
+	pNextPat = NULL;
+	pPrevPat = NULL;
+	nActionType = type;
+	switch(nActionType){
 	case 0:
-		startDelay = MSI_START_DELAY;
-		endDelay = MSI_END_DELAY;
-		motionDelay = MSI_MOTION_DELAY;
+		fStartDelay = MSI_START_DELAY;
+		fEndDelay = MSI_END_DELAY;
+		fMotionDelay = MSI_MOTION_DELAY;
 		break;
 	case 1:
-		startDelay = HEAL_START_DELAY;
-		endDelay = HEAL_END_DELAY;
-		motionDelay = HEAL_MOTION_DELAY;
+		fStartDelay = HEAL_START_DELAY;
+		fEndDelay = HEAL_END_DELAY;
+		fMotionDelay = HEAL_MOTION_DELAY;
 		break;
 	case 2:
-		startDelay = DEF_START_DELAY;
-		endDelay = DEF_END_DELAY;
-		motionDelay = DEF_MOTION_DELAY;
+		fStartDelay = DEF_START_DELAY;
+		fEndDelay = DEF_END_DELAY;
+		fMotionDelay = DEF_MOTION_DELAY;
 		break;
 	case 3:
-		startDelay = LASER_START_DELAY;
-		endDelay = LASER_END_DELAY;
-		motionDelay = LASER_MOTION_DELAY;
+		fStartDelay = LASER_START_DELAY;
+		fEndDelay = LASER_END_DELAY;
+		fMotionDelay = LASER_MOTION_DELAY;
 		break;
 	case 4:
-		startDelay = NATT_START_DELAY;
-		endDelay = NATT_END_DELAY;
-		motionDelay = NATT_MOTION_DELAY;
+		fStartDelay = NATT_START_DELAY;
+		fEndDelay = NATT_END_DELAY;
+		fMotionDelay = NATT_MOTION_DELAY;
 		break;
 	case 5:
-		startDelay = WALL_START_DELAY;
-		endDelay = WALL_END_DELAY;
-		motionDelay = WALL_MOTION_DELAY;
+		fStartDelay = WALL_START_DELAY;
+		fEndDelay = WALL_END_DELAY;
+		fMotionDelay = WALL_MOTION_DELAY;
 		break;
 	default:
 		break;
 	}
 }
 Pattern::Pattern(int type, Pattern* nextpat1){
-	nextPatternCount = 1;
-	actionType = type;
-	nextPat = nextpat1;
-	switch(actionType){
+	nNextPatternCount = 1;
+	nActionType = type;
+	pNextPat = nextpat1;
+	switch(nActionType){
 	case 0:
-		startDelay = MSI_START_DELAY;
-		endDelay = MSI_END_DELAY;
-		motionDelay = MSI_MOTION_DELAY;
+		fStartDelay = MSI_START_DELAY;
+		fEndDelay = MSI_END_DELAY;
+		fMotionDelay = MSI_MOTION_DELAY;
 		break;
 	case 1:
-		startDelay = HEAL_START_DELAY;
-		endDelay = HEAL_END_DELAY;
-		motionDelay = HEAL_MOTION_DELAY;
+		fStartDelay = HEAL_START_DELAY;
+		fEndDelay = HEAL_END_DELAY;
+		fMotionDelay = HEAL_MOTION_DELAY;
 		break;
 	case 2:
-		startDelay = DEF_START_DELAY;
-		endDelay = DEF_END_DELAY;
-		motionDelay = DEF_MOTION_DELAY;
+		fStartDelay = DEF_START_DELAY;
+		fEndDelay = DEF_END_DELAY;
+		fMotionDelay = DEF_MOTION_DELAY;
 		break;
 	case 3:
-		startDelay = LASER_START_DELAY;
-		endDelay = LASER_END_DELAY;
-		motionDelay = LASER_MOTION_DELAY;
+		fStartDelay = LASER_START_DELAY;
+		fEndDelay = LASER_END_DELAY;
+		fMotionDelay = LASER_MOTION_DELAY;
 		break;
 	case 4:
-		startDelay = NATT_START_DELAY;
-		endDelay = NATT_END_DELAY;
-		motionDelay = NATT_MOTION_DELAY;
+		fStartDelay = NATT_START_DELAY;
+		fEndDelay = NATT_END_DELAY;
+		fMotionDelay = NATT_MOTION_DELAY;
 		break;
 	case 5:
-		startDelay = WALL_START_DELAY;
-		endDelay = WALL_END_DELAY;
-		motionDelay = WALL_MOTION_DELAY;
+		fStartDelay = WALL_START_DELAY;
+		fEndDelay = WALL_END_DELAY;
+		fMotionDelay = WALL_MOTION_DELAY;
 		break;
 	default:
 		break;
@@ -121,26 +121,24 @@ Pattern::Pattern(int type, Pattern* nextpat1){
 }
 
 Pattern::~Pattern(){
-	if(nextPatternCount==1){
-		delete nextPat;
+	if(nNextPatternCount==1){
+		delete pNextPat;
 	}
 }
-bool Pattern::canPlay(float time){
-	if((start)&&(endTime+endDelay<time)){return true;}
+bool Pattern::CanPlay(float time){
+	if((bStart)&&(fEndTime+fEndDelay<time)){return true;}
 	return false;
 }
-bool Pattern::isPlay(float time){
-	if(time - startTime < startDelay){
+bool Pattern::IsPlay(float time){
+	if(time - fStartTime < fStartDelay){
 		return true;}
 	else{return false;}
 }
 
-Pattern* Pattern::getNextPat(){
-	if(nextPatternCount == 1){
-		return nextPat;
+Pattern* Pattern::GetNextPat(){
+	if(nNextPatternCount == 1){
+		return pNextPat;
 	}return NULL;
 	
 }
 
-void Pattern::playAction(float time){
-}

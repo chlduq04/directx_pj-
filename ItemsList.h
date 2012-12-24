@@ -7,23 +7,25 @@
 
 class ItemsList{
 private:
-	int count;
-	Items* nowNode;
-	Items* istart;
-	Items* iend;
-	Items* listPrev;
-	Items* listNext;
+	int nCount;
+	Items* pNowNode;
+
+	Items* pStart;
+	Items* pEnd;
+	
+	Items* pListPrev;
+	Items* pListNext;
 public:
 	ItemsList();
 	~ItemsList();
-	void setNode(Items* argu);
-	void delNode(Items* node);
-	Items* searchNode();
+	void SetNode(Items* argu);
+	void DelNode(Items* node);
+	Items* SearchNode();
 
-	inline Items* returnNode(){return nowNode;};
-	inline int getCount(){return count;};
-	inline Items* getStart(){return istart;};
-	inline Items* getEnd(){return iend;};
+	inline Items* ReturnNode(){return pNowNode;};
+	inline int GetCount(){return nCount;};
+	inline Items* GetStart(){return pStart;};
+	inline Items* GetEnd(){return pEnd;};
 
 };
 #endif

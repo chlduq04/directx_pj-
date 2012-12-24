@@ -12,58 +12,58 @@
 #include "Wall.h"
 class Moving{
 private:
-	D3DXVECTOR3 pos;
-	D3DXVECTOR3 vel;
-	D3DXVECTOR3 goal;
-	int bCount;
-	int bWallCount;
-	float crashTime;
-	bool isCrash;
-	float wall_bounce;
-	float ActionStart;
+	D3DXVECTOR3 vPos;
+	D3DXVECTOR3 vVel;
+	D3DXVECTOR3 vGoal;
+	int nCount;
+	int nWallCount;
+	float fCrashTime;
+	bool bCrash;
+	float fWallBounce;
+	float fActionStart;
 
-	float maxboundx;
-	float maxboundy;
-	float maxboundz;
-	float minboundx;
-	float minboundy;
-	float minboundz;
-	bool monWall;
-	bool monMaxWallX; 
-	bool monMaxWallY; 
-	bool monMaxWallZ; 
-	bool monMinWallX; 
-	bool monMinWallY; 
-	bool monMinWallZ; 
-
-	Ball* cha;
-	Monster* mon;
-	Wall* wall;
+	float fMaxboundx;
+	float fMaxboundy;
+	float fMaxboundz;
+	float fMinboundx;
+	float fMinboundy;
+	float fMinboundz;
+	bool bMonWall;
+	bool bMonMaxWallX; 
+	bool bMonMaxWallY; 
+	bool bMonMaxWallZ; 
+	bool bMonMinWallX; 
+	bool bMonMinWallY; 
+	bool bMonMinWallZ; 
+	
+	Ball* pCha;
+	Monster* pMon;
+	Wall* pWall;
 
 public:
 	Moving(Ball* myball,Monster* monster,Wall* wallset);
-	void getPositionWall(D3DXVECTOR3 wall,float speed);
-	void getPosition(float speed);
-	void getItem(ItemsList* itList);
-	void crashMon(float time);
-	void crashMissile(Missile* msi);
-	void returnWall();
+	void GetPositionWall(D3DXVECTOR3 wall,float speed);
+	void GetPosition(float speed);
+	void GetItem(ItemsList* itList);
+	void CrashMon(float time);
+	void CrashMissile(Missile* msi);
+	void ReturnWall();
 
-	inline bool getMonWall(){return monWall;};
-	inline void setMonWall(bool argu){monWall = argu;};
-	inline bool getMonMaxWallX(){return monMaxWallX;};
-	inline bool getMonMaxWallY(){return monMaxWallY;};
-	inline bool getMonMaxWallZ(){return monMaxWallZ;};
-	inline bool getMonMinWallX(){return monMinWallX;};
-	inline bool getMonMinWallY(){return monMinWallY;};
-	inline bool getMonMinWallZ(){return monMinWallZ;};
+	inline bool GetMonWall(){return bMonWall;};
+	inline void SetMonWall(bool argu){bMonWall = argu;};
+	inline bool GetMonMaxWallX(){return bMonMaxWallX;};
+	inline bool GetMonMaxWallY(){return bMonMaxWallY;};
+	inline bool GetMonMaxWallZ(){return bMonMaxWallZ;};
+	inline bool GetMonMinWallX(){return bMonMinWallX;};
+	inline bool GetMonMinWallY(){return bMonMinWallY;};
+	inline bool GetMonMinWallZ(){return bMonMinWallZ;};
 
-	inline float getMaxX(){return maxboundx;};
-	inline float getMinX(){return minboundx;};
-	inline float getMaxY(){return maxboundy;};
-	inline float getMinY(){return minboundy;};
-	inline float getMaxZ(){return maxboundz;};
-	inline float getMinZ(){return minboundz;};
+	inline float GetMaxX(){return fMaxboundx;};
+	inline float GetMinX(){return fMinboundx;};
+	inline float GetMaxY(){return fMaxboundy;};
+	inline float GetMinY(){return fMinboundy;};
+	inline float GetMaxZ(){return fMaxboundz;};
+	inline float GetMinZ(){return fMinboundz;};
 
 };
 

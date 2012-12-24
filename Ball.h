@@ -6,77 +6,72 @@
 #include "Settings.h"
 class Ball{
 private:
-	int level;
-	int maxLevel;
+	int nLevel;
+	int nMaxLevel;
 
-	bool alive;
-	int life;
-	int mana;
-	int weight;
-	int def;
+	bool bAlive;
+	int nLife;
+	int nMana;
+	int nWeight;
+	int nDef;
 
-	int maxLife;
-	int maxMana;
-	int maxWeight;
-	int maxDef;
-	bool ptGround;
+	int nMaxLife;
+	int nMaxMana;
+	int nMaxWeight;
+	int nMaxDef;
+	bool bGround;
 
-	D3DXVECTOR3 ptPosition;
-	D3DXVECTOR3 ptVelocity;
-	D3DXVECTOR3 ptGoal;
+	D3DXVECTOR3 vPosition;
+	D3DXVECTOR3 vVelocity;
+	D3DXVECTOR3 vGoal;
 	
 public:
 	Ball();
 	Ball(D3DXVECTOR3 setPosition,D3DXVECTOR3 setVelocity,D3DXVECTOR3 setGoal);
 
-	void setMaxLife(int argu);
-	void setMaxMana(int argu);
-	void setMaxWeight(int argu);
-	void setMaxDef(int argu);
+	void SetMaxLife(int argu);
+	void SetMaxMana(int argu);
+	void SetMaxWeight(int argu);
+	void SetMaxDef(int argu);
 
-	void setLife(int argu);
-	void setMana(int argu);
-	void setWeight(int argu);
-	void setDef(int argu);
+	void SetLife(int argu);
+	void SetMana(int argu);
+	void SetDef(int argu);
 
-	bool spendLife(int argu);
-	bool spendMana(int argu);
-	bool spendWeight(int argu);
-	bool spendDef(int argu);
+	bool SpendMana(int argu);
+	bool SpendDef(int argu);
 
-	void upLevel();
-	void downLevel();
+	void UpLevel();
+	void DownLevel();
 	
-	void setDefence(int argu);
-	void getDefence();
+	void SetDefence(int argu);
+	void GetDefence();
 
-	void move();
-
-	inline bool isAlive(){return alive;};
-	inline void setAlive(bool argu){alive = argu;};
-	inline int hisLife(){return life;};
-	inline int hisMana(){return mana;};
-	inline int hisWeight(){return weight;};
-	inline int hisDef(){return def;};
-	inline void setPosition(D3DXVECTOR3 xyz){ptPosition = xyz;};
-	inline void setVelocity(D3DXVECTOR3 xyz){ptVelocity= xyz;};
-	inline void setGoal(D3DXVECTOR3 xyz){ptGoal = xyz;};
+	inline bool IsAlive(){return bAlive;};
+	inline void SetAlive(bool argu){bAlive = argu;};
+	inline int HisLife(){return nLife;};
+	inline int HisMana(){return nMana;};
+	inline int HisWeight(){return nWeight;};
+	inline int HisDef(){return nDef;};
+	inline void SetPosition(D3DXVECTOR3 xyz){vPosition = xyz;};
+	inline void SetVelocity(D3DXVECTOR3 xyz){vVelocity= xyz;};
+	inline void SetGoal(D3DXVECTOR3 xyz){vGoal = xyz;};
 	
-	inline bool isGround(){return ptGround;}
-	inline void setGround(bool argu){ptGround = argu;}
+	inline bool IsGround(){return bGround;}
+	inline void SetGround(bool argu){bGround = argu;}
 
-	inline void setPositionX(float argu){ptPosition.x = argu;}
-	inline void setPositionY(float argu){ptPosition.y = argu;}
-	inline void setPositionZ(float argu){ptPosition.z = argu;}
-	inline void setVelocityX(float argu){ptVelocity.x = argu;}
-	inline void setVelocityY(float argu){ptVelocity.y = argu;}
-	inline void setVelocityZ(float argu){ptVelocity.z = argu;}
-	inline void setGoalX(float argu){ptGoal.x = argu;}
-	inline void setGoalY(float argu){ptGoal.y = argu;}
-	inline void setGoalZ(float argu){ptGoal.z = argu;}
-	inline D3DXVECTOR3 getPosition(){return ptPosition;}
-	inline D3DXVECTOR3 getVelocity(){return ptVelocity;}
-	inline D3DXVECTOR3 getGoal(){return ptGoal;}
+	inline void SetPositionX(float argu){vPosition.x = argu;}
+	inline void SetPositionY(float argu){vPosition.y = argu;}
+	inline void SetPositionZ(float argu){vPosition.z = argu;}
+	inline void SetVelocityX(float argu){vVelocity.x = argu;}
+	inline void SetVelocityY(float argu){vVelocity.y = argu;}
+	inline void SetVelocityZ(float argu){vVelocity.z = argu;}
+	inline void SetGoalX(float argu){vGoal.x = argu;}
+	inline void SetGoalY(float argu){vGoal.y = argu;}
+	inline void SetGoalZ(float argu){vGoal.z = argu;}
+	inline D3DXVECTOR3 GetPosition(){return vPosition;}
+	inline D3DXVECTOR3 GetVelocity(){return vVelocity;}
+	inline D3DXVECTOR3 GetGoal(){return vGoal;}
 
 
 };

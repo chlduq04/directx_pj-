@@ -5,19 +5,19 @@
 #include "Settings.h"
 class Checkai{
 private:
-	Pattern* checkResult[MOVE_PATTERN_COUNT][ACTION_PATTERN_COUNT];
+	Pattern* pCheckResult[MOVE_PATTERN_COUNT][ACTION_PATTERN_COUNT];
 public:
 	Checkai();
 	~Checkai();
-	Pattern* doAction(int type,float time);
+	Pattern* DoAction(int type,float time);
 	void mixPattern();
-	inline void patternStart(int move,int type,float time){checkResult[move][type]->startPlay(time);};
-	inline void patternEnd(int move,int type,float time){checkResult[move][type]->endPlay(time);};
-	inline bool isPlay(int move,int type,float time){return checkResult[move][type]->isPlay(time);};
-	inline void duringPlay(int move,int type,float time){checkResult[move][type]->duringPlay(time);};
-	inline void notDuringPlay(int move,int type){checkResult[move][type]->notDuringPlay();}
-	inline int getType(int move,int type){return checkResult[type][type]->getType();};
-	void changePattern(int motionNum,int actionNum);
-	//void Pattern* getDetailAction(int move,int action){return checkResult[move][action]};
+	inline void StartPattern(int move,int type,float time){pCheckResult[move][type]->StartPlay(time);};
+	inline void EndPattern(int move,int type,float time){pCheckResult[move][type]->EndPlay(time);};
+	inline bool IsPlay(int move,int type,float time){return pCheckResult[move][type]->IsPlay(time);};
+	inline void DuringPlay(int move,int type,float time){pCheckResult[move][type]->DuringPlay(time);};
+	inline void NotDuringPlay(int move,int type){pCheckResult[move][type]->NotDuringPlay();}
+	inline int GetType(int type){return pCheckResult[type][type]->GetType();};
+	void ChangePattern(int motionNum,int actionNum);
+	//void Pattern* getDetailAction(int move,int action){return pCheckResult[move][action]};
 };
 #endif

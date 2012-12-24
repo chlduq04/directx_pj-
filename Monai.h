@@ -13,74 +13,74 @@
 #include "CModel.h"
 class Monai{
 private:
-	float aniMotionTime;
-	int typeCase;
-	bool firstAction;
-	bool secondAction;
-	int actionNum; 
-	int nextActionNum;
-	int motionNum;
-	float motiontime;
-	bool actionDelay;
-	D3DXVECTOR3 mLength;
-	bool motionDelay;
-	D3DXVECTOR3 velocty;
-	D3DXVECTOR3 face;
-	D3DXVECTOR3 zero;
-	float rotate;
-	float motionSpeed;
-	float motionSpeedX;
-	float motionSpeedY;
-	float motionSpeedZ;
+	float fAniMotionTime;
+	int nTypeCase;
+	bool bFirstAction;
+	bool bSecondAction;
+	int nActionNum; 
+	int nNextActionNum;
+	int nMotionNum;
+	float fMotiontime;
+	bool bActionDelay;
+	D3DXVECTOR3 vLength;
+	bool bMotionDelay;
+	D3DXVECTOR3 vVelocity;
+	D3DXVECTOR3 vFace;
+	D3DXVECTOR3 vZero;
+	float fRotate;
+	float fMotionSpeed;
+	float fMotionSpeedX;
+	float fMotionSpeedY;
+	float fMotionSpeedZ;
 
-	int maxBoundx;
-	int maxBoundy;
-	int maxBoundz;
-	int minBoundx;
-	int minBoundy;
-	int minBoundz;
+	int nMaxBoundx;
+	int nMaxBoundy;
+	int nMaxBoundz;
+	int nMinBoundx;
+	int nMinBoundy;
+	int nMinBoundz;
 
-	float ActionStart;
-	Monster* mon;
-	Ball* cha;
-	Moving* mov;
-	Wall* wall;
-	Checkai* checkResult;
-	Missile* msi[10];
-	Pattern* nowAction;
-	Pattern* nextAction;
-	CModel* aniModel;
-	float speed;
-	float monsize;
-	float monSpeed;
-	int wallPos;
+	float fActionStart;
+	Monster* pMon;
+	Ball* pCha;
+	Moving* pMov;
+	Wall* pWall;
+	Checkai* pCheckResult;
+	Missile* pMsi[10];
+	Pattern* pNowAction;
+	Pattern* pNextAction;
+	CModel* pAniModel;
+	float fSpeed;
+	float fMonsize;
+	float fMonSpeed;
+	int nWallPos;
 
-	bool doAction;
+	bool bDoAction;
 
-	float defStartTime; //선5sec
-	float defEndTime; //후15sec
-	bool defon;
-	float wallStartTime; //선10sec
-	float wallEndTime; //후25sec
-	bool wallon;	
-	float healStartTime; //선5sec
-	float healEndTime; //후15sec
-	float healEachDelay;
-	bool healon;	
-	float raserStartTime; //선5sec
-	float raserEndTime; //후30sec
-	bool raseron;
-	float rushStartTime; //선5sec
-	float rushEndTime; //후10sec
-	bool rushon;
-	float msiStartTime; 
-	float msiEndTime; 
-	bool msion;
-	bool msionAll;
-	bool msionNext;
-	float norAttStartTime; 
-	float norAttEndTime; 
-	bool naton;
+	float fDefStartTime; //선5sec
+	float fDefEndTime; //후15sec
+	bool bDefon;
+	float fWallStartTime; //선10sec
+	float fWallEndTime; //후25sec
+	bool bWallon;	
+	float fHealStartTime; //선5sec
+	float fHealEndTime; //후15sec
+	float fHealEachDelay;
+	bool bHealon;	
+	float fRaserStartTime; //선5sec
+	float fRaserEndTime; //후30sec
+	bool bRaseron;
+	float fRushStartTime; //선5sec
+	float fRushEndTime; //후10sec
+	bool bRushon;
+	float fMsiStartTime; 
+	float fMsiEndTime; 
+	bool bMsion;
+	bool bMsionAll;
+	bool bMsionNext;
+	float fNorAttStartTime; 
+	float fNorAttEndTime; 
+	bool bNaton;
 
 
 public:
@@ -91,50 +91,50 @@ public:
 	void Pase1(float time);
 	void Pase2(float time);
 
-	inline int getActionNum(){return actionNum;};
-	void subAction(float time);
+	inline int GetActionNum(){return nActionNum;};
+	void SubAction(float time);
 
-	void defenceMode(float time);
-	void missileMode(float time);
-	void wallMode(float time);
-	void healingMode(float time);
-	void laserMode(float time);
-	void normalAttMode(float time);
+	void DefenceMode();
+	void MissileMode();
+	void WallMode();
+	void HealingMode(float time);
+	void LaserMode();
+	void NormalAttMode();
 
-	void defenceModeStart();
-	void missileModeStart(float time);
-	void wallModeStart();
-	void healingModeStart(float time);
-	void laserModeStart();
-	void normalAttModeStart();
+	void DefenceModeStart();
+	void MissileModeStart(float time);
+	void WallModeStart();
+	void HealingModeStart(float time);
+	void LaserModeStart();
+	void NormalAttModeStart();
 
-	bool rushMode(float time);
-	bool canDef(float time);
-	bool canMissile(float time);
-	bool canHealing(float time);
-	bool canRaser(float time);
-	bool canRush(float time);
-	bool canNorAtt(float time);
-	void getPositionMon(float time);
-	void normalMove(float time);
-	void closetoMove(float time);
-	void stopMove(float time);
-	void jumpMove(float time);
-	void dodgeMove(float time);
-	void realType(int type,float time);
-	void realMixType(int type,float time);
-	inline void randPositionMon(){mon->setOriginType(rand()%20);};
-	inline void setPositionMon(int type){mon->setOriginType(type);};
-	inline int getRandType(){return rand()%5;};
-	inline bool getMsionall(){return msionAll;};
+	bool RushMode(float time);
+	bool CanDef(float time);
+	bool CanMissile(float time);
+	bool CanHealing(float time);
+	bool CanRaser(float time);
+	bool CanRush(float time);
+	bool CanNorAtt(float time);
+	void GetPositionMon(float time);
+	void NormalMove(float time);
+	void ClosetoMove(float time);
+	void StopMove(float time);
+	void JumpMove(float time);
+	void DodgeMove(float time);
+	void RealType(int type,float time);
+	void RealMixType(int type,float time);
+	inline void RandPositionMon(){pMon->SetOriginType(rand()%20);};
+	inline void SetPositionMon(int type){pMon->SetOriginType(type);};
+	inline int GetRandType(){return rand()%5;};
+	inline bool GetMsionall(){return bMsionAll;};
 
-	void checkChangePattern();
-	D3DXVECTOR3 getNormal();
-	float getRotation();
-	void getMoveType(float time);
-	inline void inhenceMove(int type);
-	void setActionReset();
+	void CheckChangePattern();
+	D3DXVECTOR3 GetNormal();
+	float GetRotation();
+	void GetMoveType(float time);
+	inline void InhenceMove(int type);
+	void SetActionReset();
 
-	inline float getMotionTime(){return aniMotionTime;};
+	inline float GetMotionTime(){return fAniMotionTime;};
 };
 #endif
