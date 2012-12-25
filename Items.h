@@ -6,6 +6,7 @@
 
 class Items{
 private:
+	int nType;
 	int nItemNum;
 	int nHp;
 	int nMp;
@@ -52,5 +53,6 @@ public:
 	inline Items* GetPrev(){return pPrev;};
 	inline Items* GetNext(){return pNext;};
 	inline float GetTime(){return fTime;};
+	inline int GetType(){return nType;};
 };
 #endif

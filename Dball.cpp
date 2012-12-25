@@ -95,7 +95,7 @@ BOOL					g_bWall = FALSE;
 FLOAT					g_fStartTime; 
 ItemsList*				g_pItemList;		
 Ui*						g_pUi;
-D3DXMATRIXA16			g_matIteg_matWorld;
+D3DXMATRIXA16			g_matItWorld;
 static INT				g_nItemSerialNum = 0;
 //-----------------------------------------------------------------------------
 // Camera Setting
@@ -160,6 +160,9 @@ FLOAT					Settime;
 Xfile* g_pDrawXfile;
 Xfile* g_pMapBox;
 Xfile* g_pMonDetail[ACTION_PATTERN_COUNT+1];
+Xfile* g_pHpItems;
+Xfile* g_pMpItems;
+Xfile* g_pDefItems;
 //-----------------------------------------------------------------------------
 // Monster
 //-----------------------------------------------------------------------------
@@ -380,14 +383,27 @@ inline VOID g_pItemListDraw(FLOAT time){
 				nowNode=nowNode->GetNext();
 				g_pItemList->DelNode(deleteNode);
 			}else{
-				D3DXMatrixIdentity(&g_matIteg_matWorld);
+				D3DXMatrixIdentity(&g_matItWorld);
 				D3DXMatrixScaling(&g_matMyScale,0.1f,0.1f,0.1f);
 				D3DXMatrixRotationY(&g_matMyRotate, time);
 				D3DXMatrixTranslation(&g_matMyTrans,nowNode->GetPosition().x,nowNode->GetPosition().y,nowNode->GetPosition().z);
-				g_matIteg_matWorld *= g_matMyScale;
-				g_matIteg_matWorld *= g_matMyRotate;
-				g_matIteg_matWorld *= g_matMyTrans;
-				g_pMapBox->DrawMyballShader(g_matIteg_matWorld);
+				g_matItWorld *= g_matMyScale;
+				g_matItWorld *= g_matMyRotate;
+				g_matItWorld *= g_matMyTrans;
+				switch(nowNode->GetType()){
+				case 0:
+					g_pHpItems->DrawMyballShader(g_matItWorld);
+					break;
+				case 1:
+					g_pMpItems->DrawMyballShader(g_matItWorld);
+					break;
+				case 2:
+					g_pDefItems->DrawMyballShader(g_matItWorld);
+					break;
+				default:
+					g_pMapBox->DrawMyballShader(g_matItWorld);
+					break;
+				}
 				nowNode=nowNode->GetNext();
 			}
 		}
@@ -519,6 +535,10 @@ inline VOID Render(FLOAT time)
 		//-----------------------------------------------------------------------------
 		g_pDrawXfile->SetView(g_matView);
 		g_pMapBox->SetView(g_matView);
+		g_pHpItems->SetView(g_matView);
+		g_pMpItems->SetView(g_matView);
+		g_pDefItems->SetView(g_matView);
+
 //		BlackBox->SetView(g_matView);
 		for(INT i=0;i<ACTION_PATTERN_COUNT+1;i++){
 			g_pMonDetail[i]->SetView(g_matView);
@@ -659,6 +679,10 @@ inline VOID AfterInitD3D(){
 	for(INT i=0;i<10;i++){g_pMissile[i]= new Missile();}
 	g_pDrawXfile = new Xfile();
 	g_pMapBox = new Xfile();
+	g_pHpItems = new Xfile();
+	g_pMpItems = new Xfile();
+	g_pDefItems = new Xfile();
+
 	for(INT i=0;i<ACTION_PATTERN_COUNT+1;i++){g_pMonDetail[i] = new Xfile();}
 	g_pMyCharacter = new Ball(( D3DXVECTOR3 )m_v4Pos,( D3DXVECTOR3 )m_v4Vel,( D3DXVECTOR3 )m_v4Vel);	
 	g_pItemList = new ItemsList();
@@ -684,13 +708,19 @@ inline VOID AfterRender(){
 	delete g_pMon;
 	delete g_pMai;
 	delete g_pResult;
-	delete g_pUi;
+	delete g_pUi;;
+	delete g_pHpItems;
+	delete g_pMpItems;
+	delete g_pDefItems;
 }
 
 inline VOID BeforeRender(){
 	InitGeometry();
 	g_pDrawXfile->SetViewprojtexture(matProj,g_v4LightColor);
 	g_pMapBox->SetViewprojtexture(matProj,g_v4LightColor);
+	g_pHpItems->SetViewprojtexture(matProj,g_v4LightColor);
+	g_pMpItems->SetViewprojtexture(matProj,g_v4LightColor);
+	g_pDefItems->SetViewprojtexture(matProj,g_v4LightColor);
 	for(INT i=0;i<ACTION_PATTERN_COUNT+1;i++){
 		g_pMonDetail[i]->SetViewprojtexture(matProj,g_v4LightColor);
 	}
@@ -704,6 +734,16 @@ inline HRESULT initLoad(){
 	if(FAILED(g_pMapBox->InitballMesh(g_pd3dDevice,"FieldstoneNoisy.tga","FieldstoneBumpDOT3.tga","Monster.fx","Monster.x"))){
 		return E_FAIL;
 	}
+	if(FAILED(g_pHpItems->InitballMesh(g_pd3dDevice,"FireBase.tga","CoinDOT3.tga","HP.fx","HP.x"))){
+		return E_FAIL;
+	}
+	if(FAILED(g_pMpItems->InitballMesh(g_pd3dDevice,"CoinDOT3.tga","CoinDOT3.tga","MP.fx","MP.x"))){
+		return E_FAIL;
+	}
+	if(FAILED(g_pDefItems->InitballMesh(g_pd3dDevice,"coin.dds","CoinDOT3.tga","DEF.fx","DEF.x"))){
+		return E_FAIL;
+	}
+
 	if(FAILED(g_pMonDetail[0]->InitballMesh(g_pd3dDevice,"Spotlight.jpg","noise.tga","MsiBall.fx","Monster.x"))){
 		return E_FAIL;
 	}

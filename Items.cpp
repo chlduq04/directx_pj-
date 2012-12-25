@@ -4,6 +4,7 @@ Items::Items(){
 	pPrev = NULL;
 	pNext = NULL;
 	nItemNum = NULL;
+	nType = 0;
 	fTime = 0;
 	nHp = 0;
 	nMp = 0;
@@ -22,7 +23,7 @@ Items::Items(int type,int level,D3DXVECTOR3 position,int static_item_number,floa
 	nDefence = 0;
 	nSpeed = 0;
 	vPosition = position;
-
+	nType = type;
 	switch(type){
 	case 0:
 		nHp = level*50;
