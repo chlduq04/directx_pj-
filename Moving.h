@@ -4,12 +4,10 @@
 #include <d3dx9.h>
 #include <d3d9.h>
 #include <stdio.h>
-#include "Monster.h"
 #include "Ball.h"
 #include "ItemsList.h"
 #include "Settings.h"
 #include "Missile.h"
-#include "Wall.h"
 class Moving{
 private:
 	D3DXVECTOR3 vPos;
@@ -37,16 +35,13 @@ private:
 	bool bMonMinWallZ; 
 	
 	Ball* pCha;
-	Monster* pMon;
-	Wall* pWall;
 
 public:
-	Moving(Ball* myball,Monster* monster,Wall* wallset);
+	Moving(Ball* myball);
+	~Moving();
 	void GetPositionWall(D3DXVECTOR3 wall,float speed);
 	void GetPosition(float speed);
-	void GetItem(ItemsList* itList);
-	void CrashMon(float time);
-	void CrashMissile(Missile* msi);
+//	void CrashMon(float time);
 	void ReturnWall();
 
 	inline bool GetMonWall(){return bMonWall;};

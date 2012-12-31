@@ -5,8 +5,9 @@ Ui::Ui(LPDIRECT3DDEVICE9 device){
 	fWinWidth = WINDOW_WIDTH;
 	fWinHeight = WINDOW_HEIGHT;
 }
-
-
+Ui::~Ui(){
+	d3dDevice = NULL;
+}
 HRESULT Ui::InitBillboard(const char* image_name,LPDIRECT3DTEXTURE9* texture){
 	D3DXCreateTextureFromFile( d3dDevice, image_name, texture );
 	return S_OK;

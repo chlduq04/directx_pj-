@@ -3,7 +3,7 @@
 Ball::Ball(){
 	
 }
-Ball::Ball(D3DXVECTOR3 setPosition,D3DXVECTOR3 setVelocity,D3DXVECTOR3 setGoal){
+Ball::Ball(D3DXVECTOR3 setPosition,D3DXVECTOR3 setVelocity,D3DXVECTOR3 setGoal, LPDIRECT3DDEVICE9 device){
 	nLevel = 1;
 	nMaxLevel = CHARACTER_MAX_LEVEL;
 	bAlive = true;
@@ -24,8 +24,12 @@ Ball::Ball(D3DXVECTOR3 setPosition,D3DXVECTOR3 setVelocity,D3DXVECTOR3 setGoal){
 	vVelocity = setVelocity;
 	vGoal = setGoal;
 	bGround = false;
+	g_pChaModel = new Xfile();
+	g_pDevice = device;
 }
-
+Ball::~Ball(){
+	delete g_pChaModel;
+}
 void Ball::SetLife(int argu){
 	nLife += argu;
 	if(nLife+argu>nMaxLife)
@@ -93,4 +97,10 @@ void Ball::SetDefence(int argu){
 		nDef = nMaxDef;
 	if(nDef+argu < 0)
 		nLife -= nDef + argu;
+}
+
+HRESULT Ball::SetXfile(){
+	if(FAILED(g_pChaModel->InitballMesh(g_pDevice,"FireBase.tga","Flame.tga","FireBall.fx","FireBall.x")))
+		return E_FAIL;
+	return S_OK;
 }

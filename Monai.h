@@ -46,7 +46,7 @@ private:
 	Moving* pMov;
 	Wall* pWall;
 	Checkai* pCheckResult;
-	Missile* pMsi[10];
+	Missile* pMsi[MISSILE_COUNT];
 	Pattern* pNowAction;
 	Pattern* pNextAction;
 	CModel* pAniModel;
@@ -84,7 +84,7 @@ private:
 
 
 public:
-	Monai(Monster* monster,Ball* charecter,Missile* missile[],Moving* moving,Wall* createwall,Checkai* result,CModel* model,float time);
+	Monai(Monster* monster,Ball* charecter,Missile* missile[MISSILE_COUNT],Moving* moving,Wall* createwall,Checkai* result,CModel* model,float time);
 	~Monai();
 
 	void Pase0(float time);

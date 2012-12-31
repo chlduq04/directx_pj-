@@ -384,6 +384,9 @@
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Moving.cpp" />
     <ClCompile Include="Pattern.cpp" />
+    <ClCompile Include="SettingItems.cpp" />
+    <ClCompile Include="SettingMonster.cpp" />
+    <ClCompile Include="SettingUI.cpp" />
     <ClCompile Include="Ui.cpp" />
     <ClCompile Include="Wall.cpp" />
     <ClCompile Include="Xfile.cpp" />
@@ -407,7 +410,10 @@
     <ClInclude Include="Moving.h" />
     <ClInclude Include="Pattern.h" />
     <CLInclude Include="resource.h" />
+    <ClInclude Include="SettingItems.h" />
+    <ClInclude Include="SettingMonster.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="SettingUI.h" />
     <ClInclude Include="Struct.h" />
     <ClInclude Include="Ui.h" />
     <ClInclude Include="Variable.h" />

@@ -8,76 +8,98 @@
     <Filter Include="DXUT">
       <UniqueIdentifier>{a43c5c25-0e86-4a20-b64a-883785ff74fd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="header">
-      <UniqueIdentifier>{f95cf33f-d0e4-4c2a-a548-0dca75df6cc7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="project">
       <UniqueIdentifier>{f97e9764-19d0-4889-b1b4-11abc30c89ce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="media">
-      <UniqueIdentifier>{0396cf01-98a1-48ab-8ca4-1f4c00ddd668}</UniqueIdentifier>
-    </Filter>
     <Filter Include="xfileLoader">
       <UniqueIdentifier>{4af5e77d-ec06-4d7e-be96-daee83138e3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Monster">
+      <UniqueIdentifier>{dac397d9-fa33-4b12-989d-33b9045917a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character">
+      <UniqueIdentifier>{a8f10fcb-dcb7-4c55-a7b6-1991df68fcc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Moving">
+      <UniqueIdentifier>{5b34763b-b209-4fd6-99b7-0bf969f5e37c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{da16df5d-5c39-42d0-9d7c-576a19a57ce0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{6f7a541d-0654-4c1f-883b-21d85afffdb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Items">
+      <UniqueIdentifier>{0396cf01-98a1-48ab-8ca4-1f4c00ddd668}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Setting">
+      <UniqueIdentifier>{5f622503-5256-4e04-8127-802d71008cb4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXUT\Optional\directx.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="sample.txt">
-      <Filter>header</Filter>
-    </None>
     <None Include="ClassDiagram1.cd" />
+    <None Include="sample.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ZCamera.cpp">
-      <Filter>project</Filter>
-    </ClCompile>
-    <ClCompile Include="Ball.cpp">
-      <Filter>project</Filter>
-    </ClCompile>
-    <ClCompile Include="Monster.cpp">
-      <Filter>project</Filter>
-    </ClCompile>
     <ClCompile Include="Dball.cpp">
       <Filter>project</Filter>
     </ClCompile>
-    <ClCompile Include="Xfile.cpp">
-      <Filter>project</Filter>
+    <ClCompile Include="Ball.cpp">
+      <Filter>Character</Filter>
     </ClCompile>
     <ClCompile Include="Items.cpp">
-      <Filter>project</Filter>
-    </ClCompile>
-    <ClCompile Include="Moving.cpp">
-      <Filter>project</Filter>
+      <Filter>Items</Filter>
     </ClCompile>
     <ClCompile Include="ItemsList.cpp">
-      <Filter>project</Filter>
+      <Filter>Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Moving.cpp">
+      <Filter>Moving</Filter>
     </ClCompile>
     <ClCompile Include="Ui.cpp">
-      <Filter>project</Filter>
-    </ClCompile>
-    <ClCompile Include="CModel.cpp">
-      <Filter>project</Filter>
-    </ClCompile>
-    <ClCompile Include="CAllocateHierarchy.cpp">
-      <Filter>project</Filter>
-    </ClCompile>
-    <ClCompile Include="Monai.cpp">
-      <Filter>project</Filter>
-    </ClCompile>
-    <ClCompile Include="Missile.cpp">
-      <Filter>project</Filter>
-    </ClCompile>
-    <ClCompile Include="Wall.cpp">
-      <Filter>project</Filter>
-    </ClCompile>
-    <ClCompile Include="Pattern.cpp">
-      <Filter>project</Filter>
+      <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="CheckAI.cpp">
-      <Filter>project</Filter>
+      <Filter>Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Pattern.cpp">
+      <Filter>Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Monster.cpp">
+      <Filter>Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Monai.cpp">
+      <Filter>Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Missile.cpp">
+      <Filter>Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Wall.cpp">
+      <Filter>Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="CAllocateHierarchy.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="CModel.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="ZCamera.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Xfile.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingItems.cpp">
+      <Filter>Setting</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingUI.cpp">
+      <Filter>Setting</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingMonster.cpp">
+      <Filter>Setting</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -87,68 +109,75 @@
     <ResourceCompile Include="Meshes.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-    <ClInclude Include="ZCamera.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraSetting.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="Variable.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings.h">
-      <Filter>header</Filter>
-    </ClInclude>
     <ClInclude Include="Ball.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="Monster.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="Xfile.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="Items.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="Moving.h">
-      <Filter>header</Filter>
+      <Filter>Character</Filter>
     </ClInclude>
     <ClInclude Include="ItemsList.h">
-      <Filter>header</Filter>
+      <Filter>Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Items.h">
+      <Filter>Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Moving.h">
+      <Filter>Moving</Filter>
     </ClInclude>
     <ClInclude Include="Ui.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="Struct.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="CAllocateHierarchy.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="CModel.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="DerivedStructs.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="Macros.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="Monai.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="Missile.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="Wall.h">
-      <Filter>header</Filter>
+      <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="CheckAI.h">
-      <Filter>header</Filter>
+      <Filter>Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Missile.h">
+      <Filter>Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Monai.h">
+      <Filter>Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Monster.h">
+      <Filter>Monster</Filter>
     </ClInclude>
     <ClInclude Include="Pattern.h">
-      <Filter>header</Filter>
+      <Filter>Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Wall.h">
+      <Filter>Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="CAllocateHierarchy.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="CModel.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="DerivedStructs.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Macros.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Xfile.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="ZCamera.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Struct.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Variable.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraSetting.h" />
+    <ClInclude Include="Settings.h">
+      <Filter>Setting</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingItems.h">
+      <Filter>Setting</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingUI.h">
+      <Filter>Setting</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingMonster.h">
+      <Filter>Setting</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

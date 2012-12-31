@@ -1,10 +1,35 @@
-﻿빌드 시작: 2012-12-24 오후 9:12:28
+﻿빌드 시작: 2012-12-31 오후 9:08:13
      1>2 노드의 "C:\Users\ouchoi\Documents\Visual Studio 2010\Projects\DirectXSamples\Meshes\Meshes_2010.vcxproj" 프로젝트(build 대상)입니다.
      1>InitializeBuildStatus:
          "Debug\Meshes.unsuccessfulbuild"에 연결(touching)하고 있습니다.
        ClCompile:
-         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IDXUT\Core /IDXUT\Optional /ZI /nologo /W4 /WX- /Od /Oi /Oy- /D WIN32 /D _DEBUG /D DEBUG /D PROFILE /D _WINDOWS /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Items.cpp  
-         Items.cpp
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IDXUT\Core /IDXUT\Optional /ZI /nologo /W4 /WX- /Od /Oi /Oy- /D WIN32 /D _DEBUG /D DEBUG /D PROFILE /D _WINDOWS /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Dball.cpp SettingMonster.cpp  
+         Dball.cpp
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\zcamera.h(21): warning C4324: 'ZCamera' : __declspec(align()) 때문에 구조체가 채워졌습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\settingui.h(22): warning C4244: '=' : 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\settingui.h(22): warning C4244: '=' : 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\settingui.h(22): warning C4244: '=' : 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\settingui.h(22): warning C4244: '=' : 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\settingui.h(22): warning C4244: '=' : 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\settingitems.h(37): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\settingitems.h(37): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\settingitems.h(37): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(206): warning C4244: '+=' : 'double'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(207): warning C4244: '+=' : 'double'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(443): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(443): warning C4244: '인수' : 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(443): warning C4244: '인수' : 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(443): warning C4244: '인수' : 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\dball.cpp(403): warning C4189: 'pmatView' : 지역 변수가 초기화되었으나 참조되지 않았습니다.
+         SettingMonster.cpp
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\settingmonster.cpp(100): warning C4805: '==' : 연산에 'BOOL' 형식과 'bool' 형식을 함께 사용하는 것은 안전하지 않습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\settingmonster.cpp(115): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\settingmonster.cpp(115): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\settingmonster.cpp(123): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\settingmonster.cpp(126): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\settingmonster.cpp(136): warning C4238: 비표준 확장이 사용됨 : 클래스 rvalue를 lvalue로 사용했습니다.
+     1>c:\users\ouchoi\documents\visual studio 2010\projects\directxsamples\meshes\settingmonster.cpp(136): warning C4244: '인수' : 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         코드를 생성하고 있습니다...
        ResourceCompile:
          모든 출력이 최신 상태입니다.
        ManifestResourceCompile:
@@ -24,6 +49,9 @@
          Debug\Monster.obj
          Debug\Moving.obj
          Debug\Pattern.obj
+         Debug\SettingItems.obj
+         Debug\SettingMonster.obj
+         Debug\SettingUI.obj
          Debug\Ui.obj
          Debug\Wall.obj
          Debug\Xfile.obj
@@ -41,4 +69,4 @@
 
 빌드했습니다.
 
-경과 시간: 00:00:03.48
+경과 시간: 00:00:04.77

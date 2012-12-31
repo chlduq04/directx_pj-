@@ -1,6 +1,6 @@
 #include "Monai.h"
 
-Monai::Monai(Monster* pMonster,Ball* pCharecter,Missile* missile[],Moving* pMoving,Wall* createwall,Checkai* result,CModel* model,float time){
+Monai::Monai(Monster* pMonster,Ball* pCharecter,Missile* missile[MISSILE_COUNT],Moving* pMoving,Wall* createwall,Checkai* result,CModel* model,float time){
 	bFirstAction = false;
 	bSecondAction = false;
 	bActionDelay = false;
@@ -18,7 +18,7 @@ Monai::Monai(Monster* pMonster,Ball* pCharecter,Missile* missile[],Moving* pMovi
 	pCheckResult = result;
 	pAniModel = model;
 	bDoAction = false;
-	for(int i=0;i<10;i++){
+	for(int i=0;i<MISSILE_COUNT;i++){
 		pMsi[i] = missile[i];
 	}
 	fMotionSpeed = 0.5f;
@@ -193,7 +193,7 @@ void Monai::HealingMode(float time){
 void Monai::MissileMode(){
 	bMsionAll = true;
 	bMsionNext = true;
-	for(int i=0;i<10;i++){pMsi[i]->Start();}
+	for(int i=0;i<MISSILE_COUNT;i++){pMsi[i]->Start();}
 	pAniModel->SetCurrentAnimation(4);
 	fAniMotionTime = 0.005f;
 }
@@ -216,7 +216,7 @@ void Monai::DefenceModeStart(){
 void Monai::MissileModeStart(float time){
 	bMsionAll = false;
 	bMsionNext = false;
-	for(int i=0;i<10;i++){
+	for(int i=0;i<MISSILE_COUNT;i++){
 		pMsi[i]->MoveMissile(pMon,pCha,time);
 		if(!bMsionAll&&pMsi[i]->NowStart()){
 			bMsionAll = true;
@@ -233,6 +233,26 @@ void Monai::WallModeStart(){
 		pMov->GetPositionWall(D3DXVECTOR3(0,0,nWallPos),GAMESPEED);//z
 	}
 
+	if( !pWall->IsGround() )
+	{
+		pWall->SetPosition(pWall->GetPosition()+pWall->GetVelocity()*BALLSPEED);
+		if(pWall->GetVelocity().y>0)
+			pWall->SetVelocityY(pWall->GetVelocity().y-(GRAVITY+REVERSE_GRAVITY)*BALLSPEED*15.0f);
+		else
+			pWall->SetVelocityY(pWall->GetVelocity().y-(GRAVITY*BALLSPEED)*5.0f);
+
+		if( pWall->GetPosition().y < -GROUND)
+		{
+			if(pWall->GetBcount()>7){
+				pWall->IsGround(true);
+			}else{
+				pWall->SetPositionY(-GROUND );
+				pWall->SetVelocityY(-pWall->GetVelocity().y* ( 1 - ABSORBANCE*20 ));
+				pWall->SetBcount();
+			}
+
+		}
+	}
 }
 void Monai::HealingModeStart(float time){
 	if(time - fHealEachDelay > 1){
@@ -537,6 +557,7 @@ void Monai::SetActionReset(){
 	pMon->MonDefence(10);
 	if(nActionNum == 5||nNextActionNum == 5){
 		pMov->ReturnWall();
+		pWall->ResetPosVel();
 	}
 	bMsion = false;
 	bDefon = false;

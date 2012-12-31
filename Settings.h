@@ -36,6 +36,7 @@
 //-----------------------------------------------------------------------------
 // Mon
 //-----------------------------------------------------------------------------
+#define MISSILE_COUNT 15
 #define START_MON_POSITIONX 160.0f
 #define START_MON_POSITIONY 30.0f
 #define START_MON_POSITIONZ 160.0f

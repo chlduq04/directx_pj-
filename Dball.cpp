@@ -20,53 +20,19 @@
 #include "Xfile.h"
 #include "Ball.h"
 #include "Moving.h"
-#include "Items.h"
-#include "ItemsList.h"
-#include "Ui.h"
+#include "SettingUI.h"
 #include "Struct.h"
-#include "CModel.h"
-#include "Macros.h"
 #include "Monster.h"
 #include "Monai.h"
-#include "Missile.h"
-#include "Wall.h"
 #include "CheckAI.h"
+#include "SettingItems.h"
+#include "SettingMonster.h"
 //-----------------------------------------------------------------------------
 // Memory Check
 //-----------------------------------------------------------------------------
 #ifdef _DEBUG       
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__) 
 #endif
-//-----------------------------------------------------------------------------
-// Drow Billboard
-//-----------------------------------------------------------------------------
-MYVERTEX vtx[4] = {
-	{WINDOW_WIDTH/2-WINDOW_WIDTH/20, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/120, 0, 0, 1},
-	{WINDOW_WIDTH/2-WINDOW_WIDTH/20, -WINDOW_HEIGHT/2, 0, 0, 0 },
-	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/120, 0, 1, 1},
-	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2, 0, 1, 0}
-};
-MYVERTEX hpVtx[4] = {
-	{WINDOW_WIDTH/2-WINDOW_WIDTH/20, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/50, 0, 0, 1},
-	{WINDOW_WIDTH/2-WINDOW_WIDTH/20, -WINDOW_HEIGHT/2, 0, 0, 0 },
-	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/50, 0, 1, 1},
-	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2, 0, 1, 0}
-};
-MYVERTEX mapVtx[4] = {
-	{WINDOW_WIDTH/2-WINDOW_WIDTH/5, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/5, 0, 0, 1},
-	{WINDOW_WIDTH/2-WINDOW_WIDTH/5, -WINDOW_HEIGHT/2, 0, 0, 0 },
-	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/5, 0, 1, 1},
-	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2, 0, 1, 0}
-};
-MYVERTEX monHp[4] = {
-	{WINDOW_WIDTH/2-WINDOW_WIDTH/5, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/5, 0, 0, 1},
-	{WINDOW_WIDTH/2-WINDOW_WIDTH/5, -WINDOW_HEIGHT/2, 0, 0, 0 },
-	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/5, 0, 1, 1},
-	{WINDOW_WIDTH/2, -WINDOW_HEIGHT/2, 0, 1, 0}
-};
-LPDIRECT3DTEXTURE9		g_pSpeedBar[10] = { NULL, NULL, NULL };// 빌보드로 사용할 텍스처
-D3DXMATRIX				matBillboard;
-
 //-----------------------------------------------------------------------------
 // System Setting
 //-----------------------------------------------------------------------------
@@ -75,28 +41,19 @@ DWORD					g_cxHeight = 0;
 DWORD					g_czHeight = 0;
 DWORD					g_dwMouseX = 0;
 DWORD					g_dwMouseY = 0;
-DWORD					VERTEX_FVF = ( D3DFVF_XYZ | D3DFVF_DIFFUSE );
 //-----------------------------------------------------------------------------
 // Camera Setting
 //-----------------------------------------------------------------------------
 ZCamera*				g_pCamera = NULL;
 //-----------------------------------------------------------------------------
-// Model Loading
-//-----------------------------------------------------------------------------
-CModel*					g_pModel = NULL; // A model object to work with
-//-----------------------------------------------------------------------------
 // Draw Wall
 //-----------------------------------------------------------------------------
-Wall*					g_pWall = NULL;
 BOOL					g_bWall = FALSE;
 //-----------------------------------------------------------------------------
 // Items Setting
 //-----------------------------------------------------------------------------
-FLOAT					g_fStartTime; 
-ItemsList*				g_pItemList;		
-Ui*						g_pUi;
-D3DXMATRIXA16			g_matItWorld;
-static INT				g_nItemSerialNum = 0;
+SettingItems*			g_pSetItems;
+SettingUI*						g_pSetUi;
 //-----------------------------------------------------------------------------
 // Camera Setting
 //-----------------------------------------------------------------------------
@@ -140,7 +97,9 @@ LPD3DXMESH				g_pMesh = NULL; // Our mesh object in sysmem
 D3DMATERIAL9*			g_pMeshMaterials = NULL; // Materials for our mesh
 LPDIRECT3DTEXTURE9*		g_pMeshTextures = NULL; // Textures for our mesh
 DWORD					g_dwNumMaterials = 0L;   // Number of mesh materials
-
+D3DXMATRIX				g_matSetWorld;
+D3DXMATRIX				g_matSetTrans;
+D3DXMATRIX				g_matSetScale;
 //-----------------------------------------------------------------------------
 // Laser variables
 //-----------------------------------------------------------------------------
@@ -157,22 +116,11 @@ FLOAT					Settime;
 //-----------------------------------------------------------------------------
 // Xfile Draw
 //-----------------------------------------------------------------------------
-Xfile* g_pDrawXfile;
 Xfile* g_pMapBox;
-Xfile* g_pMonDetail[ACTION_PATTERN_COUNT+1];
-Xfile* g_pHpItems;
-Xfile* g_pMpItems;
-Xfile* g_pDefItems;
 //-----------------------------------------------------------------------------
-// Monster
+// Model Loading
 //-----------------------------------------------------------------------------
-Monster* g_pMon;
-Monai* g_pMai;
-Missile* g_pMissile[10];
-//-----------------------------------------------------------------------------
-// Monster
-//-----------------------------------------------------------------------------
-Checkai* g_pResult;
+SettingMonster*			g_pSetMonster = NULL;
 //-----------------------------------------------------------------------------
 // InitD3D
 //-----------------------------------------------------------------------------
@@ -331,16 +279,6 @@ inline VOID Cleanup()
 	if( g_pMeshMaterials != NULL )
 		delete[] g_pMeshMaterials;
 
-	if(g_pSpeedBar){
-		for(INT i=0;i<10;i++){
-			if(g_pSpeedBar[i]){
-				g_pSpeedBar[i]->Release(); 
-				g_pSpeedBar[i] = NULL;
-				delete g_pSpeedBar[i];
-			}
-		}
-	}
-
 	if( g_pMeshTextures )
 	{
 		for( DWORD i = 0; i < g_dwNumMaterials; i++ )
@@ -360,118 +298,24 @@ inline VOID Cleanup()
 		g_pD3D->Release();
 }
 
-//-----------------------------------------------------------------------------
-// Name: Render()
-// Desc: Draws the scene
-//-----------------------------------------------------------------------------
-inline VOID Setg_pItemList(FLOAT time){
-	if( time-g_fStartTime >=  1.0f){
-		if((rand()%10==5)&&(g_pItemList->GetCount()<10)){
-			D3DXVECTOR3 iPosition(rand()%100,rand()%100,rand()%100);
-			g_pItemList->SetNode(new Items(rand()%3,1,iPosition,g_nItemSerialNum++,time));
-		}
-		g_fStartTime = time; 
-	}
+inline D3DXMATRIX DrawPosition(/**/D3DXVECTOR3 scale,/**/D3DXVECTOR3 trans)
+{
+	D3DXMatrixIdentity(&g_matSetWorld);
+	D3DXMatrixScaling(&g_matSetScale,scale.x,scale.y,scale.z);
+	D3DXMatrixTranslation(&g_matSetTrans,trans.x,trans.y,trans.z);
+	return g_matSetWorld * g_matSetScale * g_matSetTrans;
 }
-
-inline VOID g_pItemListDraw(FLOAT time){
-	Items* nowNode = g_pItemList->GetStart()->GetNext();
-	if(nowNode!=g_pItemList->GetEnd()){
-		while(nowNode->GetNext()!=g_pItemList->GetEnd()){
-			if(time-(nowNode->GetTime())>20){
-				Items* deleteNode = nowNode;
-				nowNode=nowNode->GetNext();
-				g_pItemList->DelNode(deleteNode);
-			}else{
-				D3DXMatrixIdentity(&g_matItWorld);
-				D3DXMatrixScaling(&g_matMyScale,0.1f,0.1f,0.1f);
-				D3DXMatrixRotationY(&g_matMyRotate, time);
-				D3DXMatrixTranslation(&g_matMyTrans,nowNode->GetPosition().x,nowNode->GetPosition().y,nowNode->GetPosition().z);
-				g_matItWorld *= g_matMyScale;
-				g_matItWorld *= g_matMyRotate;
-				g_matItWorld *= g_matMyTrans;
-				switch(nowNode->GetType()){
-				case 0:
-					g_pHpItems->DrawMyballShader(g_matItWorld);
-					break;
-				case 1:
-					g_pMpItems->DrawMyballShader(g_matItWorld);
-					break;
-				case 2:
-					g_pDefItems->DrawMyballShader(g_matItWorld);
-					break;
-				default:
-					g_pMapBox->DrawMyballShader(g_matItWorld);
-					break;
-				}
-				nowNode=nowNode->GetNext();
-			}
-		}
-	}
-}
-
-inline VOID DrawUi(){
-	g_pUi->SetUI();
-
-	INT velocity = abs((INT)D3DXVec3Length(&g_pMyCharacter->GetVelocity()));
-	if(velocity>50){
-		velocity = 50;
-	}
-	switch(velocity){
-	case 50 : case 49 : g_pUi->DrawBillboard(g_pSpeedBar[1],&matBillboard,-10.5f,120.0f,0.0f,vtx);
-	case 48 : case 47 : g_pUi->DrawBillboard(g_pSpeedBar[1],&matBillboard,-10.5f,115.0f,0.0f,vtx);
-	case 46 : case 45 : g_pUi->DrawBillboard(g_pSpeedBar[1],&matBillboard,-10.5f,110.0f,0.0f,vtx);
-	case 44 : case 43 : g_pUi->DrawBillboard(g_pSpeedBar[1],&matBillboard,-10.5f,105.0f,0.0f,vtx);
-	case 42 : case 41 : g_pUi->DrawBillboard(g_pSpeedBar[2],&matBillboard,-10.5f,100.0f,0.0f,vtx);
-	case 40 : case 39 : g_pUi->DrawBillboard(g_pSpeedBar[2],&matBillboard,-10.5f,95.0f,0.0f,vtx);
-	case 38 : case 37 : g_pUi->DrawBillboard(g_pSpeedBar[2],&matBillboard,-10.5f,90.0f,0.0f,vtx);
-	case 36 : case 35 : g_pUi->DrawBillboard(g_pSpeedBar[2],&matBillboard,-10.5f,85.0f,0.0f,vtx);
-	case 34 : case 33 : g_pUi->DrawBillboard(g_pSpeedBar[2],&matBillboard,-10.5f,80.0f,0.0f,vtx);
-	case 32 : case 31 : g_pUi->DrawBillboard(g_pSpeedBar[2],&matBillboard,-10.5f,75.0f,0.0f,vtx);
-	case 30 : case 29 : g_pUi->DrawBillboard(g_pSpeedBar[2],&matBillboard,-10.5f,70.0f,0.0f,vtx);
-	case 28 : case 27 : g_pUi->DrawBillboard(g_pSpeedBar[2],&matBillboard,-10.5f,65.0f,0.0f,vtx);
-	case 26 : case 25 : g_pUi->DrawBillboard(g_pSpeedBar[0],&matBillboard,-10.5f,60.0f,0.0f,vtx);
-	case 24 : case 23 : g_pUi->DrawBillboard(g_pSpeedBar[0],&matBillboard,-10.5f,55.0f,0.0f,vtx);
-	case 22 : case 21 : g_pUi->DrawBillboard(g_pSpeedBar[0],&matBillboard,-10.5f,50.0f,0.0f,vtx);
-	case 20 : case 19 : g_pUi->DrawBillboard(g_pSpeedBar[0],&matBillboard,-10.5f,45.0f,0.0f,vtx);
-	case 18 : case 17 : g_pUi->DrawBillboard(g_pSpeedBar[0],&matBillboard,-10.5f,40.0f,0.0f,vtx);
-	case 16 : case 15 : g_pUi->DrawBillboard(g_pSpeedBar[0],&matBillboard,-10.5f,35.0f,0.0f,vtx);
-	case 14 : case 13 : g_pUi->DrawBillboard(g_pSpeedBar[0],&matBillboard,-10.5f,30.0f,0.0f,vtx);
-	case 12 : case 11 : g_pUi->DrawBillboard(g_pSpeedBar[0],&matBillboard,-10.5f,25.0f,0.0f,vtx);
-	case 10 : case 9 : g_pUi->DrawBillboard(g_pSpeedBar[0],&matBillboard,-10.5f,20.0f,0.0f,vtx);
-	case 8 : case 7 : g_pUi->DrawBillboard(g_pSpeedBar[0],&matBillboard,-10.5f,15.0f,0.0f,vtx);
-	case 6 : case 5 : g_pUi->DrawBillboard(g_pSpeedBar[0],&matBillboard,-10.5f,10.0f,0.0f,vtx);
-	case 4 : case 3 : g_pUi->DrawBillboard(g_pSpeedBar[0],&matBillboard,-10.5f,5.0f,0.0f,vtx);
-	case 2 : case 1: g_pUi->DrawBillboard(g_pSpeedBar[0],&matBillboard,-10.5f,0.0f,0.0f,vtx);
-		break;
-	}
-//	g_pUi->DrawBillboard(g_pSpeedBar[6],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/5,0,0,mapVtx);
-
-	for(INT i=0;i<g_pMyCharacter->HisLife()/10;i++){
-		g_pUi->DrawBillboard(g_pSpeedBar[3],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/20,12.0f*i,0.0f,hpVtx);
-	}
-	for(INT i=0;i<g_pMyCharacter->HisMana()/10;i++){
-		g_pUi->DrawBillboard(g_pSpeedBar[4],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/20*2,12.0f*i,0.0f,hpVtx);
-	}
-	for(INT i=0;i<g_pMyCharacter->HisDef()/10;i++){
-		g_pUi->DrawBillboard(g_pSpeedBar[5],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/20*3,12.0f*i,0.0f,hpVtx);
-	}
-
-	INT m = g_pMon->HisLife()/50;
-	for(INT i=0;i<m;i++){
-		g_pUi->DrawBillboard(g_pSpeedBar[3],&matBillboard,-WINDOW_WIDTH+WINDOW_WIDTH/20*i,WINDOW_HEIGHT-m,0.0f,hpVtx);
-	}
-
-	g_pd3dDevice->SetTransform(D3DTS_PROJECTION, &matProj);// return to origin prog=
+inline D3DXMATRIX DrawPosition(D3DXMATRIX* world,/**/D3DXVECTOR3 scale,/**/D3DXVECTOR3 trans)
+{
+	D3DXMatrixIdentity(world);
+	D3DXMatrixScaling(&g_matSetScale,scale.x,scale.y,scale.z);
+	D3DXMatrixTranslation(&g_matSetTrans,trans.x,trans.y,trans.z);
+	*world = *world * g_matSetScale * g_matSetTrans;
+	return *world;
 }
 
 
-inline VOID modelLeader(FLOAT time){
-	if(g_pModel){
-		g_pModel->Update(time);
-		g_pModel->Draw();
-	}
-}
+
 //inline VOID RenderPolyLine( LPDIRECT3DDEVICE9 device, UINT count = 100 )
 //{
 //	if(!SetBefore){
@@ -533,54 +377,22 @@ inline VOID Render(FLOAT time)
 		//-----------------------------------------------------------------------------
 		// View Setting
 		//-----------------------------------------------------------------------------
-		g_pDrawXfile->SetView(g_matView);
+		g_pMyCharacter->SetViewMatrix(g_matView);
+		g_pSetMonster->SetViewMatrix(g_matView);
 		g_pMapBox->SetView(g_matView);
-		g_pHpItems->SetView(g_matView);
-		g_pMpItems->SetView(g_matView);
-		g_pDefItems->SetView(g_matView);
-
-//		BlackBox->SetView(g_matView);
-		for(INT i=0;i<ACTION_PATTERN_COUNT+1;i++){
-			g_pMonDetail[i]->SetView(g_matView);
-		}
+		g_pSetItems->SetViewMatrix(g_matView);
 		//-----------------------------------------------------------------------------
 		// Character Setting
 		//-----------------------------------------------------------------------------
 		g_pMoving->GetPosition(GSPEED);	
-		
-		D3DXMatrixIdentity(&g_matMyWorld);
-		D3DXMatrixScaling(&g_matMyScale,BALL_SIZE,BALL_SIZE,BALL_SIZE);
-		D3DXMatrixTranslation(&g_matMyTrans,g_pMyCharacter->GetPosition().x,g_pMyCharacter->GetPosition().y,g_pMyCharacter->GetPosition().z);
-		g_matMyWorld *= g_matMyScale;
-		g_matMyWorld *= g_matMyTrans;
-		g_pDrawXfile->DrawMyballShader(g_matMyWorld);	
-
-
-//		RenderPolyLine(g_pd3dDevice);
-
+		g_pSetMonster->MonsterPosition(GSPEED);
+		g_pMyCharacter->Draw(&g_matMyWorld);
 		//-----------------------------------------------------------------------------
 		// Monster Setting
 		//-----------------------------------------------------------------------------
-		g_pMai->GetPositionMon(time);
-		D3DXMatrixIdentity(&g_matBoxWorld);
-//		D3DXMatrixTranslation(&g_matMyTrans,100.0f,0,0);
-		D3DXMatrixScaling(&g_matMyScale,MON_SIZE,MON_SIZE,MON_SIZE);
-		D3DXMatrixTranslation(&g_matMyTrans,g_pMon->GetPosition().x,g_pMon->GetPosition().y,g_pMon->GetPosition().z);
-		g_matBoxWorld *= g_matMyScale;
-		if(g_pMai->GetActionNum()==4){
-			D3DXMatrixRotationY(&g_matMyRotate,time*GAMESPEED*10);
-			g_matBoxWorld *= g_matMyRotate;
-		}else{
-			D3DXVECTOR3 monRotationX = D3DXVECTOR3(1,0,1);
-			D3DXVECTOR3	monRotationZ = D3DXVECTOR3(g_pMon->GetVelocity().x,0,g_pMon->GetVelocity().z);
-			D3DXVec3Normalize(&monRotationX,&monRotationX);
-			D3DXVec3Normalize(&monRotationZ,&monRotationZ);
-			FLOAT angle=acos(D3DXVec3Dot(&monRotationX,&monRotationZ))*180/D3DX_PI;
-			D3DXMatrixRotationY(&g_matMyRotate,angle);
-			g_matBoxWorld *= g_matMyRotate;
-		}
-		g_matBoxWorld *= g_matMyTrans;
-//		g_pMonDetail[g_pMai->GetActionNum()]->DrawMyballShader(g_matBoxWorld);	
+
+		g_pSetMonster->GetPositionMon(time);
+		DrawPosition(&g_matBoxWorld,D3DXVECTOR3(MON_SIZE,MON_SIZE,MON_SIZE),g_pSetMonster->GetMonster()->GetPosition());
 		if(g_nCameraCase == 1){
 			g_pd3dDevice->SetTransform( D3DTS_WORLD, &g_matBoxWorld );
 			D3DXMATRIXA16*	pmatView = g_pCamera->GetViewMatrix();		// 카메라 행렬을 얻는다.
@@ -591,74 +403,26 @@ inline VOID Render(FLOAT time)
 			D3DXMATRIXA16*	pmatView = g_pCamera->GetViewMatrix();		// 카메라 행렬을 얻는다.
 			g_pd3dDevice->SetTransform( D3DTS_VIEW, &g_matView);			// 카메라 행렬 셋팅
 		}
-		modelLeader(g_pMai->GetMotionTime());
+		g_pSetMonster->Draw();
 
 		//-----------------------------------------------------------------------------
 		// Missile Setting
 		//-----------------------------------------------------------------------------
-		if(g_pMai->GetMsionall()){
-			for(INT i=0;i<10;i++){
-				D3DXMatrixIdentity(&g_matMisWorld);
-				D3DXMatrixScaling(&g_matMyScale,MISSILE_SIZE,MISSILE_SIZE,MISSILE_SIZE);
-				D3DXMatrixTranslation(&g_matMyTrans,g_pMissile[i]->GetPosition().x,g_pMissile[i]->GetPosition().y,g_pMissile[i]->GetPosition().z);
-				g_matMisWorld *= g_matMyScale;
-				g_matMisWorld *= g_matMyTrans;
-				g_pDrawXfile->DrawMyballShader(g_matMisWorld);
-				g_pMoving->CrashMissile(g_pMissile[i]);
-			}
-		}
+		g_pSetMonster->CrashMissile();
+//		if(g_pMai->GetMsionall()){
+			g_pSetMonster->CrashMissile();
+//		}
 		//-----------------------------------------------------------------------------
 		// Room Setting
 		//-----------------------------------------------------------------------------
-		D3DXMatrixIdentity(&g_matBoxWorld);
-		D3DXMatrixScaling(&g_matMyScale,3.2f,0.15f,3.2f);
-		D3DXMatrixTranslation(&g_matMyTrans,MAXBOUNDX/2,-5.2f,MAXBOUNDZ/2);
-		g_matBoxWorld *= g_matMyScale;
-		g_matBoxWorld *= g_matMyTrans;
-		g_pMapBox->DrawMyballShader(g_matBoxWorld);
+		g_pMapBox->DrawMyballShader(DrawPosition(D3DXVECTOR3(3.2f,0.15f,3.2f),D3DXVECTOR3(MAXBOUNDX/2,-5.2f,MAXBOUNDZ/2)));
+		g_pSetMonster->DrawWall();
 
-//		g_pMoving->GetPositionWall(g_pMyCharacter,g_pWall,D3DXVECTOR3(30,0,0),GSPEED);
+		g_pSetMonster->CrashMon(time);
+		g_pSetItems->Draw(time, g_pMyCharacter);		
+		g_pSetUi->DrawUI(abs((INT)D3DXVec3Length(&g_pMyCharacter->GetVelocity())),g_pMyCharacter->HisLife(),g_pMyCharacter->HisMana(),g_pMyCharacter->HisDef(),g_pSetMonster->GetMonster()->GetLife()/*g_pMon->HisLife()*/);
+		g_pd3dDevice->SetTransform(D3DTS_PROJECTION, &matProj);
 
-		if(g_pMoving->GetMonWall())
-		{
-			if(!g_bWall){
-			D3DXMatrixIdentity(&g_matBoxWorld);
-			if(g_pMoving->GetMonMaxWallX()){
-				D3DXMatrixScaling(&g_matMyScale,0.001f,3.2f,3.2f);
-				D3DXMatrixTranslation(&g_matMyTrans,g_pMoving->GetMaxX(),g_pWall->GetPositionY()+MAXBOUNDY/2,MAXBOUNDZ/2);
-			}
-			else if(g_pMoving->GetMonMinWallX()){
-				D3DXMatrixScaling(&g_matMyScale,0.001f,3.2f,3.2f);
-				D3DXMatrixTranslation(&g_matMyTrans,g_pMoving->GetMinX(),g_pWall->GetPositionY()+MAXBOUNDY/2,MAXBOUNDZ/2);
-			}
-			else if(g_pMoving->GetMonMaxWallY()){
-			}
-			else if(g_pMoving->GetMonMinWallY()){
-			}
-			else if(g_pMoving->GetMonMaxWallZ()){
-				D3DXMatrixScaling(&g_matMyScale,3.2f,3.2f,0.001f);
-				D3DXMatrixTranslation(&g_matMyTrans,MAXBOUNDX/2,g_pWall->GetPositionY()+MAXBOUNDY/2,g_pMoving->GetMaxZ());
-			}
-			else if(g_pMoving->GetMonMinWallZ()){
-				D3DXMatrixScaling(&g_matMyScale,3.2f,3.2f,0.001f);
-				D3DXMatrixTranslation(&g_matMyTrans,MAXBOUNDX/2,g_pWall->GetPositionY()+MAXBOUNDY/2,g_pMoving->GetMinZ());
-			}
-			g_matBoxWorld *= g_matMyScale;
-			g_matBoxWorld *= g_matMyTrans;
-			g_pMapBox->DrawMyballShader(g_matBoxWorld);
-			g_bWall = true;
-			}else{
-				g_bWall = FALSE;
-			}
-		}
-
-		g_pMoving->GetItem(g_pItemList);		
-		Setg_pItemList(time);
-		g_pItemListDraw(time);
-
-		g_pMoving->CrashMon(time);
-
-		DrawUi();
 		g_pd3dDevice->EndScene();
 
 	}
@@ -671,126 +435,44 @@ inline VOID AfterInitD3D(){
 	srand((unsigned)GetTickCount());
 	D3DXVECTOR4 m_v4Pos( START_POSITIONX, START_POSITIONY, START_POSITIONZ, 1.0f );
 	D3DXVECTOR4 m_v4Vel( START_VELOCITYX, START_VELOCITYY, START_VELOCITYZ, 0.0f );
-	D3DXVECTOR4 m_v4MonPos( START_MON_POSITIONX, START_MON_POSITIONY, START_MON_POSITIONZ, 1.0f );
-	D3DXVECTOR4 m_v4MonVel( START_VELOCITYX, START_VELOCITYY, START_VELOCITYZ, 0.0f );
 
 	g_pCamera = new ZCamera;
-	g_pWall = new Wall();
-	for(INT i=0;i<10;i++){g_pMissile[i]= new Missile();}
-	g_pDrawXfile = new Xfile();
 	g_pMapBox = new Xfile();
-	g_pHpItems = new Xfile();
-	g_pMpItems = new Xfile();
-	g_pDefItems = new Xfile();
 
-	for(INT i=0;i<ACTION_PATTERN_COUNT+1;i++){g_pMonDetail[i] = new Xfile();}
-	g_pMyCharacter = new Ball(( D3DXVECTOR3 )m_v4Pos,( D3DXVECTOR3 )m_v4Vel,( D3DXVECTOR3 )m_v4Vel);	
-	g_pItemList = new ItemsList();
-	g_pModel = new CModel(g_pd3dDevice);
-	g_pMon = new Monster((D3DXVECTOR3)m_v4MonPos,(D3DXVECTOR3)m_v4MonVel,(D3DXVECTOR3)m_v4MonVel);
-	g_pMoving = new Moving(g_pMyCharacter,g_pMon,g_pWall);
-	g_pResult = new Checkai();
-	g_pMai = new Monai(g_pMon,g_pMyCharacter,g_pMissile,g_pMoving,g_pWall,g_pResult,g_pModel, m_fStartTime);
-	g_pUi = new Ui(g_pd3dDevice);
+	g_pMyCharacter = new Ball(( D3DXVECTOR3 )m_v4Pos,( D3DXVECTOR3 )m_v4Vel,( D3DXVECTOR3 )m_v4Vel, g_pd3dDevice);	
+	g_pSetItems = new SettingItems(m_fStartTime,g_pd3dDevice);
+	
+	g_pMoving = new Moving(g_pMyCharacter);
+	g_pSetMonster = new SettingMonster(g_pd3dDevice,g_pMyCharacter,g_pMoving,m_fStartTime);
+//	g_pMai = new Monai(g_pSetMonster->GetMonster(),g_pMyCharacter,g_pSetMonster->GetMissile(),g_pMoving,g_pSetMonster->GetWall(),g_pSetMonster->GetCheckai(),g_pSetMonster->GetModel(), m_fStartTime);
+	g_pSetUi = new SettingUI(g_pd3dDevice);
 }
 
 inline VOID AfterRender(){
-	for(INT i=0;i<10;i++){delete g_pMissile[i];}
-	delete g_pWall;
 	delete g_pCamera;
-	delete g_pDrawXfile;
 	delete g_pMapBox;
-	for(INT i=0;i<ACTION_PATTERN_COUNT+1;i++){delete g_pMonDetail[i];};
 	delete g_pMyCharacter;
 	delete g_pMoving;
-	delete g_pItemList;
-	delete g_pModel;
-	delete g_pMon;
-	delete g_pMai;
-	delete g_pResult;
-	delete g_pUi;;
-	delete g_pHpItems;
-	delete g_pMpItems;
-	delete g_pDefItems;
+	delete g_pSetItems;
+	delete g_pSetMonster;
+//	delete g_pMai;
+	delete g_pSetUi;
 }
 
 inline VOID BeforeRender(){
 	InitGeometry();
-	g_pDrawXfile->SetViewprojtexture(matProj,g_v4LightColor);
+	g_pMyCharacter->SetProjectionMatrix(matProj,g_v4LightColor);
+	g_pSetMonster->SetProjectionMatrix(matProj,g_v4LightColor);
 	g_pMapBox->SetViewprojtexture(matProj,g_v4LightColor);
-	g_pHpItems->SetViewprojtexture(matProj,g_v4LightColor);
-	g_pMpItems->SetViewprojtexture(matProj,g_v4LightColor);
-	g_pDefItems->SetViewprojtexture(matProj,g_v4LightColor);
-	for(INT i=0;i<ACTION_PATTERN_COUNT+1;i++){
-		g_pMonDetail[i]->SetViewprojtexture(matProj,g_v4LightColor);
-	}
-
+	g_pSetItems->SetProjectionMatrix(matProj,g_v4LightColor);
 }
 inline HRESULT initLoad(){
-	/*---------init character---------*/
-	if(FAILED(g_pDrawXfile->InitballMesh(g_pd3dDevice,"FireBase.tga","Flame.tga","FireBall.fx","FireBall.x"))){
-		return E_FAIL;
-	}
 	if(FAILED(g_pMapBox->InitballMesh(g_pd3dDevice,"FieldstoneNoisy.tga","FieldstoneBumpDOT3.tga","Monster.fx","Monster.x"))){
 		return E_FAIL;
 	}
-	if(FAILED(g_pHpItems->InitballMesh(g_pd3dDevice,"FireBase.tga","CoinDOT3.tga","HP.fx","HP.x"))){
-		return E_FAIL;
-	}
-	if(FAILED(g_pMpItems->InitballMesh(g_pd3dDevice,"CoinDOT3.tga","CoinDOT3.tga","MP.fx","MP.x"))){
-		return E_FAIL;
-	}
-	if(FAILED(g_pDefItems->InitballMesh(g_pd3dDevice,"coin.dds","CoinDOT3.tga","DEF.fx","DEF.x"))){
-		return E_FAIL;
-	}
-
-	if(FAILED(g_pMonDetail[0]->InitballMesh(g_pd3dDevice,"Spotlight.jpg","noise.tga","MsiBall.fx","Monster.x"))){
-		return E_FAIL;
-	}
-	if(FAILED(g_pMonDetail[1]->InitballMesh(g_pd3dDevice,"Corona.tga","Corona.tga","HealBall.fx","Monster.x"))){
-		return E_FAIL;
-	}
-	if(FAILED(g_pMonDetail[2]->InitballMesh(g_pd3dDevice,"Hex.dds","FireBase.tga","DefBall.fx","Monster.x"))){
-		return E_FAIL;
-	}
-	if(FAILED(g_pMonDetail[3]->InitballMesh(g_pd3dDevice,"quad2.tga","base.tga","AttBall.fx","Monster.x"))){
-		return E_FAIL;
-	}
-	if(FAILED(g_pMonDetail[4]->InitballMesh(g_pd3dDevice,"N2d_000.tga","base.tga","LaserBall.fx","Monster.x"))){
-		return E_FAIL;
-	}
-	if(FAILED(g_pMonDetail[5]->InitballMesh(g_pd3dDevice,"Cube4.png","Fur.tga","WallBall.fx","Monster.x"))){
-		return E_FAIL;
-	}
-	if(FAILED(g_pMonDetail[6]->InitballMesh(g_pd3dDevice,"nhk_16.tga","FireBase.tga","ChangeBall.fx","Monster.x"))){
-		return E_FAIL;
-	}
-	/*---------init billboard---------*/
-	if(!SUCCEEDED(g_pUi->InitBillboard("normal_speed.png",&g_pSpeedBar[0]))){
-		return E_FAIL;
-	}
-	if(!SUCCEEDED(g_pUi->InitBillboard("red_speed.png",&g_pSpeedBar[1]))){
-		return E_FAIL;
-	}
-	if(!SUCCEEDED(g_pUi->InitBillboard("yellow_speed.png",&g_pSpeedBar[2]))){
-		return E_FAIL;
-	}
-	if(!SUCCEEDED(g_pUi->InitBillboard("hp.png",&g_pSpeedBar[3]))){
-		return E_FAIL;
-	}
-	if(!SUCCEEDED(g_pUi->InitBillboard("mp.png",&g_pSpeedBar[4]))){
-		return E_FAIL;
-	}
-	if(!SUCCEEDED(g_pUi->InitBillboard("def.png",&g_pSpeedBar[5]))){
-		return E_FAIL;
-	}
-	if(!SUCCEEDED(g_pUi->InitBillboard("black_rec.png",&g_pSpeedBar[6]))){
-		return E_FAIL;
-	}
-	/*---------init monster.x---------*/
-	if(!SUCCEEDED(g_pModel->LoadXFile("boxmodel.x"))){
-		return E_FAIL;
-	}
+	g_pMyCharacter->SetXfile();
+	g_pSetItems->SetXfile();
+	g_pSetMonster->SetXfile();
 	return S_OK;
 }
 //-----------------------------------------------------------------------------
@@ -840,12 +522,6 @@ inline LRESULT WINAPI MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				g_nCameraCase = 2;
 			else if(g_nCameraCase == 2)
 				g_nCameraCase =1;
-			break;
-		case 'K':
-			g_pModel->SetCurrentAnimation(g_pModel->GetCurrentAnimation()+1);
-			break;
-		case 'L':
-			g_pModel->SetCurrentAnimation(g_pModel->GetCurrentAnimation()-1);
 			break;
 		}
 		break;

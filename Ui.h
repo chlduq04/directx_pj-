@@ -12,6 +12,7 @@ private:
 	float fWinHeight;
 public:
 	Ui(LPDIRECT3DDEVICE9 device);
+	~Ui();
 	VOID SetUI();
 	VOID SetCenUI();
 	VOID DrawBillboard(LPDIRECT3DTEXTURE9 texture,D3DXMATRIX* matworld,float tranx, float trany, float tranz, MYVERTEX* vtx);
