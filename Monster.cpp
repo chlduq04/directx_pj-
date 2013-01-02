@@ -34,9 +34,9 @@ void Monster::MonAttack(){
 }
 void Monster::MonMissile(){}
 void Monster::MonJump(){}
-void Monster::MonHealing(){
+void Monster::MonHealing(INT arge){
 	if(mLife<maxLife){
-		mLife += 50;
+		mLife += arge;
 	}
 	else{
 		mLife = maxLife;

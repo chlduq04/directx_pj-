@@ -46,28 +46,26 @@ DWORD					g_dwMouseY = 0;
 //-----------------------------------------------------------------------------
 ZCamera*				g_pCamera = NULL;
 //-----------------------------------------------------------------------------
-// Draw Wall
-//-----------------------------------------------------------------------------
-BOOL					g_bWall = FALSE;
-//-----------------------------------------------------------------------------
 // Items Setting
 //-----------------------------------------------------------------------------
 SettingItems*			g_pSetItems;
-SettingUI*						g_pSetUi;
+//-----------------------------------------------------------------------------
+// UI Setting
+//-----------------------------------------------------------------------------
+SettingUI*				g_pSetUi;
 //-----------------------------------------------------------------------------
 // Camera Setting
 //-----------------------------------------------------------------------------
 D3DXMATRIXA16			g_matAni;
-INT						g_nCameraCase = 1;
+INT						g_nCameraCase = 2;
 FLOAT					g_fMouseX;
 FLOAT					g_fMouseY;
 //-----------------------------------------------------------------------------
 // Character Matrix
 //-----------------------------------------------------------------------------
 D3DXMATRIX				g_matView;
-D3DXMATRIXA16			g_matWorld;
-D3DXMATRIXA16			g_matBoxWorld;
-D3DXMATRIXA16			g_matMisWorld;
+D3DXMATRIX				g_matWorld;
+D3DXMATRIX				g_matBoxWorld;
 
 D3DXVECTOR4             g_v4LightColor(1.0f, 1.0f, 1.0f, 1.0f);//빛의 색
 D3DXVECTOR3				g_v3Zero(0.0f,0.0f,0.0f); 
@@ -78,16 +76,7 @@ D3DXMATRIXA16			g_matMyWorld;
 D3DXMATRIXA16			g_matMyScale;
 D3DXMATRIXA16			g_matMyTrans;
 D3DXMATRIXA16			g_matMyRotate;
-D3DXMATRIXA16			g_matMyRotateX;
-D3DXMATRIXA16			g_matMyRotateY;
-D3DXMATRIXA16			g_matMyRotateZ;
 D3DXVECTOR3				g_v3EyePosition;
-//-----------------------------------------------------------------------------
-// World Matrix
-//-----------------------------------------------------------------------------
-D3DXMATRIXA16			matWorld;
-D3DXMATRIXA16			matView;
-D3DXMATRIXA16			matProj;
 //-----------------------------------------------------------------------------
 // Global variables
 //-----------------------------------------------------------------------------
@@ -97,28 +86,31 @@ LPD3DXMESH				g_pMesh = NULL; // Our mesh object in sysmem
 D3DMATERIAL9*			g_pMeshMaterials = NULL; // Materials for our mesh
 LPDIRECT3DTEXTURE9*		g_pMeshTextures = NULL; // Textures for our mesh
 DWORD					g_dwNumMaterials = 0L;   // Number of mesh materials
+FLOAT					GSPEED = GAMESPEED;
 D3DXMATRIX				g_matSetWorld;
 D3DXMATRIX				g_matSetTrans;
 D3DXMATRIX				g_matSetScale;
+D3DXMATRIXA16			matWorld;
+D3DXMATRIXA16			matView;
+D3DXMATRIXA16			matProj;
 //-----------------------------------------------------------------------------
 // Laser variables
 //-----------------------------------------------------------------------------
-D3DXVECTOR3				ret1;
-D3DXVECTOR3				ret2;
-FLOAT					GSPEED = GAMESPEED;
-BOOL					bWireFrame = true;
-D3DXVECTOR3				curve[4];
-//D3DXVECTOR3				beforeMonPos;
-D3DXVECTOR3				beforeMypos;
-D3DXVECTOR3				laserSpeed;
-BOOL					SetBefore = FALSE;
-FLOAT					Settime;
+//D3DXVECTOR3				ret1;
+//D3DXVECTOR3				ret2;
+//BOOL					bWireFrame = true;
+//D3DXVECTOR3				curve[4];
+////D3DXVECTOR3				beforeMonPos;
+//D3DXVECTOR3				beforeMypos;
+//D3DXVECTOR3				laserSpeed;
+//BOOL					SetBefore = FALSE;
+//FLOAT					Settime;
 //-----------------------------------------------------------------------------
-// Xfile Draw
+// Map Draw
 //-----------------------------------------------------------------------------
 Xfile* g_pMapBox;
 //-----------------------------------------------------------------------------
-// Model Loading
+// Monster Loading
 //-----------------------------------------------------------------------------
 SettingMonster*			g_pSetMonster = NULL;
 //-----------------------------------------------------------------------------
@@ -160,7 +152,6 @@ inline HRESULT InitD3D( HWND hWnd )
 //-----------------------------------------------------------------------------
 // 각 행렬 제어, 카메라 세팅
 //-----------------------------------------------------------------------------
-
 inline VOID SetupCamera()
 {
 	/// 월드 행렬 설정
@@ -194,8 +185,7 @@ inline VOID InitGeometry()
 
 /**-----------------------------------------------------------------------------
 * 입력 처리
-*------------------------------------------------------------------------------
-*/
+*------------------------------------------------------------------------------*/
 inline VOID ProcessInputs( VOID )
 {
 	POINT	pt;
@@ -236,6 +226,9 @@ inline VOID ProcessInputs( VOID )
 
 
 }
+/**-----------------------------------------------------------------------------
+* 빛 처리
+*------------------------------------------------------------------------------*/
 inline VOID SetupLight()
 {
 	D3DMATERIAL9 mtrl;
@@ -270,10 +263,9 @@ inline VOID SetupLight()
 	g_pd3dDevice->SetRenderState( D3DRS_AMBIENT, 0x00404040 );		/// 환경광원(ambient light)의 값 설정
 }
 
-//-----------------------------------------------------------------------------
-// Name: Cleanup()
-// Desc: Releases all previously initialized objects
-//-----------------------------------------------------------------------------
+/**-----------------------------------------------------------------------------
+* Clean
+*------------------------------------------------------------------------------*/
 inline VOID Cleanup()
 {
 	if( g_pMeshMaterials != NULL )
@@ -297,7 +289,9 @@ inline VOID Cleanup()
 	if( g_pD3D != NULL )
 		g_pD3D->Release();
 }
-
+/**-----------------------------------------------------------------------------
+* Draw Position
+*------------------------------------------------------------------------------*/
 inline D3DXMATRIX DrawPosition(/**/D3DXVECTOR3 scale,/**/D3DXVECTOR3 trans)
 {
 	D3DXMatrixIdentity(&g_matSetWorld);
@@ -313,8 +307,6 @@ inline D3DXMATRIX DrawPosition(D3DXMATRIX* world,/**/D3DXVECTOR3 scale,/**/D3DXV
 	*world = *world * g_matSetScale * g_matSetTrans;
 	return *world;
 }
-
-
 
 //inline VOID RenderPolyLine( LPDIRECT3DDEVICE9 device, UINT count = 100 )
 //{
@@ -344,36 +336,37 @@ inline D3DXMATRIX DrawPosition(D3DXMATRIX* world,/**/D3DXVECTOR3 scale,/**/D3DXV
 //		ret1 = ret2;
 //	}
 //}
+inline VOID CameraCase(){
+	if(g_nCameraCase == 1){
+		D3DXVECTOR3 vLookatPt(g_matMyWorld._41,g_matMyWorld._42, g_matMyWorld._43);
+		D3DXMatrixLookAtLH(&g_matView,g_pCamera->GetEye(),g_pCamera->GetLookat(),g_pCamera->GetUp());
+	}
+	else if(g_nCameraCase == 2){			
+		if(g_fMouseY<-25)
+			g_fMouseY = -25;
+		if(g_fMouseY>25)
+			g_fMouseY = 25;
 
+		D3DXVECTOR3 vEyePt(g_matMyWorld._41+10*cos(g_fMouseX),g_matMyWorld._42+g_fMouseY,g_matMyWorld._43+10*sin(g_fMouseX));
+		D3DXVECTOR3 vLookatPt(g_matMyWorld._41,g_matMyWorld._42, g_matMyWorld._43);						
+		D3DXVECTOR3 vUpVec(0.0f,1.0f,0.0f);						
+		D3DXMatrixLookAtLH( &g_matView, &vEyePt, &vLookatPt, &vUpVec );
+		g_v3EyePosition = vLookatPt - vEyePt;
+	}
+}
+/**-----------------------------------------------------------------------------
+* Render
+*------------------------------------------------------------------------------*/
 inline VOID Render(FLOAT time)
 {
 	g_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB( 0, 0, 0 ), 1.0f, 0 );
 //	SetupLight();
 	if( SUCCEEDED( g_pd3dDevice->BeginScene() ) )
 	{
-
 		//-----------------------------------------------------------------------------
 		// Camera Setting
 		//-----------------------------------------------------------------------------
-		
-		if(g_nCameraCase == 1){
-			D3DXVECTOR3 vLookatPt(g_matMyWorld._41,g_matMyWorld._42, g_matMyWorld._43);
-			D3DXMatrixLookAtLH(&g_matView,g_pCamera->GetEye(),g_pCamera->GetLookat(),g_pCamera->GetUp());
-		}
-		else if(g_nCameraCase == 2){			
-			if(g_fMouseY<-25)
-				g_fMouseY = -25;
-			if(g_fMouseY>25)
-				g_fMouseY = 25;
-
-			D3DXVECTOR3 vEyePt(g_matMyWorld._41+10*cos(g_fMouseX),g_matMyWorld._42+g_fMouseY,g_matMyWorld._43+10*sin(g_fMouseX));
-			D3DXVECTOR3 vLookatPt(g_matMyWorld._41,g_matMyWorld._42, g_matMyWorld._43);						
-			D3DXVECTOR3 vUpVec(0.0f,1.0f,0.0f);						
-			D3DXMatrixLookAtLH( &g_matView, &vEyePt, &vLookatPt, &vUpVec );
-			g_v3EyePosition = vLookatPt - vEyePt;
-		}
-		
-
+		CameraCase();	
 		//-----------------------------------------------------------------------------
 		// View Setting
 		//-----------------------------------------------------------------------------
@@ -382,44 +375,28 @@ inline VOID Render(FLOAT time)
 		g_pMapBox->SetView(g_matView);
 		g_pSetItems->SetViewMatrix(g_matView);
 		//-----------------------------------------------------------------------------
+		// Move Setting
+		//-----------------------------------------------------------------------------
+		g_pMoving->GetPosition(GSPEED);			
+		//-----------------------------------------------------------------------------
 		// Character Setting
 		//-----------------------------------------------------------------------------
-		g_pMoving->GetPosition(GSPEED);	
-		g_pSetMonster->MonsterPosition(GSPEED);
 		g_pMyCharacter->Draw(&g_matMyWorld);
 		//-----------------------------------------------------------------------------
 		// Monster Setting
 		//-----------------------------------------------------------------------------
-
-		g_pSetMonster->GetPositionMon(time);
-		DrawPosition(&g_matBoxWorld,D3DXVECTOR3(MON_SIZE,MON_SIZE,MON_SIZE),g_pSetMonster->GetMonster()->GetPosition());
-		if(g_nCameraCase == 1){
-			g_pd3dDevice->SetTransform( D3DTS_WORLD, &g_matBoxWorld );
-			D3DXMATRIXA16*	pmatView = g_pCamera->GetViewMatrix();		// 카메라 행렬을 얻는다.
-			g_pd3dDevice->SetTransform( D3DTS_VIEW, pmatView );			// 카메라 행렬 셋팅
-		}
-		else if(g_nCameraCase == 2){
-			g_pd3dDevice->SetTransform( D3DTS_WORLD, &g_matBoxWorld );
-			D3DXMATRIXA16*	pmatView = g_pCamera->GetViewMatrix();		// 카메라 행렬을 얻는다.
-			g_pd3dDevice->SetTransform( D3DTS_VIEW, &g_matView);			// 카메라 행렬 셋팅
-		}
-		g_pSetMonster->Draw();
-
-		//-----------------------------------------------------------------------------
-		// Missile Setting
-		//-----------------------------------------------------------------------------
-		g_pSetMonster->CrashMissile();
-//		if(g_pMai->GetMsionall()){
-			g_pSetMonster->CrashMissile();
-//		}
+		g_pSetMonster->Draw(&g_matBoxWorld,&g_matView,g_pCamera,time,GSPEED,g_nCameraCase);
 		//-----------------------------------------------------------------------------
 		// Room Setting
 		//-----------------------------------------------------------------------------
 		g_pMapBox->DrawMyballShader(DrawPosition(D3DXVECTOR3(3.2f,0.15f,3.2f),D3DXVECTOR3(MAXBOUNDX/2,-5.2f,MAXBOUNDZ/2)));
-		g_pSetMonster->DrawWall();
-
-		g_pSetMonster->CrashMon(time);
+		//-----------------------------------------------------------------------------
+		// Items Setting
+		//-----------------------------------------------------------------------------
 		g_pSetItems->Draw(time, g_pMyCharacter);		
+		//-----------------------------------------------------------------------------
+		// UI Setting
+		//-----------------------------------------------------------------------------
 		g_pSetUi->DrawUI(abs((INT)D3DXVec3Length(&g_pMyCharacter->GetVelocity())),g_pMyCharacter->HisLife(),g_pMyCharacter->HisMana(),g_pMyCharacter->HisDef(),g_pSetMonster->GetMonster()->GetLife()/*g_pMon->HisLife()*/);
 		g_pd3dDevice->SetTransform(D3DTS_PROJECTION, &matProj);
 
@@ -438,13 +415,12 @@ inline VOID AfterInitD3D(){
 
 	g_pCamera = new ZCamera;
 	g_pMapBox = new Xfile();
-
-	g_pMyCharacter = new Ball(( D3DXVECTOR3 )m_v4Pos,( D3DXVECTOR3 )m_v4Vel,( D3DXVECTOR3 )m_v4Vel, g_pd3dDevice);	
 	g_pSetItems = new SettingItems(m_fStartTime,g_pd3dDevice);
-	
+	g_pMyCharacter = new Ball(( D3DXVECTOR3 )m_v4Pos,( D3DXVECTOR3 )m_v4Vel,( D3DXVECTOR3 )m_v4Vel, g_pd3dDevice);	
 	g_pMoving = new Moving(g_pMyCharacter);
+	
 	g_pSetMonster = new SettingMonster(g_pd3dDevice,g_pMyCharacter,g_pMoving,m_fStartTime);
-//	g_pMai = new Monai(g_pSetMonster->GetMonster(),g_pMyCharacter,g_pSetMonster->GetMissile(),g_pMoving,g_pSetMonster->GetWall(),g_pSetMonster->GetCheckai(),g_pSetMonster->GetModel(), m_fStartTime);
+
 	g_pSetUi = new SettingUI(g_pd3dDevice);
 }
 

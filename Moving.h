@@ -39,10 +39,8 @@ private:
 public:
 	Moving(Ball* myball);
 	~Moving();
-	void GetPositionWall(D3DXVECTOR3 wall,float speed);
 	void GetPosition(float speed);
 //	void CrashMon(float time);
-	void ReturnWall();
 
 	inline bool GetMonWall(){return bMonWall;};
 	inline void SetMonWall(bool argu){bMonWall = argu;};

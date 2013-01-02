@@ -1,15 +1,14 @@
 #include "Monai.h"
 
 Monai::Monai(Monster* pMonster,Ball* pCharecter,Missile* missile[MISSILE_COUNT],Moving* pMoving,Wall* createwall,Checkai* result,CModel* model,float time){
-	bFirstAction = false;
-	bSecondAction = false;
-	bActionDelay = false;
 	nTypeCase = 0;
 	vZero = D3DXVECTOR3(0.0f,0.0f,0.0f);
+	vZline = D3DXVECTOR3(0.0f,0.0f,1.0f);
+	vFace = D3DXVECTOR3(0.0f,0.0f,0.0f);
 	fMonSpeed = 0.0f;
 	
 	fAniMotionTime = 0.02f;
-
+	nWallPos = 0;
 	fActionStart = -1.0f;
 	pMon = pMonster;
 	pCha = pCharecter;
@@ -22,42 +21,41 @@ Monai::Monai(Monster* pMonster,Ball* pCharecter,Missile* missile[MISSILE_COUNT],
 		pMsi[i] = missile[i];
 	}
 	fMotionSpeed = 0.5f;
-	fMotionSpeedX = 1.0f;
-	fMotionSpeedY = 1.0f;
-	fMotionSpeedZ = 1.0f;
-	bMotionDelay = false;
-	fMsiStartTime = time; 
-	fMsiEndTime = time; 
-	fDefStartTime = time;
-	fDefEndTime = time;
-	fWallStartTime = time;
-	fWallEndTime = time;
-	fHealStartTime = time;
-	fHealEndTime = time;
-	fHealEachDelay = time;
-	fRaserStartTime = time;
-	fRaserEndTime = time;
-	fRushStartTime = time;
-	fRushEndTime = time;
-	fNorAttStartTime = time;
-	fNorAttEndTime = time;
-
+	
 	bMsion = false;
 	bDefon = false;
-	bWallon = false;
+	//bWallon = false;
 	bHealon = false;
 	bRaseron = false;
 	bRushon = false;
 	bNaton = false;
 	bMsionAll = false;
 	bMsionNext = false;
-	nActionNum = 0;
-	nNextActionNum = 0;
+	g_nMissileCount = MISSILE_INITIAL_COUNT;
+	g_nInitDefence = 50;
+	g_nInitHealing = 20;
+	g_nWallPosition = 0;
+	g_nPase = 0;
 }
-Monai::~Monai(){}
+Monai::~Monai(){
+
+	pMon = NULL;
+	pCha = NULL;
+	pMov = NULL;
+	pWall = NULL;
+	pCheckResult = NULL;
+	for(int i=0;i<MISSILE_COUNT;i++){
+		pMsi[i] = NULL;
+	}
+	pNowAction = NULL;
+	pCheckAction = NULL;
+	pAniModel = NULL;
+
+}
 void Monai::GetPositionMon(float time){	
+	CheckMonster();
 	GetMoveType(time);
-	RealType(pMon->GetmType(),time);
+	Type(pMon->GetmType(),time);
 }
 
 void Monai::InhenceMove(int type){
@@ -71,7 +69,6 @@ void Monai::InhenceMove(int type){
 
 void Monai::GetMoveType(float time){
 	if(!pMon->IsGoal()){
-		fMotionSpeedY = 1.0f;
 		switch(pMon->GetOriginType()){
 		case 0:
 		case 1:
@@ -114,7 +111,6 @@ void Monai::GetMoveType(float time){
 			pMon->SetmType(3);
 			pMon->SetGoal(pCha->GetPosition()+D3DXVECTOR3(rand()%10-5,1.0f,rand()%10-5));
 			fMotionSpeed = 0.5f;
-			fMotionSpeedY = 10.0f;
 			vVelocity = pMon->GetGoal() - pMon->GetPosition();
 			D3DXVec3Normalize(&vVelocity,&vVelocity);
 			pAniModel->SetCurrentAnimation(7);
@@ -136,9 +132,7 @@ void Monai::GetMoveType(float time){
 		if(bNaton){
 			pAniModel->SetCurrentAnimation(1);
 		}
-		vVelocity.y *= fMotionSpeedY;
 		pMon->SetVelocity(vVelocity*GAMESPEED*fMotionSpeed);
-		pMon->SetRotate(vVelocity);
 		pMon->SetisGoal(true);
 	}
 	else{
@@ -154,7 +148,6 @@ void Monai::GetMoveType(float time){
 				pMon->SetVelocityX(0.0f);
 				pMon->SetVelocityY(0.0f);
 				pMon->SetVelocityZ(0.0f);
-
 				pMon->SetisGoal(false);
 				RandPositionMon();
 			}
@@ -174,9 +167,11 @@ void Monai::StopMove(float time){
 		}
 	}
 }
+
+
 void Monai::DefenceMode(){
 	pAniModel->SetCurrentAnimation(5);
-	pMon->MonDefence(100);
+	pMon->MonDefence(g_nInitDefence);
 	fAniMotionTime = 0.001f;
 }
 void Monai::LaserMode(){}
@@ -193,22 +188,34 @@ void Monai::HealingMode(float time){
 void Monai::MissileMode(){
 	bMsionAll = true;
 	bMsionNext = true;
-	for(int i=0;i<MISSILE_COUNT;i++){pMsi[i]->Start();}
+	for(int i=0;i<g_nMissileCount;i++){pMsi[i]->Start();}
 	pAniModel->SetCurrentAnimation(4);
 	fAniMotionTime = 0.005f;
 }
 void Monai::WallMode(){
+	pAniModel->SetCurrentAnimation(3);
 	nWallPos = rand()%2;
 	if(nWallPos){
 		nWallPos = pCha->GetPosition().x;
+		if(pCha->GetPosition().x>nWallPos){
+			g_nWallPosition = 1;
+		}
+		else{
+			g_nWallPosition = 2;
+		}
 	}
 	else{
 		nWallPos = pCha->GetPosition().z;
+		if(pCha->GetPosition().z>nWallPos){
+			g_nWallPosition = 3;
+		}
+		else{
+			g_nWallPosition = 4;
+		}
 	}
-	pAniModel->SetCurrentAnimation(3);
-	pMov->SetMonWall(true);
 	fAniMotionTime = 0.001f;
 }
+
 void Monai::DefenceModeStart(){
 	pAniModel->SetCurrentAnimation(5);
 	fAniMotionTime = 0.001f;
@@ -216,7 +223,7 @@ void Monai::DefenceModeStart(){
 void Monai::MissileModeStart(float time){
 	bMsionAll = false;
 	bMsionNext = false;
-	for(int i=0;i<MISSILE_COUNT;i++){
+	for(int i=0;i<g_nMissileCount;i++){
 		pMsi[i]->MoveMissile(pMon,pCha,time);
 		if(!bMsionAll&&pMsi[i]->NowStart()){
 			bMsionAll = true;
@@ -226,40 +233,13 @@ void Monai::MissileModeStart(float time){
 
 }
 void Monai::WallModeStart(){
-	if(nWallPos){
-		pMov->GetPositionWall(D3DXVECTOR3(nWallPos,0,0),GAMESPEED);//x
-	}
-	else{
-		pMov->GetPositionWall(D3DXVECTOR3(0,0,nWallPos),GAMESPEED);//z
-	}
 
-	if( !pWall->IsGround() )
-	{
-		pWall->SetPosition(pWall->GetPosition()+pWall->GetVelocity()*BALLSPEED);
-		if(pWall->GetVelocity().y>0)
-			pWall->SetVelocityY(pWall->GetVelocity().y-(GRAVITY+REVERSE_GRAVITY)*BALLSPEED*15.0f);
-		else
-			pWall->SetVelocityY(pWall->GetVelocity().y-(GRAVITY*BALLSPEED)*5.0f);
-
-		if( pWall->GetPosition().y < -GROUND)
-		{
-			if(pWall->GetBcount()>7){
-				pWall->IsGround(true);
-			}else{
-				pWall->SetPositionY(-GROUND );
-				pWall->SetVelocityY(-pWall->GetVelocity().y* ( 1 - ABSORBANCE*20 ));
-				pWall->SetBcount();
-			}
-
-		}
-	}
 }
 void Monai::HealingModeStart(float time){
 	if(time - fHealEachDelay > 1){
 		fHealEachDelay = time;
-		pMon->MonHealing();
+		pMon->MonHealing(g_nInitHealing);
 	}
-
 }
 void Monai::LaserModeStart(){
 }
@@ -269,361 +249,136 @@ void Monai::NormalAttModeStart(){
 		pCha->SetLife(-10);
 	}
 }
-
-void Monai::RealMixType(int type,float time){
-	switch(nTypeCase){
+void Monai::Case(Pattern* pattern,float time){
+	switch(pattern->GetNowAction()){
 	case 0:
-		pNowAction = pCheckResult->DoAction(type,time);
-		pNextAction = pNowAction->GetNextPat();
-		nActionNum = pNowAction->GetType();
-		fMotiontime = time;
-		nTypeCase = 1;
+		switch(pattern->GetType()){
+		case 0:
+			MissileMode();
+			break;
+		case 1:
+			HealingMode(time);
+			break;
+		case 2:
+			DefenceMode();
+			break;
+		case 3:
+			LaserMode();
+			break;
+		case 4:
+			NormalAttMode();
+			break;
+		case 5:
+			WallMode();
+			break;
+		}
+		pattern->SetNowAction(1);
+		pattern->StartPlay(time);
 		break;
 	case 1:
-		if(time - fMotiontime > pNowAction->GetMotionDelay()){
-			switch(nActionNum){
+		if(bMsionAll || pattern->IsPlay(time)){
+			switch(pattern->GetType()){
 			case 0:
-				MissileMode();
+				MissileModeStart(time);
 				break;
 			case 1:
-				HealingMode(time);
+				HealingModeStart(time);
 				break;
 			case 2:
-				DefenceMode();
+				DefenceModeStart();
 				break;
 			case 3:
-				LaserMode();
+				LaserModeStart();
 				break;
 			case 4:
-				NormalAttMode();
+				NormalAttModeStart();
 				break;
 			case 5:
-				WallMode();
+				WallModeStart();
 				break;
 			}
-			pNowAction->StartPlay(time);
+		}
+		else{
+			pattern->EndPlay(time);
+			pattern->SetNowAction(0);
 			nTypeCase = 2;
 		}
 		break;
+	}
+}
+void Monai::Type(int type,float time){
+	switch(nTypeCase){
+	case 0:
+		pCheckAction = pCheckResult->DoAction(type,time);
+		pNowAction = pCheckAction;
+		g_fCheckChaHP = pCha->HisLife();
+		g_fCheckMonHP = pMon->HisLife();
+		nTypeCase = 1;
+		break;
+	case 1:
+		Case(pNowAction, time);
+		break;
 	case 2:
-		if(pNextAction != NULL){
-			nNextActionNum = pNextAction->GetType();
-			switch(nNextActionNum){
-			case 0:
-				MissileMode();
-				break;
-			case 1:
-				HealingMode(time);
-				break;
-			case 2:
-				DefenceMode();
-				break;
-			case 3:
-				LaserMode();
-				break;
-			case 4:
-				NormalAttMode();
-				break;
-			case 5:
-				WallMode();
-				break;
-			}
-			pNextAction->StartPlay(time);
-			nTypeCase = 3;
+		pNowAction = pNowAction->GetNextPat();
+		if(pNowAction != NULL){
+		nTypeCase = 1;
 		}
 		else{
-			nTypeCase = 4;
+			nTypeCase = 3;
 		}
 		break;
 	case 3:
-		if(bMsionAll || pNowAction->IsPlay(time)){
-			switch(nActionNum){
-			case 0:
-				MissileModeStart(time);
-				break;
-			case 1:
-				HealingModeStart(time);
-				break;
-			case 2:
-				DefenceModeStart();
-				break;
-			case 3:
-				LaserModeStart();
-				break;
-			case 4:
-				NormalAttModeStart();
-				break;
-			case 5:
-				WallModeStart();
-				break;
-			}
-		}else{
-			pNowAction->EndPlay(time);
-		}
-		if(bMsionNext||pNextAction->IsPlay(time)){
-			switch(nNextActionNum){
-			case 0:
-				MissileModeStart(time);
-				break;
-			case 1:
-				HealingModeStart(time);
-				break;
-			case 2:
-				DefenceModeStart();
-				break;
-			case 3:
-				LaserModeStart();
-				break;
-			case 4:
-				NormalAttModeStart();
-				break;
-			case 5:
-				WallModeStart();
-				break;
-			}
-		}else{
-			pNextAction->EndPlay(time);
-		}
-		if(!bMsionNext&&!pNextAction->IsPlay(time)&&!bMsionAll&&!pNowAction->IsPlay(time)){
-			nTypeCase = 5;
-		}
-		break;
-	case 4:
-		if(bMsionAll || pNowAction->IsPlay(time)){
-			switch(nActionNum){
-			case 0:
-				MissileModeStart(time);
-				break;
-			case 1:
-				HealingModeStart(time);
-				break;
-			case 2:
-				DefenceModeStart();
-				break;
-			case 3:
-				LaserModeStart();
-				break;
-			case 4:
-				NormalAttModeStart();
-				break;
-			case 5:
-				WallModeStart();
-				break;
-			}
-		}
-		else{
-			pNowAction->EndPlay(time);
-			nTypeCase = 5;
-		}
-		break;
-	case 5:
+		pCheckAction->UpDo(1);
+		pCheckAction->UpEffective((g_fCheckChaHP - pCha->HisLife()/5));
+		pCheckAction->UpDo((g_fCheckMonHP - pMon->HisLife()/100));
 		SetActionReset();
+		nTypeCase = 0;
 		break;
 	}
 }
 
-void Monai::RealType(int type,float time){
-	switch(nTypeCase){
-	case 0:
-		pNowAction = pCheckResult->DoAction(type,time);
-		pNextAction = pNowAction->GetNextPat();
-		fMotiontime = time;
-		nActionNum = CHANGE_ACTION_NUM;
-		nTypeCase = 1;
-		break;
-	case 1:
-		nTypeCase = 2;
-		nActionNum = pNowAction->GetType();
-		break;
-	case 2:
-		if(time - fMotiontime > pNowAction->GetMotionDelay()){
-			pNowAction->StartPlay(time);
-			switch(nActionNum){
-			case 0:
-				MissileMode();
-				break;
-			case 1:
-				HealingMode(time);
-				break;
-			case 2:
-				DefenceMode();
-				break;
-			case 3:
-				LaserMode();
-				break;
-			case 4:
-				NormalAttMode();
-				break;
-			case 5:
-				WallMode();
-				break;
-			}
-			nTypeCase = 3;
-		}
-		break;
-	case 3:
-		if(bMsionAll || pNowAction->IsPlay(time)){
-			switch(nActionNum){
-			case 0:
-				MissileModeStart(time);
-				break;
-			case 1:
-				HealingModeStart(time);
-				break;
-			case 2:
-				DefenceModeStart();
-				break;
-			case 3:
-				LaserModeStart();
-				break;
-			case 4:
-				NormalAttModeStart();
-				break;
-			case 5:
-				WallModeStart();
-				break;
-			}
-		}
-		else{
-			nTypeCase = 4;
-		}
-		break;
-	case 4:
-		if(pNextAction != NULL){
-			nNextActionNum = pNextAction->GetType();
-			switch(nNextActionNum){
-			case 0:
-				MissileMode();
-				break;
-			case 1:
-				HealingMode(time);
-				break;
-			case 2:
-				DefenceMode();
-				break;
-			case 3:
-				LaserMode();
-				break;
-			case 4:
-				NormalAttMode();
-				break;
-			case 5:
-				WallMode();
-				break;
-			}
-			pNowAction->EndPlay(time);
-			pNextAction->StartPlay(time);
-			nTypeCase = 5;
-		}
-		else{		
-			pNowAction->EndPlay(time);
-			nTypeCase = 6;
-		}
-		break;
-	case 5:
-		if(bMsion||pNextAction->IsPlay(time)){
-			switch(nNextActionNum){
-			case 0:
-				MissileModeStart(time);
-				break;
-			case 1:
-				HealingModeStart(time);
-				break;
-			case 2:
-				DefenceModeStart();
-				break;
-			case 3:
-				LaserModeStart();
-				break;
-			case 4:
-				NormalAttModeStart();
-				break;
-			case 5:
-				WallModeStart();
-				break;
-			}
-		}
-		else{
-			pNextAction->EndPlay(time);
-			nTypeCase = 6;
-		}
-		break;
-	case 6:
-		SetActionReset();
-		break;
-	}
-}
 void Monai::SetActionReset(){
 	pMon->MonDefence(10);
-	if(nActionNum == 5||nNextActionNum == 5){
-		pMov->ReturnWall();
-		pWall->ResetPosVel();
-	}
+	pWall->ResetPosVel();
 	bMsion = false;
 	bDefon = false;
-	bWallon = false;
 	bHealon = false;
 	bRaseron = false;
 	bRushon = false;
 	bNaton = false;
-	nNextActionNum = 0;
-	nTypeCase = 0;
+	g_nWallPosition = 0;
 }
 
 
-bool Monai::RushMode(float time){
-	if((bRushon == false)&&(time-fRushEndTime-RUSH_END_DELAY>0)){
-		fRushStartTime = time;
-		bRushon = true;
-	}
-	if(bRushon == true){
-		if(time - fRushStartTime < RUSH_START_DELAY){
-			//		for(int i=0;i<10;i++){
-			//			pMsi[i]->pMoveMissile(pMon,pCha,time);
-			//		}
-			return true;
-		}
-		else{
-			bRushon = false;
-			fRushEndTime = time;
-			return false;
-		}
-	}
-	return false;
-
+BOOL Monai::RushMode(float time){
+	return TRUE;
 }
 
 D3DXVECTOR3 Monai::GetNormal(){
 	return vFace;
 }
-float Monai::GetRotation(){
-	return fRotate;
-}
-bool Monai::CanDef(float time){
-	if(fDefEndTime+DEF_END_DELAY<time){return true;}
-	return false;
-}
-bool Monai::CanMissile(float time){
-	if(fMsiEndTime+MSI_END_DELAY<time){return true;}
-	return false;
-}
-bool Monai::CanHealing(float time){
-	if(fHealEndTime+HEAL_END_DELAY<time){return true;}
-	return false;
-}
-bool Monai::CanRaser(float time){
-	if(fRaserEndTime+LASER_END_DELAY<time){return true;}
-	return false;
-}
-bool Monai::CanRush(float time){
-	if(fRushEndTime+RUSH_END_DELAY<time){return true;}
-	return false;
-}
-bool Monai::CanNorAtt(float time){
-	if(fNorAttEndTime+NATT_END_DELAY<time){return true;}
-	return false;
-}
 
-void Monai::CheckChangePattern(){
-	
+VOID Monai::Pase0(){
+	SetMissileCount(15);
+	for(int i=0;i<g_nMissileCount;i++){
+		pMsi[i]->SetSpeed(4);
+	}
+	g_nInitDefence = 50;
+	g_nInitHealing = 20;
+}
+VOID Monai::Pase1(){
+	SetMissileCount(25);
+	for(int i=0;i<g_nMissileCount;i++){
+		pMsi[i]->SetSpeed(4.5);
+	}
+	g_nInitDefence = 70;
+	g_nInitHealing = 35;
+}
+VOID Monai::Pase2(){
+	SetMissileCount(35);
+	for(int i=0;i<g_nMissileCount;i++){
+		pMsi[i]->SetSpeed(5);
+	}
+	g_nInitDefence = 90;
+	g_nInitHealing = 50;
 }

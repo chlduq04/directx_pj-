@@ -40,13 +40,17 @@ public:
 	void MonAttack();
 	void MonMissile();
 	void MonJump();
-	void MonHealing();
+	void MonHealing(INT arge);
 	
 
 	inline float GetAttack(){return mAttack;};
 	inline void SetisGoal(bool argu){bGoal = argu;};
 	inline bool IsGoal(){return bGoal;};
-	inline bool IsAlive(){return mAlive;};
+	inline bool IsAlive(){
+		if(mLife < 10){
+			return false;
+		}return true;
+	};
 	inline float HisLife(){return mLife;};
 	inline bool IsbGround(){return bGround;};
 
@@ -91,7 +95,10 @@ public:
 	inline void SetLife(float dmg){
 		mLife = dmg * (100-mDefence)/100 + mLife;
 	};
-	inline void SetRotate(D3DXVECTOR3 rotation){vRotate = rotation;};
 	inline D3DXVECTOR3 GetRotation(){return vRotate;};
+	inline VOID SetAlive(BOOL argu){
+		mAlive = argu;	
+		mLife = maxLife;
+	};
 };
 #endif

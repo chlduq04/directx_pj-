@@ -19,6 +19,7 @@ SettingMonster::SettingMonster(LPDIRECT3DDEVICE9 device,Ball* cha, Moving* move,
 	fCrashTime = 0;
 	bCrash = FALSE;
 	g_bWall = FALSE;
+	g_matInit = D3DXVECTOR3(0.0f,0.0f,0.0f);
 }
 SettingMonster::~SettingMonster(){
 	delete g_pMonModel;
@@ -33,6 +34,7 @@ SettingMonster::~SettingMonster(){
 	for(INT i=0;i<MISSILE_COUNT;i++){
 		delete g_pMissile[i] ;
 	}
+	delete g_pMonAi;
 }
 HRESULT SettingMonster::SetXfile(){
 	if(FAILED(g_pMissileModel->InitballMesh(g_pDevice,"FireBase.tga","Flame.tga","FireBall.fx","FireBall.x"))){
@@ -41,53 +43,47 @@ HRESULT SettingMonster::SetXfile(){
 	if(FAILED(g_pWallModel->InitballMesh(g_pDevice,"FieldstoneNoisy.tga","FieldstoneBumpDOT3.tga","Monster.fx","Monster.x"))){
 		return E_FAIL;
 	}
-	if(!SUCCEEDED(g_pMonModel->LoadXFile("boxmodel.x"))){
+	if(!SUCCEEDED(g_pMonModel->LoadXFile("box.x"))){
 		return E_FAIL;
 	}
 	return S_OK;
 }
-VOID SettingMonster::Draw(){
+VOID SettingMonster::Draw(LPD3DXMATRIX monworld,LPD3DXMATRIX originview,ZCamera* camera,FLOAT time,FLOAT speed,INT cameracase){
+	MonsterPosition(speed);
+	GetPositionMon(time);
+	D3DXVec3Normalize(&g_matAngle,&D3DXVECTOR3( g_pMonster->GetVelocity().x,0,g_pMonster->GetVelocity().z));
+	if(g_pMonster->GetVelocity().x>0){
+		DrawPosition(monworld,D3DXVECTOR3(MON_SIZE,MON_SIZE,MON_SIZE), acos(D3DXVec3Dot(&g_matAngle,&D3DXVECTOR3( 0,0,-1.0))) + D3DX_PI,g_pMonster->GetPosition());
+	}else{
+		DrawPosition(monworld,D3DXVECTOR3(MON_SIZE,MON_SIZE,MON_SIZE), acos(D3DXVec3Dot(&g_matAngle,&D3DXVECTOR3( 0,0,-1.0))) ,g_pMonster->GetPosition());
+	}
+
+	if(cameracase == 1){
+		g_pDevice->SetTransform( D3DTS_WORLD, monworld );
+		g_pDevice->SetTransform( D3DTS_VIEW, camera->GetViewMatrix() );			// 카메라 행렬 셋팅
+	}
+	else if(cameracase == 2){
+		g_pDevice->SetTransform( D3DTS_WORLD, monworld );
+		g_pDevice->SetTransform( D3DTS_VIEW, originview);			// 카메라 행렬 셋팅
+	}
+	CrashMon(time);
+
 	if(g_pMonModel){
 		g_pMonModel->Update(g_pMonAi->GetMotionTime());
 		g_pMonModel->Draw();
 	}
+	//-----------------------------------------------------------------------------
+	// Wall Setting
+	//-----------------------------------------------------------------------------
+	DrawWall();
+	//-----------------------------------------------------------------------------
+	// Missile Setting
+	//-----------------------------------------------------------------------------
+	CrashMissile();
+	D3DXMatrixIdentity(monworld);
 }
-VOID SettingMonster::DrawWall(){
-	if(g_pMove->GetMonWall())
-	{
-		if(!g_bWall){
-			if(g_pMove->GetMonMaxWallX()){
-				g_pWallModel->DrawMyballShader(DrawPosition(D3DXVECTOR3(0.001f,3.2f,3.2f),D3DXVECTOR3(g_pMove->GetMaxX(),g_pWall->GetPositionY()+MAXBOUNDY/2,MAXBOUNDZ/2)));
-			}
-			else if(g_pMove->GetMonMinWallX()){
-				g_pWallModel->DrawMyballShader(DrawPosition(D3DXVECTOR3(0.001f,3.2f,3.2f),D3DXVECTOR3(g_pMove->GetMinX(),g_pWall->GetPositionY()+MAXBOUNDY/2,MAXBOUNDZ/2)));			
-			}
-			else if(g_pMove->GetMonMaxWallZ()){
-				g_pWallModel->DrawMyballShader(DrawPosition(D3DXVECTOR3(3.2f,3.2f,0.001f),D3DXVECTOR3(MAXBOUNDX/2,g_pWall->GetPositionY()+MAXBOUNDY/2,g_pMove->GetMaxZ())));
-			}
-			else if(g_pMove->GetMonMinWallZ()){
-				g_pWallModel->DrawMyballShader(DrawPosition(D3DXVECTOR3(3.2f,3.2f,0.001f),D3DXVECTOR3(MAXBOUNDX/2,g_pWall->GetPositionY()+MAXBOUNDY/2,g_pMove->GetMinZ())));
-			}
-			g_bWall = TRUE;
-		}else{
-			g_bWall = FALSE;
-		}
-	}
-}
-VOID SettingMonster::CrashMissile(){
-	if(g_pMonAi->GetMsionall()){
-		for(INT i=0;i<MISSILE_COUNT;i++){
-			g_pMissileModel->DrawMyballShader(DrawPosition(D3DXVECTOR3(MISSILE_SIZE,MISSILE_SIZE,MISSILE_SIZE),g_pMissile[i]->GetPosition()));
-			if(g_pMissile[i]->GetType()!= 4){
-				D3DXVECTOR3 vOneToTwo = g_pCha->GetPosition() - g_pMissile[i]->GetPosition();
-				float DistSq = D3DXVec3LengthSq( &vOneToTwo );
-				if( DistSq < (MON_REAL_SIZE+MYSIZE) * (MON_REAL_SIZE+MYSIZE) ){
-					g_pCha->SetLife(g_pMissile[i]->GetDemage());
-				}
-			}
-		}
-	}	
-}
+
+
 VOID SettingMonster::SetViewMatrix(D3DXMATRIX view){
 	g_pMissileModel->SetView(view);
 	g_pWallModel->SetView(view);
@@ -96,45 +92,3 @@ VOID SettingMonster::SetProjectionMatrix(D3DXMATRIX proj,D3DXVECTOR4 light){
 	g_pMissileModel->SetViewprojtexture(proj,light);
 	g_pWallModel->SetViewprojtexture(proj,light);
 };
-VOID SettingMonster::CrashMon(FLOAT time){
-	if((time - fCrashTime > 2.0f)&&(bCrash == true)){
-		g_pMonster->SetisGoal(false);
-		g_pMonster->SetOriginType(0);
-		bCrash = false;
-	}
-	if(g_pMonster->IsAlive()==true)//is alive?
-	{
-		D3DXVECTOR3 pMonRealPosition = g_pMonster->GetPosition();
-		pMonRealPosition.y += MON_REAL_SIZE/2;
-		D3DXVECTOR3 vOneToTwo = g_pCha->GetPosition() - pMonRealPosition;
-		float DistSq = D3DXVec3LengthSq( &vOneToTwo );
-
-		if( DistSq < (MON_REAL_SIZE+MYSIZE) * (MON_REAL_SIZE+MYSIZE) )
-		{
-			D3DXVec3Normalize( &vOneToTwo, &vOneToTwo );
-			float fImpact = D3DXVec3Dot( &vOneToTwo, &g_pMonster->GetVelocity() ) - D3DXVec3Dot( &vOneToTwo, &g_pCha->GetVelocity());	
-
-			if( fImpact > 0.0f )
-			{
-				bCrash = true;
-
-				fCrashTime = time;
-
-				D3DXVECTOR3 vVelocityOneN = ( 1 - BOUNCE_LOST ) * D3DXVec3Dot( &vOneToTwo, &g_pMonster->GetVelocity() ) * vOneToTwo;
-				D3DXVECTOR3 vVelocityOneT = ( 1 - BOUNCE_LOST ) * g_pMonster->GetVelocity() - vVelocityOneN;
-
-				D3DXVECTOR3 vVelocityTwoN = ( 1 - BOUNCE_LOST ) * D3DXVec3Dot( &vOneToTwo, &g_pCha->GetVelocity()) * vOneToTwo;
-				D3DXVECTOR3 vVelocityTwoT = ( 1 - BOUNCE_LOST ) * g_pCha->GetVelocity() - vVelocityTwoN;
-
-				g_pMonster->SetVelocity(vVelocityOneT - vVelocityOneN * ( 1 - BOUNCE_TRANSFER ) + vVelocityTwoN * BOUNCE_TRANSFER);
-				g_pCha->SetVelocity(vVelocityTwoT - vVelocityTwoN * ( 1 - BOUNCE_TRANSFER ) + vVelocityOneN * BOUNCE_TRANSFER);
-
-				float fDistanceToMove = ( MON_REAL_SIZE - sqrtf( DistSq ) ) * 0.5f;
-				g_pMonster->SetPosition(g_pMonster->GetPosition()-vOneToTwo * fDistanceToMove);
-				g_pCha->SetPosition(g_pCha->GetPosition()+vOneToTwo * fDistanceToMove);	
-				
-				g_pMonster->SetLife(-abs((int)D3DXVec3Length(&g_pCha->GetVelocity())));
-			}
-		}
-	}
-}

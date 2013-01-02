@@ -36,10 +36,11 @@
 //-----------------------------------------------------------------------------
 // Mon
 //-----------------------------------------------------------------------------
-#define MISSILE_COUNT 15
+#define MISSILE_COUNT 35
+#define MISSILE_INITIAL_COUNT 15
 #define START_MON_POSITIONX 160.0f
-#define START_MON_POSITIONY 30.0f
-#define START_MON_POSITIONZ 160.0f
+#define START_MON_POSITIONY 20.0f
+#define START_MON_POSITIONZ 20.0f
 
 #define START_MON_VELOCITYX 0.0f
 #define START_MON_VELOCITYY 0.0f
@@ -101,7 +102,7 @@
 #define ACTION_PATTERN_COUNT 6
 
 #define BALL_SIZE 0.02f
-#define MON_SIZE 0.1f
+#define MON_SIZE 0.5f
 #define MISSILE_SIZE 0.01f
 
 #define MON_REAL_SIZE 7.0f

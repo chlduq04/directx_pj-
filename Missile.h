@@ -16,6 +16,7 @@ private:
 	D3DXVECTOR3 vMissile_my_length;
 	D3DXVECTOR3 vMissile_goal_length;
 	int nDemage;
+	int nSpeed;
 	int nNowType;
 	bool bStart;
 public:
@@ -40,6 +41,7 @@ public:
 	inline void Start(){nNowType = 0;};
 	inline bool NowStart(){return bStart;};
 	inline int GetType(){return nNowType;};
+	inline VOID SetSpeed(INT speed){nSpeed = speed;};
 
 };
 

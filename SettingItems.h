@@ -71,13 +71,13 @@ public:
 					switch(nowNode->GetType()){
 					default:
 					case 0:
-						g_pHpItems->DrawMyballShader(DrawPosition(D3DXVECTOR3(0.1f,0.1f,0.1f),nowNode->GetPosition(),time));
+						g_pHpItems->DrawMyballShader(DrawPosition(D3DXVECTOR3(0.1f,0.1f,0.1f),nowNode->GetPosition(),nowNode->GetTime()+time));
 						break;
 					case 1:
-						g_pMpItems->DrawMyballShader(DrawPosition(D3DXVECTOR3(0.1f,0.1f,0.1f),nowNode->GetPosition(),time));
+						g_pMpItems->DrawMyballShader(DrawPosition(D3DXVECTOR3(0.1f,0.1f,0.1f),nowNode->GetPosition(),nowNode->GetTime()+time));
 						break;
 					case 2:
-						g_pDefItems->DrawMyballShader(DrawPosition(D3DXVECTOR3(0.1f,0.1f,0.1f),nowNode->GetPosition(),time));
+						g_pDefItems->DrawMyballShader(DrawPosition(D3DXVECTOR3(0.1f,0.1f,0.1f),nowNode->GetPosition(),nowNode->GetTime()+time));
 						break;
 					}
 					nowNode=nowNode->GetNext();
