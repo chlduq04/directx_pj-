@@ -30,7 +30,7 @@ Ball::Ball(D3DXVECTOR3 setPosition,D3DXVECTOR3 setVelocity,D3DXVECTOR3 setGoal, 
 Ball::~Ball(){
 	delete g_pChaModel;
 }
-void Ball::SetLife(int argu){
+void Ball::SetLife(float argu){
 	nLife += argu;
 	if(nLife+argu>nMaxLife)
 		nLife= nMaxLife;

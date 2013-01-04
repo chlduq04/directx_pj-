@@ -14,7 +14,8 @@
 
 //	pCheckResult[행동][우선순위] = new pattern;
 Checkai::Checkai(){
-	Pattern* l_pRandPattern = new Pattern();
+	g_bChange = FALSE;
+	l_pRandPattern = new Pattern();
 	pCheckResult[0][0] = new Pattern(2);
 	pCheckResult[0][1] = new Pattern(0,new Pattern(1));
 	pCheckResult[0][2] = new Pattern(0,new Pattern(2));
@@ -49,9 +50,9 @@ Checkai::Checkai(){
 	pCheckResult[4][3] = new Pattern(2);
 	pCheckResult[4][4] = new Pattern(0,new Pattern(3));
 	pCheckResult[4][5] = new Pattern(2);
-	delete l_pRandPattern;
 }
 Checkai::~Checkai(){
+	delete l_pRandPattern;
 	for(int i=0;i<MOVE_PATTERN_COUNT;i++){
 		for(int j=0;j<ACTION_PATTERN_COUNT;j++){
 			delete pCheckResult[i][j];
@@ -67,13 +68,4 @@ Pattern* Checkai::DoAction(int type,float time){
 		}
 	}
 	return pCheckResult[type][1];
-}
-void Checkai::ChangePattern(int motionNum,int actionNum){
-	if(actionNum!=0){
-		Pattern* origin = pCheckResult[motionNum][actionNum];
-		pCheckResult[motionNum][actionNum] = pCheckResult[motionNum][actionNum-1];
-		pCheckResult[motionNum][actionNum-1] = origin;
-	}
-}
-void Checkai::mixPattern(){
 }

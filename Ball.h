@@ -41,7 +41,7 @@ public:
 	void SetMaxWeight(int argu);
 	void SetMaxDef(int argu);
 
-	void SetLife(int argu);
+	void SetLife(float argu);
 	void SetMana(int argu);
 	void SetDef(int argu);
 
@@ -77,6 +77,9 @@ public:
 	inline void SetGoalY(float argu){vGoal.y = argu;};
 	inline void SetGoalZ(float argu){vGoal.z = argu;};
 	inline D3DXVECTOR3 GetPosition(){return vPosition;};
+	inline float GetPositionX(){return vPosition.x;};
+	inline float GetPositionY(){return vPosition.y;};
+	inline float GetPositionZ(){return vPosition.z;};
 	inline D3DXVECTOR3 GetVelocity(){return vVelocity;};
 	inline D3DXVECTOR3 GetGoal(){return vGoal;};
 	inline D3DXMATRIX DrawPosition(/**/D3DXVECTOR3 scale,/**/D3DXVECTOR3 trans)

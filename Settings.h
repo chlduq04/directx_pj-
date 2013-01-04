@@ -3,7 +3,9 @@
 
 #include <d3d9.h>
 #include <d3dx9.h>
-
+#define DEL(p)	{ if(p) { delete (p); (p) = NULL;}} 
+#define DELS(p)	{ if(p) { delete[] (p); (p) = NULL;}} 
+#define REL(p)	{ if(p) { (p)->Release(); (p) = NULL;}} 
 #define CHANGE_ACTION_NUM 6
 //-----------------------------------------------------------------------------
 // My
@@ -102,7 +104,7 @@
 #define ACTION_PATTERN_COUNT 6
 
 #define BALL_SIZE 0.02f
-#define MON_SIZE 0.5f
+#define MON_SIZE 0.2f
 #define MISSILE_SIZE 0.01f
 
 #define MON_REAL_SIZE 7.0f

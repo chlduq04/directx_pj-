@@ -27,6 +27,7 @@
 #include "CheckAI.h"
 #include "SettingItems.h"
 #include "SettingMonster.h"
+#include "Skybox.h"
 //-----------------------------------------------------------------------------
 // Memory Check
 //-----------------------------------------------------------------------------
@@ -94,21 +95,10 @@ D3DXMATRIXA16			matWorld;
 D3DXMATRIXA16			matView;
 D3DXMATRIXA16			matProj;
 //-----------------------------------------------------------------------------
-// Laser variables
-//-----------------------------------------------------------------------------
-//D3DXVECTOR3				ret1;
-//D3DXVECTOR3				ret2;
-//BOOL					bWireFrame = true;
-//D3DXVECTOR3				curve[4];
-////D3DXVECTOR3				beforeMonPos;
-//D3DXVECTOR3				beforeMypos;
-//D3DXVECTOR3				laserSpeed;
-//BOOL					SetBefore = FALSE;
-//FLOAT					Settime;
-//-----------------------------------------------------------------------------
 // Map Draw
 //-----------------------------------------------------------------------------
-Xfile* g_pMapBox;
+Xfile*					g_pMapBox;
+CSkyBox*				g_pSkyBox;
 //-----------------------------------------------------------------------------
 // Monster Loading
 //-----------------------------------------------------------------------------
@@ -308,34 +298,6 @@ inline D3DXMATRIX DrawPosition(D3DXMATRIX* world,/**/D3DXVECTOR3 scale,/**/D3DXV
 	return *world;
 }
 
-//inline VOID RenderPolyLine( LPDIRECT3DDEVICE9 device, UINT count = 100 )
-//{
-//	if(!SetBefore){
-//		beforeMypos = g_pMyCharacter->GetPosition();
-//		SetBefore = true;
-//	}
-//	laserSpeed = g_pMyCharacter->GetPosition() - beforeMypos;
-//	D3DXVec3Normalize(&laserSpeed,&laserSpeed);
-//	beforeMypos += laserSpeed * 0.5f;
-//
-//	curve[0] = g_pMon->GetPosition();
-//	curve[1] = g_pMon->GetPosition();
-//	curve[2] = beforeMypos;
-//	curve[3] = beforeMypos;
-//	D3DXVec3CatmullRom( &ret1, &curve[ 0 ], &curve[ 1 ], &curve[ 2 ], &curve[ 3 ], (FLOAT)0 / count );
-//	D3DXMatrixScaling(&g_matMyScale,BALL_SIZE,BALL_SIZE,BALL_SIZE);
-//
-//	for( INT i = 0; i < count + 1; i++ )
-//	{
-//		D3DXMatrixIdentity(&matWorld);
-//		D3DXVec3CatmullRom( &ret2, &curve[ 0 ], &curve[ 1 ], &curve[ 2 ], &curve[ 3 ], (FLOAT)(i + 1) / count );
-//		D3DXMatrixTranslation(&g_matMyTrans,ret1.x,ret1.y,ret1.z);
-//		matWorld *= g_matMyScale;
-//		matWorld *= g_matMyTrans;
-//		g_pDrawXfile->DrawMyballShader(matWorld);
-//		ret1 = ret2;
-//	}
-//}
 inline VOID CameraCase(){
 	if(g_nCameraCase == 1){
 		D3DXVECTOR3 vLookatPt(g_matMyWorld._41,g_matMyWorld._42, g_matMyWorld._43);
@@ -395,6 +357,10 @@ inline VOID Render(FLOAT time)
 		//-----------------------------------------------------------------------------
 		g_pSetItems->Draw(time, g_pMyCharacter);		
 		//-----------------------------------------------------------------------------
+		// Sky box Setting
+		//-----------------------------------------------------------------------------
+		g_pSkyBox->Render();   
+		//-----------------------------------------------------------------------------
 		// UI Setting
 		//-----------------------------------------------------------------------------
 		g_pSetUi->DrawUI(abs((INT)D3DXVec3Length(&g_pMyCharacter->GetVelocity())),g_pMyCharacter->HisLife(),g_pMyCharacter->HisMana(),g_pMyCharacter->HisDef(),g_pSetMonster->GetMonster()->GetLife()/*g_pMon->HisLife()*/);
@@ -420,7 +386,7 @@ inline VOID AfterInitD3D(){
 	g_pMoving = new Moving(g_pMyCharacter);
 	
 	g_pSetMonster = new SettingMonster(g_pd3dDevice,g_pMyCharacter,g_pMoving,m_fStartTime);
-
+	g_pSkyBox = new CSkyBox(g_pd3dDevice);
 	g_pSetUi = new SettingUI(g_pd3dDevice);
 }
 
@@ -432,6 +398,7 @@ inline VOID AfterRender(){
 	delete g_pSetItems;
 	delete g_pSetMonster;
 //	delete g_pMai;
+	delete g_pSkyBox;
 	delete g_pSetUi;
 }
 
@@ -446,6 +413,8 @@ inline HRESULT initLoad(){
 	if(FAILED(g_pMapBox->InitballMesh(g_pd3dDevice,"FieldstoneNoisy.tga","FieldstoneBumpDOT3.tga","Monster.fx","Monster.x"))){
 		return E_FAIL;
 	}
+	g_pSkyBox->InitVB(); 
+	g_pSkyBox->InitTexture();
 	g_pMyCharacter->SetXfile();
 	g_pSetItems->SetXfile();
 	g_pSetMonster->SetXfile();

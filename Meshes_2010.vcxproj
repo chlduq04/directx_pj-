@@ -387,6 +387,7 @@
     <ClCompile Include="SettingItems.cpp" />
     <ClCompile Include="SettingMonster.cpp" />
     <ClCompile Include="SettingUI.cpp" />
+    <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Ui.cpp" />
     <ClCompile Include="Wall.cpp" />
     <ClCompile Include="Xfile.cpp" />
@@ -414,6 +415,7 @@
     <ClInclude Include="SettingMonster.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SettingUI.h" />
+    <ClInclude Include="Skybox.h" />
     <ClInclude Include="Struct.h" />
     <ClInclude Include="Ui.h" />
     <ClInclude Include="Variable.h" />

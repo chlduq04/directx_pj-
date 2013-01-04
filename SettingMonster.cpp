@@ -20,6 +20,9 @@ SettingMonster::SettingMonster(LPDIRECT3DDEVICE9 device,Ball* cha, Moving* move,
 	bCrash = FALSE;
 	g_bWall = FALSE;
 	g_matInit = D3DXVECTOR3(0.0f,0.0f,0.0f);
+	SetBefore = FALSE;
+	bWireFrame = TRUE;
+	LaserDamage = 0.2f;
 }
 SettingMonster::~SettingMonster(){
 	delete g_pMonModel;
@@ -53,7 +56,7 @@ VOID SettingMonster::Draw(LPD3DXMATRIX monworld,LPD3DXMATRIX originview,ZCamera*
 	GetPositionMon(time);
 	D3DXVec3Normalize(&g_matAngle,&D3DXVECTOR3( g_pMonster->GetVelocity().x,0,g_pMonster->GetVelocity().z));
 	if(g_pMonster->GetVelocity().x>0){
-		DrawPosition(monworld,D3DXVECTOR3(MON_SIZE,MON_SIZE,MON_SIZE), acos(D3DXVec3Dot(&g_matAngle,&D3DXVECTOR3( 0,0,-1.0))) + D3DX_PI,g_pMonster->GetPosition());
+		DrawPosition(monworld,D3DXVECTOR3(MON_SIZE,MON_SIZE,MON_SIZE), -acos(D3DXVec3Dot(&g_matAngle,&D3DXVECTOR3( 0,0,-1.0))) + 2*D3DX_PI,g_pMonster->GetPosition());
 	}else{
 		DrawPosition(monworld,D3DXVECTOR3(MON_SIZE,MON_SIZE,MON_SIZE), acos(D3DXVec3Dot(&g_matAngle,&D3DXVECTOR3( 0,0,-1.0))) ,g_pMonster->GetPosition());
 	}
@@ -72,6 +75,7 @@ VOID SettingMonster::Draw(LPD3DXMATRIX monworld,LPD3DXMATRIX originview,ZCamera*
 		g_pMonModel->Update(g_pMonAi->GetMotionTime());
 		g_pMonModel->Draw();
 	}
+	//RenderLine();
 	//-----------------------------------------------------------------------------
 	// Wall Setting
 	//-----------------------------------------------------------------------------

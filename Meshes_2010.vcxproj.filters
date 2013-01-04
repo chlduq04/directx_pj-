@@ -101,6 +101,9 @@
     <ClCompile Include="SettingMonster.cpp">
       <Filter>Setting</Filter>
     </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
@@ -178,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="SettingMonster.h">
       <Filter>Setting</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@
 #define _MONAI_H_
 #include <d3d9.h>
 #include <d3dx9.h>
+#include <process.h>
 #include "Monster.h"
 #include "Ball.h"
 #include "Missile.h"
@@ -62,7 +63,10 @@ private:
 	INT g_nInitHealing;
 	INT g_nWallPosition;
 	INT g_nPase;
+	BOOL g_bChangeThread;
+	BOOL g_bChangePattern;
 
+	FLOAT g_fActionStart;
 public:
 	Monai(Monster* monster,Ball* charecter,Missile* missile[MISSILE_COUNT],Moving* moving,Wall* createwall,Checkai* result,CModel* model,float time);
 	~Monai();
@@ -91,7 +95,6 @@ public:
 	void GetPositionMon(float time);
 	void NormalMove(float time);
 	void ClosetoMove(float time);
-	void StopMove(float time);
 	void JumpMove(float time);
 	void DodgeMove(float time);
 	void Type(int type,float time);
@@ -106,22 +109,11 @@ public:
 	float GetRotation();
 	void GetMoveType(float time);
 	inline void InhenceMove(int type);
-	void SetActionReset();
+	void SetActionReset(float time);
 	inline float GetMotionTime(){return fAniMotionTime;};
 	inline VOID SetMissileCount(INT count){g_nMissileCount = count;};
 //	inline BOOL GetWallOn(){return bWallon;};
 	inline INT OnWall(){return nWallPos;};
 	inline INT OnWallPosition(){return g_nWallPosition;};
-	inline VOID CheckMonster(){
-		if(!pMon->IsAlive()){
-			if(g_nPase == 0){
-				Pase1();
-				g_nPase = 1;
-			}else{
-				Pase2();
-			}
-			pMon->SetAlive(true);
-		}
-	}
 };
 #endif

@@ -100,5 +100,6 @@ public:
 		mAlive = argu;	
 		mLife = maxLife;
 	};
+	VOID ResetMonster();
 };
 #endif

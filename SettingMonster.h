@@ -37,6 +37,19 @@ private:
 	LPDIRECT3DDEVICE9	g_pDevice;
 	Missile*			g_pMissile[MISSILE_COUNT];
 	Wall*				g_pWall;
+
+	//-----------------------------------------------------------------------------
+	// Laser variables
+	//-----------------------------------------------------------------------------
+	D3DXVECTOR3				ret1;
+	D3DXVECTOR3				ret2;
+	BOOL					bWireFrame;
+	D3DXVECTOR3				curve[4];
+	D3DXVECTOR3				beforeMypos;
+	D3DXVECTOR3				laserSpeed;
+	BOOL					SetBefore;
+	FLOAT					Settime;
+	FLOAT					LaserDamage;
 public:
 	SettingMonster(LPDIRECT3DDEVICE9 device,Ball* cha, Moving* move, FLOAT time);
 	~SettingMonster();
@@ -247,11 +260,35 @@ public:
 					g_pMonster->SetPosition(g_pMonster->GetPosition()-vOneToTwo * fDistanceToMove);
 					g_pCha->SetPosition(g_pCha->GetPosition()+vOneToTwo * fDistanceToMove);	
 
-					g_pMonster->SetLife(-abs((int)D3DXVec3Length(&g_pCha->GetVelocity())));
+					g_pMonster->SetLife(-abs((int)D3DXVec3Length(&g_pCha->GetVelocity())*5));
 				}
 			}
 		}
 	}
+	/*inline VOID RenderLine( UINT count = 200 ){
+		if(!SetBefore){
+			beforeMypos = g_pCha->GetPosition() + g_pCha->GetPosition() - g_pMonster->GetPosition() + D3DXVECTOR3(rand()%5,rand()%5,rand()%5);
+			SetBefore = true;
+		}
+		laserSpeed = g_pCha->GetPosition() + g_pCha->GetPosition() - g_pMonster->GetPosition() - beforeMypos;
+		D3DXVec3Normalize(&laserSpeed,&laserSpeed);
+		beforeMypos += laserSpeed * 0.8f;
+		curve[0] = g_pMonster->GetPosition() - g_pMonster->GetVelocity()*100;
+		curve[3] = beforeMypos - laserSpeed * 100;
 
+		curve[1] = g_pMonster->GetPosition();
+		curve[2] = beforeMypos;
+
+
+		for( INT i = 0; i < count + 1; i++ )
+		{
+			D3DXVec3CatmullRom( &ret1, &curve[ 0 ], &curve[ 1 ], &curve[ 2 ], &curve[ 3 ], (FLOAT)(i + 1) / count );
+			g_pMissileModel->DrawMyballShader(DrawPosition(D3DXVECTOR3(0.01,0.005,0.01),D3DXVECTOR3(ret1.x,ret1.y,ret1.z)));
+			D3DXVECTOR3 vOneToTwo = g_pCha->GetPosition() - D3DXVECTOR3(ret1.x,ret1.y,ret1.z);
+			if(D3DXVec3LengthSq( &vOneToTwo ) < BALL_REAL_SIZE * BALL_REAL_SIZE){
+				g_pCha->SetLife(-LaserDamage);
+			}
+		}
+	}*/
 };
 #endif
