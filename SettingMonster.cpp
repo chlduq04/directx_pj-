@@ -1,10 +1,11 @@
 #include "SettingMonster.h"
-SettingMonster::SettingMonster(LPDIRECT3DDEVICE9 device,Ball* cha, Moving* move,FLOAT time){
+SettingMonster::SettingMonster(LPDIRECT3DDEVICE9 device,Ball* cha, Moving* move,FLOAT time,SettingUI* ui){
 	D3DXVECTOR4 m_v4MonPos( START_MON_POSITIONX, START_MON_POSITIONY, START_MON_POSITIONZ, 1.0f );
 	D3DXVECTOR4 m_v4MonVel( START_VELOCITYX, START_VELOCITYY, START_VELOCITYZ, 0.0f );
 	g_pDevice = device;
 	g_pCha = cha;
 	g_pMove = move;
+	g_pUI = ui;
 	g_pWall = new Wall();
 	g_pMissileModel = new Xfile();
 	g_pWallModel = new Xfile();
@@ -15,10 +16,9 @@ SettingMonster::SettingMonster(LPDIRECT3DDEVICE9 device,Ball* cha, Moving* move,
 		g_pMissile[i] = new Missile();
 	}
 
-	g_pMonAi = new Monai(g_pMonster,g_pCha,g_pMissile,g_pMove,g_pWall,g_pCheck,g_pMonModel,time);
+	g_pMonAi = new Monai(g_pMonster,g_pCha,g_pMissile,g_pMove,g_pWall,g_pCheck,g_pMonModel,g_pUI,time);
 	fCrashTime = 0;
 	bCrash = FALSE;
-	g_bWall = FALSE;
 	g_matInit = D3DXVECTOR3(0.0f,0.0f,0.0f);
 	SetBefore = FALSE;
 	bWireFrame = TRUE;
@@ -31,6 +31,7 @@ SettingMonster::~SettingMonster(){
 	delete g_pWallModel;
 	delete g_pMonster;
 	delete g_pWall;
+	g_pUI = NULL;
 	g_pDevice = NULL;
 	g_pCha = NULL;
 	g_pMove  = NULL;
@@ -40,13 +41,13 @@ SettingMonster::~SettingMonster(){
 	delete g_pMonAi;
 }
 HRESULT SettingMonster::SetXfile(){
-	if(FAILED(g_pMissileModel->InitballMesh(g_pDevice,"FireBase.tga","Flame.tga","FireBall.fx","FireBall.x"))){
+	if(FAILED(g_pMissileModel->InitballMesh(g_pDevice,"Base.tga","FieldstoneBumpDOT3.tga","Monster.fx","Monster.x"))){
 		return E_FAIL;
 	}
 	if(FAILED(g_pWallModel->InitballMesh(g_pDevice,"FieldstoneNoisy.tga","FieldstoneBumpDOT3.tga","Monster.fx","Monster.x"))){
 		return E_FAIL;
 	}
-	if(!SUCCEEDED(g_pMonModel->LoadXFile("box.x"))){
+	if(!SUCCEEDED(g_pMonModel->LoadXFile("Mon.x"))){
 		return E_FAIL;
 	}
 	return S_OK;
@@ -83,7 +84,7 @@ VOID SettingMonster::Draw(LPD3DXMATRIX monworld,LPD3DXMATRIX originview,ZCamera*
 	//-----------------------------------------------------------------------------
 	// Missile Setting
 	//-----------------------------------------------------------------------------
-	CrashMissile();
+	CrashMissile(time);
 	D3DXMatrixIdentity(monworld);
 }
 

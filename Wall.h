@@ -11,6 +11,7 @@ private:
 	float fType;
 	bool bGround;
 	int nBouncecount;
+	BOOL g_bView;
 public:
 	Wall();
 	inline int GetBcount(){return nBouncecount;};
@@ -47,5 +48,7 @@ public:
 		bGround = false;
 		nBouncecount = 0;
 	};
+	inline bool GetView(){return g_bView;};
+	inline void SetView(bool view){g_bView = view;};
 };
 #endif

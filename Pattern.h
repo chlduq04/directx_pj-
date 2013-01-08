@@ -15,7 +15,7 @@ private:
 	INT nNextPattern[6];
 
 	BOOL bStart;
-
+	BOOL bMissile;
     INT nRate;
 	INT nDoCount;
 	INT nEffective;
@@ -37,6 +37,7 @@ public:
 	inline void SetNowAction(int type){g_nType = type;};
 	void PlayAction(float fTime);
 	inline void StartPlay(float time){fStartTime = time; bStart = true;};
+	inline float GetStartPlay(){return fStartTime;};
 	inline void DuringPlay(float time){fStartTime = time;};
 	inline void NotDuringPlay(){bStart = false;};
 	inline void EndPlay(float time){
@@ -64,5 +65,7 @@ public:
 	inline VOID SetRate(){
 		nRate = (float)(nEffective/(nDoCount))*1000;
 	};
+	inline VOID SetMissile(BOOL argu){bMissile = argu;};
+	inline bool GetMissile(){return bMissile;};
 };
 #endif

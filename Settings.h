@@ -3,6 +3,7 @@
 
 #include <d3d9.h>
 #include <d3dx9.h>
+const DWORD  VERTEXFVF = D3DFVF_XYZ | D3DFVF_TEX2; 
 #define DEL(p)	{ if(p) { delete (p); (p) = NULL;}} 
 #define DELS(p)	{ if(p) { delete[] (p); (p) = NULL;}} 
 #define REL(p)	{ if(p) { (p)->Release(); (p) = NULL;}} 
@@ -73,7 +74,7 @@
 
 #define LASER_START_DELAY 5
 #define LASER_END_DELAY 30
-#define LASER_MOTION_DELAY 5
+#define LASER_MOTION_DELAY 3
 
 #define RUSH_START_DELAY 5
 #define RUSH_END_DELAY 10
@@ -105,9 +106,9 @@
 
 #define BALL_SIZE 0.02f
 #define MON_SIZE 0.2f
-#define MISSILE_SIZE 0.01f
+#define MISSILE_SIZE 0.02f
 
-#define MON_REAL_SIZE 7.0f
+#define MON_REAL_SIZE 10.0f
 #define BALL_REAL_SIZE 5.0f
 #define ITEM_REAL_SIZE 10.0f
 #define MISSILE_REAL_SIZE 1.0f
@@ -130,5 +131,5 @@
 #define BOUNCE_LOST 0.1f
 #define BOUNCE_TRANSFER 0.05f
 
-
+#define LASER_SIZE 5.0f
 #endif 

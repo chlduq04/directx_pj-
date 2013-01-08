@@ -1,5 +1,6 @@
 #include "Wall.h"
 Wall::Wall(){
+	g_bView = false;
 	nBouncecount = 0;
 	bGround = false;
 	fHp = 100;

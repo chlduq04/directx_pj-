@@ -1,5 +1,6 @@
 #include "Pattern.h"
 Pattern::Pattern(){
+	bMissile = false;
 	nRate = 0;
 	nDoCount = 1;
 	nEffective = 1;
@@ -43,7 +44,7 @@ Pattern::Pattern(){
 	}
 }
 Pattern::Pattern(Pattern* randpat,INT count){
-
+	bMissile = false;
 	nRate = 0;
 	nDoCount = 1;
 	nEffective = 1;
@@ -92,6 +93,7 @@ Pattern::Pattern(Pattern* randpat,INT count){
 	}
 }
 Pattern::Pattern(int type){
+	bMissile = false;
 	nRate = 0;
 	nDoCount = 1;
 	nEffective = 1;
@@ -135,6 +137,7 @@ Pattern::Pattern(int type){
 	}
 }
 Pattern::Pattern(int type, Pattern* nextpat){
+	bMissile = false;
 	nRate = 0;
 	nDoCount = 1;
 	nEffective = 1;
@@ -194,7 +197,7 @@ bool Pattern::CanPlay(float time){
 	return false;
 }
 bool Pattern::IsPlay(float time){
-	if(time - fStartTime < fStartDelay){
+	if(time - fStartTime < fStartDelay||bMissile){
 		return true;}
 	else{return false;}
 }

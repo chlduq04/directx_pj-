@@ -1,6 +1,6 @@
 #include "Monai.h"
 
-Monai::Monai(Monster* pMonster,Ball* pCharecter,Missile* missile[MISSILE_COUNT],Moving* pMoving,Wall* createwall,Checkai* result,CModel* model,float time){
+Monai::Monai(Monster* pMonster,Ball* pCharecter,Missile* missile[MISSILE_COUNT],Moving* pMoving,Wall* createwall,Checkai* result,CModel* model,SettingUI* ui,float time){
 	nTypeCase = 0;
 	vZero = D3DXVECTOR3(0.0f,0.0f,0.0f);
 	vZline = D3DXVECTOR3(0.0f,0.0f,1.0f);
@@ -16,17 +16,18 @@ Monai::Monai(Monster* pMonster,Ball* pCharecter,Missile* missile[MISSILE_COUNT],
 	pWall = createwall;
 	pCheckResult = result;
 	pAniModel = model;
+	pUI = ui;
 	bDoAction = false;
 	for(int i=0;i<MISSILE_COUNT;i++){
 		pMsi[i] = missile[i];
 	}
 	fMotionSpeed = 0.5f;
-
+	g_fNormalAttack = 0;
 	bMsion = false;
 	bDefon = false;
 	//bWallon = false;
 	bHealon = false;
-	bRaseron = false;
+	bLaseron = false;
 	bRushon = false;
 	bNaton = false;
 	bMsionAll = false;
@@ -38,13 +39,21 @@ Monai::Monai(Monster* pMonster,Ball* pCharecter,Missile* missile[MISSILE_COUNT],
 	g_nPase = 0;
 	g_bChangeThread = FALSE;
 	g_bChangePattern = FALSE;
+
 	g_fActionStart = 0;
+	g_fNormalAttack = 0;
+	g_bNormalAttack = TRUE;
+
+	g_fLaserLength = 1;
+	g_fLaserDamage = -20;
+	g_fNAttackDamage = -5;
 }
 Monai::~Monai(){
 	pMon = NULL;
 	pCha = NULL;
 	pMov = NULL;
 	pWall = NULL;
+	pUI = NULL;
 	pCheckResult = NULL;
 	for(int i=0;i<MISSILE_COUNT;i++){
 		pMsi[i] = NULL;
@@ -52,8 +61,10 @@ Monai::~Monai(){
 	pNowAction = NULL;
 	pCheckAction = NULL;
 	pAniModel = NULL;
+
 }
 void Monai::GetPositionMon(float time){	
+	//GetMoveType(time);
 	if(!g_bChangePattern){
 		GetMoveType(time);
 	}
@@ -62,9 +73,31 @@ void Monai::GetPositionMon(float time){
 	}else{
 		pCheckResult->StartSorting();
 		g_bChangeThread = FALSE;
+		g_bChangePattern = FALSE;
+	}
+	/*
+	if(!bNaton&&time - g_fNormalAttack>5.0f){
+		vLength = pMon->GetPosition()-pCha->GetPosition(); 
+		if(D3DXVec3Length(&vLength)<MON_REAL_SIZE+MON_ATTACK_RANGE){
+			g_bNormalAttack = FALSE;
+		}
+		if(!g_bNormalAttack){
+			pAniModel->SetCurrentAnimation(0);
+			fAniMotionTime = 0.01f;
+			g_fNormalAttackStart = time;
+			g_bNormalAttack = TRUE;
+			bNaton = TRUE;
+		}else{
+			if(time - g_fNormalAttackStart>2.0f){
+				pCha->SetLife(-1);
+			}else{
+				g_bNormalAttack = FALSE;
+				bNaton = FALSE;
+			}
+		}
 	}
 	
-	//if(!g_bChangeThread){
+	*///if(!g_bChangeThread){
 	//	Type(pMon->GetmType(),time);
 	//}else{
 	//	if(g_bChangePattern){
@@ -96,7 +129,9 @@ void Monai::GetMoveType(float time){
 			fMotionSpeed = 0.2f;
 			vVelocity = pMon->GetGoal() - pMon->GetPosition();
 			D3DXVec3Normalize(&vVelocity,&vVelocity);
-			pAniModel->SetCurrentAnimation(9);
+			if(!bNaton){
+				pAniModel->SetCurrentAnimation(9);
+			}
 			fAniMotionTime = 0.005f;
 			break;
 		case 6:
@@ -109,7 +144,9 @@ void Monai::GetMoveType(float time){
 			fMotionSpeed = 0.5f;
 			vVelocity = pMon->GetGoal() - pMon->GetPosition();
 			D3DXVec3Normalize(&vVelocity,&vVelocity);
-			pAniModel->SetCurrentAnimation(9);
+			if(!bNaton){
+				pAniModel->SetCurrentAnimation(9);
+			}
 			fAniMotionTime = 0.02f;
 			break;
 		case 11:
@@ -128,7 +165,9 @@ void Monai::GetMoveType(float time){
 			fMotionSpeed = 0.5f;
 			vVelocity = pMon->GetGoal() - pMon->GetPosition();
 			D3DXVec3Normalize(&vVelocity,&vVelocity);
-			pAniModel->SetCurrentAnimation(9);
+			if(!bNaton){
+				pAniModel->SetCurrentAnimation(9);
+			}
 			fAniMotionTime = 0.01f;
 			break;
 		case 16:
@@ -140,7 +179,9 @@ void Monai::GetMoveType(float time){
 			fMotionSpeed = 0.5f;
 			vVelocity = pMon->GetGoal() - pMon->GetPosition();
 			D3DXVec3Normalize(&vVelocity,&vVelocity);
-			pAniModel->SetCurrentAnimation(5);
+			if(!bNaton){
+				pAniModel->SetCurrentAnimation(5);
+			}
 			fAniMotionTime = 0.001f;			
 			break;
 		}
@@ -176,9 +217,14 @@ void Monai::DefenceMode(){
 	pMon->MonDefence(g_nInitDefence);
 	fAniMotionTime = 0.001f;
 }
-void Monai::LaserMode(){}
+void Monai::LaserMode(){
+	g_vec3LaserPosition = pCha->GetPosition();
+	pUI->SetLaserUI();
+	pAniModel->SetCurrentAnimation(2);
+	fAniMotionTime = 0.001f;
+}
 void Monai::NormalAttMode(){
-	pAniModel->SetCurrentAnimation(1);
+	pAniModel->SetCurrentAnimation(0);
 	fAniMotionTime = 0.001f;
 	bNaton = true;
 }
@@ -189,7 +235,6 @@ void Monai::HealingMode(float time){
 }
 void Monai::MissileMode(){
 	bMsionAll = true;
-	bMsionNext = true;
 	for(int i=0;i<g_nMissileCount;i++){pMsi[i]->Start();}
 	pAniModel->SetCurrentAnimation(3);
 	fAniMotionTime = 0.005f;
@@ -222,20 +267,17 @@ void Monai::DefenceModeStart(){
 	pAniModel->SetCurrentAnimation(5);
 	fAniMotionTime = 0.001f;
 }
-void Monai::MissileModeStart(float time){
-	bMsionAll = false;
-	bMsionNext = false;
+void Monai::MissileModeStart(float time,Pattern* pat){
+	pat->SetMissile(false);
 	for(int i=0;i<g_nMissileCount;i++){
 		pMsi[i]->MoveMissile(pMon,pCha,time);
-		if(!bMsionAll&&pMsi[i]->NowStart()){
-			bMsionAll = true;
-			bMsionNext = true;
+		if(!pat->GetMissile()&&pMsi[i]->NowStart()){
+			pat->SetMissile(true);
 		}
 	}
 
 }
 void Monai::WallModeStart(){
-
 }
 void Monai::HealingModeStart(float time){
 	if(time - fHealEachDelay > 1){
@@ -244,19 +286,27 @@ void Monai::HealingModeStart(float time){
 	}
 }
 void Monai::LaserModeStart(){
+	D3DXVECTOR3 length = g_vec3LaserPosition - pCha->GetPosition();
+	FLOAT M = D3DXVec3LengthSq(&length);
+	if(D3DXVec3LengthSq(&length)<(MYSIZE+LASER_SIZE)*(MYSIZE*LASER_SIZE)*g_fLaserLength){
+		pUI->DamageUI();
+		pCha->SetLife(g_fLaserDamage);
+	}
 }
 void Monai::NormalAttModeStart(){
 	vLength = pMon->GetPosition()-pCha->GetPosition(); 
 	if(D3DXVec3Length(&vLength)<MON_REAL_SIZE+BALL_REAL_SIZE+MON_ATTACK_RANGE){
-		pCha->SetLife(-10);
+		pUI->DamageUI();
+		pCha->SetLife(g_fNAttackDamage);
 	}
 }
-void Monai::Case(Pattern* pattern,float time){
+bool Monai::Case(Pattern* pattern,float time){
 	switch(pattern->GetNowAction()){
 	case 0: 
 		switch(pattern->GetType()){
 		case 0:
 			MissileMode();
+			pattern->SetMissile(true);
 			break;
 		case 1:
 			HealingMode(time);
@@ -275,19 +325,20 @@ void Monai::Case(Pattern* pattern,float time){
 			break;
 		}
 		pattern->SetNowAction(1);
+		pattern->StartPlay(time);
+		return false;
 	case 1:
-		if(time - g_fActionStart > pattern->GetMotionDelay()){
-			g_bChangePattern = FALSE;
-			pattern->StartPlay(time);
+		if(time - pattern->GetStartPlay() > pattern->GetMotionDelay()){
+			g_bChangePattern = FALSE;			
 			pattern->SetNowAction(2);
 			pMon->SetisGoal(false);
 		}
-		break;
+		return false;
 	case 2:
-		if(bMsionAll || pattern->IsPlay(time)){
+		if(pattern->IsPlay(time)){
 			switch(pattern->GetType()){
 			case 0:
-				MissileModeStart(time);
+				MissileModeStart(time,pattern);
 				break;
 			case 1:
 				HealingModeStart(time);
@@ -308,10 +359,11 @@ void Monai::Case(Pattern* pattern,float time){
 		}
 		else{
 			pattern->EndPlay(time);
-			pattern->SetNowAction(0);
-			nTypeCase = 2;
+			pattern->SetNowAction(3);
 		}
-		break;
+		return false;
+	case 3:
+		return true;
 	}
 }
 void Monai::Type(int type,float time){
@@ -320,31 +372,45 @@ void Monai::Type(int type,float time){
 		if(time - g_fActionStart>2.0f){	
 			g_bChangePattern = TRUE;
 			pMon->SetVelocity(D3DXVECTOR3(0.0f,0.0f,0.0f));
-
 			g_fActionStart = time;
 			pCheckAction = pCheckResult->DoAction(type,time);
 			pNowAction = pCheckAction;
 			g_fCheckChaHP = pCha->HisLife();
 			g_fCheckMonHP = pMon->HisLife();
-			nTypeCase = 1;
+			if(pNowAction->GetNextPat()== NULL){
+				nTypeCase = 1;
+			}else{
+				if(pNowAction->GetNextPat()->GetNextPat() == NULL){
+					nTypeCase = 2;
+				}else{
+					nTypeCase = 3;				
+				}
+			}
 		}
 		break;
 	case 1:
-		Case(pNowAction , time);
+		if(!Case(pNowAction , time)){
+			pNowAction = pNowAction->GetNextPat();
+			if(pNowAction == NULL){
+				nTypeCase = 5;
+			}
+		}
 		break;
 	case 2:
-		pNowAction = pNowAction ->GetNextPat();
-		if(pNowAction != NULL){
-			nTypeCase = 1;
-		}
-		else{
-			nTypeCase = 3;
+		if(!Case(pNowAction, time) || !Case(pNowAction->GetNextPat(), time)){
+		}else{
+			nTypeCase = 5;
 		}
 		break;
 	case 3:
-		pCheckAction->UpDo(1);
+		if(!Case(pNowAction, time) || !Case(pNowAction->GetNextPat(), time) || !Case(pNowAction->GetNextPat()->GetNextPat(), time)){
+		}else{
+			nTypeCase = 5;
+		}
+		break;
+	case 5:
 		pCheckAction->UpEffective((g_fCheckChaHP - pCha->HisLife()/5));
-		pCheckAction->UpDo((g_fCheckMonHP - pMon->HisLife()/100));
+		pCheckAction->UpDo((g_fCheckMonHP - pMon->HisLife()/100 + 1));
 		SetActionReset(time);
 		nTypeCase = 0;
 		break;
@@ -357,9 +423,10 @@ void Monai::SetActionReset(float time){
 	bMsion = false;
 	bDefon = false;
 	bHealon = false;
-	bRaseron = false;
+	bLaseron = false;
 	bRushon = false;
 	bNaton = false;
+	bMsionAll = false;
 	g_nWallPosition = 0;
 	g_fActionStart = time;
 	RandPositionMon();
@@ -370,6 +437,7 @@ void Monai::SetActionReset(float time){
 			g_nPase = 1;
 		}else{
 			Pase2();
+			g_nPase = 2;
 		}
 		pMon->SetAlive(true);
 		g_bChangeThread = TRUE;
@@ -392,6 +460,10 @@ VOID Monai::Pase0(){
 	}
 	g_nInitDefence = 50;
 	g_nInitHealing = 20;
+	g_fLaserLength = 1;
+	g_fLaserDamage = -20;
+	g_fNAttackDamage = -5;
+
 }
 VOID Monai::Pase1(){
 	pMon->ResetMonster();
@@ -401,6 +473,10 @@ VOID Monai::Pase1(){
 	}
 	g_nInitDefence = 70;
 	g_nInitHealing = 35;
+	g_fLaserLength = 1.2;
+	g_fLaserDamage = -25;
+	g_fNAttackDamage = -10;
+
 }
 VOID Monai::Pase2(){
 	pMon->ResetMonster();
@@ -410,4 +486,7 @@ VOID Monai::Pase2(){
 	}
 	g_nInitDefence = 90;
 	g_nInitHealing = 50;
+	g_fLaserLength = 1.5;
+	g_fLaserDamage = -30;
+	g_fNAttackDamage = -15;
 }

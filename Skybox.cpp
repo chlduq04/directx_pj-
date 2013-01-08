@@ -105,9 +105,7 @@ HRESULT CSkyBox::InitTexture(){
 }   
 HRESULT CSkyBox::SetTexture(const char *TextureFile, int ps)   
 {   
-    if (FAILED(D3DXCreateTextureFromFile( m_pd3dDevice,   
-                                            TextureFile,   
-                                            &m_pTexture[ps])))   
+    if (FAILED(D3DXCreateTextureFromFile( m_pd3dDevice, TextureFile, &m_pTexture[ps])))   
     {   
         return E_FAIL;   
     }   
@@ -120,7 +118,7 @@ void CSkyBox::Render()
     D3DXMATRIX  matWorld;   
 	D3DXMATRIX	matTrans;
     D3DXMatrixScaling(&matWorld, 180.0f, 180.0f, 180.0f);   
-	D3DXMatrixTranslation(&matTrans,MAXBOUNDX/2,0.0f,MAXBOUNDZ/2);
+	D3DXMatrixTranslation(&matTrans,MAXBOUNDX/2,5.0f,MAXBOUNDZ/2);
 	matWorld *= matTrans;
     m_pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);     
 //    m_pd3dDevice->SetRenderState(D3DRS_LIGHTING, FALSE);   
@@ -138,5 +136,4 @@ void CSkyBox::Render()
         m_pd3dDevice->SetTexture(0, m_pTexture[i]);   
         m_pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP, i*4, 2);   
     }   
-   
 }  

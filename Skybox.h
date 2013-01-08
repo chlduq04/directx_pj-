@@ -3,14 +3,7 @@
 #include <d3dx9.h>
 #include <d3d9.h>
 #include "Settings.h"
-struct VERTEX 
-{ 
-    float x, y, z; 
-    float tu, tv; 
-	float tu1, tv1; 
-}; 
-const DWORD  VERTEXFVF = D3DFVF_XYZ | D3DFVF_TEX2; 
- 
+#include "Struct.h" 
 class CSkyBox 
 { 
 private: 

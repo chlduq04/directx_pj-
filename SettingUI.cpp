@@ -1,5 +1,7 @@
 #include "SettingUI.h"
 SettingUI::SettingUI(LPDIRECT3DDEVICE9 dev){
+	NowLaser = false;
+	SetLaser = WINDOW_WIDTH;
 	g_pUI = new Ui(dev);
 	g_pUI->InitBillboard("normal_speed.png",&g_pImage[0]);
 	g_pUI->InitBillboard("red_speed.png",&g_pImage[1]);
@@ -7,7 +9,7 @@ SettingUI::SettingUI(LPDIRECT3DDEVICE9 dev){
 	g_pUI->InitBillboard("hp.png",&g_pImage[3]);
 	g_pUI->InitBillboard("mp.png",&g_pImage[4]);
 	g_pUI->InitBillboard("def.png",&g_pImage[5]);
-	g_pUI->InitBillboard("black_rec.png",&g_pImage[6]);
+	g_pUI->InitBillboard("laser.png",&g_pImage[6]);
 
 	SettingVtx(&vtx[0],WINDOW_WIDTH/2-WINDOW_WIDTH/20, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/120, 0, 0, 1);
 	SettingVtx(&vtx[1],WINDOW_WIDTH/2-WINDOW_WIDTH/20, -WINDOW_HEIGHT/2, 0, 0, 0);
@@ -24,7 +26,12 @@ SettingUI::SettingUI(LPDIRECT3DDEVICE9 dev){
 	SettingVtx(&Mon[2],WINDOW_WIDTH/2, -WINDOW_HEIGHT/2+WINDOW_HEIGHT/5, 0, 1, 1);
 	SettingVtx(&Mon[3],WINDOW_WIDTH/2, -WINDOW_HEIGHT/2, 0, 1, 0);
 
+	SettingVtx(&Laser[0],-WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 0, 0, 1);
+	SettingVtx(&Laser[1],-WINDOW_WIDTH/2, -WINDOW_HEIGHT/2, 0, 0, 0);
+	SettingVtx(&Laser[2], WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 0, 1, 1);
+	SettingVtx(&Laser[3], WINDOW_WIDTH/2, -WINDOW_HEIGHT/2, 0, 1, 0);
 }
+
 SettingUI::~SettingUI(){
 	if(g_pImage){
 		for(INT i=0;i<7;i++){
@@ -37,6 +44,7 @@ SettingUI::~SettingUI(){
 	}
 	delete g_pUI;
 }
+
 VOID SettingUI::DrawUI(int velocity,float life,float mana,float def,float monlife){
 	g_pUI->SetUI();
 	switch(velocity){
@@ -68,16 +76,36 @@ VOID SettingUI::DrawUI(int velocity,float life,float mana,float def,float monlif
 	case 2 : case 1: case 0: g_pUI->DrawBillboard(g_pImage[0],&matBillBoard,-10.5f,0.0f,0.0f,vtx);
 		break;
 	}
-	for(INT i=0;i<life/10;i++){
-		g_pUI->DrawBillboard(g_pImage[3],&matBillBoard,-WINDOW_WIDTH+WINDOW_WIDTH/20,12.0f*i,0.0f,Cha);
+	if(life>=1){
+		for(INT i=0;i<life/10;i++){
+			g_pUI->DrawBillboard(g_pImage[3],&matBillBoard,-WINDOW_WIDTH+WINDOW_WIDTH/20,12.0f*i,0.0f,Cha);
+		}
 	}
-	for(INT i=0;i<mana/10;i++){
-		g_pUI->DrawBillboard(g_pImage[4],&matBillBoard,-WINDOW_WIDTH+WINDOW_WIDTH/20*2,12.0f*i,0.0f,Cha);
+	if(mana>=1){
+		for(INT i=0;i<mana/10;i++){
+			g_pUI->DrawBillboard(g_pImage[4],&matBillBoard,-WINDOW_WIDTH+WINDOW_WIDTH/20*2,12.0f*i,0.0f,Cha);
+		}
 	}
 	for(INT i=0;i<def/10;i++){
 		g_pUI->DrawBillboard(g_pImage[5],&matBillBoard,-WINDOW_WIDTH+WINDOW_WIDTH/20*3,12.0f*i,0.0f,Cha);
 	}
 	for(INT i=0;i<monlife/50;i++){
-		g_pUI->DrawBillboard(g_pImage[3],&matBillBoard,-WINDOW_WIDTH+WINDOW_WIDTH/20*i,WINDOW_HEIGHT-monlife/50,0.0f,Mon);
+		g_pUI->DrawBillboard(g_pImage[3],&matBillBoard,-WINDOW_WIDTH+WINDOW_WIDTH/20*i,WINDOW_HEIGHT-20,0.0f,Mon);
 	}
+	if(NowLaser){	
+		if(SetLaser > -WINDOW_WIDTH){
+			g_pUI->DrawBillboard(g_pImage[6],&matBillBoard,SetLaser,0,0.0f,Laser);
+			SetLaser-=WINDOW_WIDTH/20;
+		}
+		else{
+			NowLaser = false;
+		}
+	}else{
+		SetLaser = WINDOW_WIDTH;
+	}
+
+}
+VOID SettingUI::DamageUI(){
+	g_pUI->SetUI();
+	g_pUI->DrawBillboard(g_pImage[6],&matBillBoard,0,0,0.0f,Laser);
 }

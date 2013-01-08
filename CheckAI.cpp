@@ -16,9 +16,9 @@
 Checkai::Checkai(){
 	g_bChange = FALSE;
 	l_pRandPattern = new Pattern();
-	pCheckResult[0][0] = new Pattern(2);
-	pCheckResult[0][1] = new Pattern(0,new Pattern(1));
-	pCheckResult[0][2] = new Pattern(0,new Pattern(2));
+	pCheckResult[0][0] = new Pattern(0);
+	pCheckResult[0][1] = new Pattern(3,new Pattern(1));
+	pCheckResult[0][2] = new Pattern(3,new Pattern(2));
 	pCheckResult[0][3] = new Pattern(5,new Pattern(0));
 	pCheckResult[0][4] = new Pattern(5,new Pattern(1));
 	pCheckResult[0][5] = new Pattern(l_pRandPattern,2);
@@ -28,21 +28,21 @@ Checkai::Checkai(){
 	pCheckResult[1][2] = new Pattern(0,new Pattern(4));
 	pCheckResult[1][3] = new Pattern(2,new Pattern(4));
 	pCheckResult[1][4] = new Pattern(3,new Pattern());
-	pCheckResult[1][5] = new Pattern(l_pRandPattern,2);
+	pCheckResult[1][5] = new Pattern(l_pRandPattern,1);
 
 	pCheckResult[2][0] = new Pattern(3,new Pattern(0));
 	pCheckResult[2][1] = new Pattern(0,new Pattern(1));
 	pCheckResult[2][2] = new Pattern(0,new Pattern(2));
 	pCheckResult[2][3] = new Pattern(1,new Pattern(3));
 	pCheckResult[2][4] = new Pattern(2,new Pattern(3));
-	pCheckResult[2][5] = new Pattern(l_pRandPattern,2);
+	pCheckResult[2][5] = new Pattern(l_pRandPattern,1);
 
 	pCheckResult[3][0] = new Pattern(3,new Pattern(0));
 	pCheckResult[3][1] = new Pattern(0,new Pattern(0));
 	pCheckResult[3][2] = new Pattern(1,new Pattern(0));
 	pCheckResult[3][3] = new Pattern(2,new Pattern(0));
 	pCheckResult[3][4] = new Pattern(5,new Pattern(0));
-	pCheckResult[3][5] = new Pattern(l_pRandPattern,2);
+	pCheckResult[3][5] = new Pattern(l_pRandPattern,1);
 
 	pCheckResult[4][0] = new Pattern(3,new Pattern(0));
 	pCheckResult[4][1] = new Pattern(5,new Pattern(0));

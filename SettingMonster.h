@@ -12,12 +12,12 @@
 #include "Moving.h"
 #include "Monai.h"
 #include "ZCamera.h"
+#include "SettingUI.h"
 class SettingMonster{
 private:
 	D3DXMATRIX			g_matRotation;
 	D3DXVECTOR3			g_matInit;
 	D3DXVECTOR3			g_matAngle;
-	BOOL				g_bWall;
 	FLOAT				g_m_fStartTime;
 	FLOAT				fCrashTime;
 	BOOL				bCrash;
@@ -26,6 +26,7 @@ private:
 	D3DXMATRIX			g_matSetWorld;
 	D3DXMATRIX			g_matSetRotate;
 
+	SettingUI*			g_pUI;
 	Monai*				g_pMonAi;
 	Moving*				g_pMove;
 	Monster*			g_pMonster;
@@ -51,7 +52,7 @@ private:
 	FLOAT					Settime;
 	FLOAT					LaserDamage;
 public:
-	SettingMonster(LPDIRECT3DDEVICE9 device,Ball* cha, Moving* move, FLOAT time);
+	SettingMonster(LPDIRECT3DDEVICE9 device,Ball* cha, Moving* move, FLOAT time, SettingUI* ui);
 	~SettingMonster();
 	HRESULT	SetXfile();
 	VOID Draw(LPD3DXMATRIX monworld,LPD3DXMATRIX originview,ZCamera* camera,FLOAT time,FLOAT speed,INT cameracase);
@@ -78,6 +79,14 @@ public:
 		D3DXMatrixTranslation(&g_matSetTrans,trans.x,trans.y,trans.z);
 		return g_matSetWorld * g_matSetScale * g_matSetTrans;
 	};
+	inline D3DXMATRIX DrawPosition(D3DXVECTOR3 scale,/**/float rotate, D3DXVECTOR3 trans)
+	{
+		D3DXMatrixIdentity(&g_matSetWorld);
+		D3DXMatrixScaling(&g_matSetScale,scale.x,scale.y,scale.z);
+		D3DXMatrixRotationY(&g_matSetRotate,rotate);
+		D3DXMatrixTranslation(&g_matSetTrans,trans.x,trans.y,trans.z);
+		return g_matSetWorld * g_matSetScale * g_matSetRotate * g_matSetTrans;
+	};
 	inline D3DXMATRIX DrawPosition(D3DXMATRIX* world,/**/D3DXVECTOR3 scale,FLOAT rotate,/**/D3DXVECTOR3 trans){
 		D3DXMatrixIdentity(world);
 		D3DXMatrixScaling(&g_matSetScale,scale.x,scale.y,scale.z);
@@ -96,9 +105,9 @@ public:
 				//D3DXMatrixRotationAxis(&matWorld,&matAngle,m);
 
 			if(g_pMonster->GetVelocity().y>0)
-				g_pMonster->SetVelocityY(g_pMonster->GetVelocity().y-(GRAVITY+REVERSE_GRAVITY)*BALLSPEED*speed);
+				g_pMonster->SetVelocityY(g_pMonster->GetVelocity().y-(GRAVITY+REVERSE_GRAVITY)*speed/10);
 			else
-				g_pMonster->SetVelocityY(g_pMonster->GetVelocity().y-(GRAVITY*BALLSPEED*speed/10));
+				g_pMonster->SetVelocityY(g_pMonster->GetVelocity().y-(GRAVITY*speed/100));
 
 			if( g_pMonster->GetPosition().y < -GROUND + ( MON_SIZE* 0.5f ) )
 			{
@@ -141,12 +150,14 @@ public:
 					case 2:
 						if(abs(g_pMonAi->OnWall() - g_pCha->GetPosition().x)<BALL_SIZE+3.0f && abs(g_pWall->GetPositionY() - g_pCha->GetPosition().y)<BALL_SIZE+5.0f){
 							g_pCha->SetLife(-g_pWall->GetVelocityY());
+							g_pUI->DamageUI();
 						}
 						break;
 					case 3:
 					case 4:
 						if(abs(g_pMonAi->OnWall() - g_pCha->GetPosition().z)<BALL_SIZE+3.0f && abs(g_pWall->GetPositionY() - g_pCha->GetPosition().y)<BALL_SIZE+5.0f){
 							g_pCha->SetLife(-g_pWall->GetVelocityY());
+							g_pUI->DamageUI();
 						}
 						break;
 					}
@@ -165,7 +176,7 @@ public:
 				}
 			}
 			INT l_nWall = g_pMonAi->OnWall();
-			if(!g_bWall){
+			if(!g_pWall->GetView()){
 				switch(g_pMonAi->OnWallPosition()){
 				case 1:
 					if( g_pCha->GetPosition().x < l_nWall + ( MYSIZE * 0.5f ) )
@@ -202,23 +213,22 @@ public:
 				default:
 					break;
 				}
-				g_bWall = TRUE;
+				g_pWall->SetView(TRUE);
 			}else{
-				g_bWall = FALSE;
+				g_pWall->SetView(FALSE);
 			}
 		}
 	};
-	inline VOID CrashMissile(){
+	inline VOID CrashMissile(float time){
 		if(g_pMonAi->GetMsionall()){
-			for(INT i=0;i<MISSILE_COUNT;i++){
-				g_pMissileModel->DrawMyballShader(DrawPosition(D3DXVECTOR3(MISSILE_SIZE,MISSILE_SIZE,MISSILE_SIZE),g_pMissile[i]->GetPosition()));
-				if(g_pMissile[i]->GetType()!= 4){
+			for(INT i=0;i<g_pMonAi->GetMissileCount();i++){
+					g_pMissileModel->DrawMyballShader(DrawPosition(D3DXVECTOR3(MISSILE_SIZE,MISSILE_SIZE,MISSILE_SIZE),time/10,g_pMissile[i]->GetPosition()));
 					D3DXVECTOR3 vOneToTwo = g_pCha->GetPosition() - g_pMissile[i]->GetPosition();
 					float DistSq = D3DXVec3LengthSq( &vOneToTwo );
-					if( DistSq < (MON_REAL_SIZE+MYSIZE) * (MON_REAL_SIZE+MYSIZE) ){
+					if( DistSq < (MON_REAL_SIZE/2+MYSIZE) * (MON_REAL_SIZE/2+MYSIZE) ){
+						g_pUI->DamageUI();
 						g_pCha->SetLife(g_pMissile[i]->GetDemage());
 					}
-				}
 			}
 		}	
 	};
@@ -232,8 +242,8 @@ public:
 		if(g_pMonster->IsAlive()==true)//is alive?
 		{
 			D3DXVECTOR3 pMonRealPosition = g_pMonster->GetPosition();
-			pMonRealPosition.y += MON_REAL_SIZE/2;
-			D3DXVECTOR3 vOneToTwo = g_pCha->GetPosition() - pMonRealPosition;
+			pMonRealPosition.y += MON_REAL_SIZE;
+			D3DXVECTOR3 vOneToTwo = g_pCha->GetPosition() - g_pMonster->GetPosition();
 			float DistSq = D3DXVec3LengthSq( &vOneToTwo );
 
 			if( DistSq < (MON_REAL_SIZE+MYSIZE) * (MON_REAL_SIZE+MYSIZE) )
@@ -290,5 +300,8 @@ public:
 			}
 		}
 	}*/
+	inline BOOL GetLaser(){
+		return g_pMonAi->NowLaserMode();
+	};
 };
 #endif

@@ -384,10 +384,9 @@ inline VOID AfterInitD3D(){
 	g_pSetItems = new SettingItems(m_fStartTime,g_pd3dDevice);
 	g_pMyCharacter = new Ball(( D3DXVECTOR3 )m_v4Pos,( D3DXVECTOR3 )m_v4Vel,( D3DXVECTOR3 )m_v4Vel, g_pd3dDevice);	
 	g_pMoving = new Moving(g_pMyCharacter);
-	
-	g_pSetMonster = new SettingMonster(g_pd3dDevice,g_pMyCharacter,g_pMoving,m_fStartTime);
+	g_pSetUi = new SettingUI(g_pd3dDevice);	
+	g_pSetMonster = new SettingMonster(g_pd3dDevice,g_pMyCharacter,g_pMoving,m_fStartTime,g_pSetUi);
 	g_pSkyBox = new CSkyBox(g_pd3dDevice);
-	g_pSetUi = new SettingUI(g_pd3dDevice);
 }
 
 inline VOID AfterRender(){
@@ -396,10 +395,10 @@ inline VOID AfterRender(){
 	delete g_pMyCharacter;
 	delete g_pMoving;
 	delete g_pSetItems;
+	delete g_pSetUi;
 	delete g_pSetMonster;
 //	delete g_pMai;
 	delete g_pSkyBox;
-	delete g_pSetUi;
 }
 
 inline VOID BeforeRender(){
@@ -512,7 +511,7 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 
 	// Create the application's window
 	HWND hWnd = CreateWindow( "D3D Tutorial", "GongGong",
-		WS_OVERLAPPEDWINDOW, 100, 100, WINDOW_WIDTH, WINDOW_HEIGHT,
+		WS_OVERLAPPEDWINDOW, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
 		NULL, NULL, wc.hInstance, NULL );
 
 	g_hwnd = hWnd;

@@ -61,7 +61,9 @@ public:
 				pCheckResult[i][j]->ResetRate();
 			}
 			delete pCheckResult[i][MOVE_PATTERN_COUNT-1];
+			delete pCheckResult[i][MOVE_PATTERN_COUNT-2];
 			pCheckResult[i][MOVE_PATTERN_COUNT-1] = new Pattern(l_pRandPattern,2);
+			pCheckResult[i][MOVE_PATTERN_COUNT-2] = new Pattern(l_pRandPattern,2);
 		}
 
 		//for(int k=0;k<MOVE_PATTERN_COUNT;k++){

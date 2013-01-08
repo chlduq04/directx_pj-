@@ -12,6 +12,7 @@
 #include "Pattern.h"
 #include "CheckAI.h"
 #include "CModel.h"
+#include "SettingUI.h"
 class Monai{
 private:
 	FLOAT fAniMotionTime;
@@ -35,6 +36,7 @@ private:
 	Pattern* pNowAction;
 	Pattern* pCheckAction;
 	CModel* pAniModel;
+	SettingUI* pUI;
 	float fSpeed;
 	float fMonsize;
 	float fMonSpeed;
@@ -46,7 +48,7 @@ private:
 	//BOOL bWallon;	
 	float fHealEachDelay;
 	BOOL bHealon;	
-	BOOL bRaseron;
+	BOOL bLaseron;
 	BOOL bRushon;
 	BOOL bMsion;
 	BOOL bMsionAll;
@@ -65,10 +67,18 @@ private:
 	INT g_nPase;
 	BOOL g_bChangeThread;
 	BOOL g_bChangePattern;
-
 	FLOAT g_fActionStart;
+
+	FLOAT g_fNormalAttack;
+	FLOAT g_fNormalAttackStart;
+	BOOL g_bNormalAttack;
+	D3DXVECTOR3 g_vec3LaserPosition;
+	
+	FLOAT g_fLaserLength;
+	FLOAT g_fLaserDamage;
+	FLOAT g_fNAttackDamage;
 public:
-	Monai(Monster* monster,Ball* charecter,Missile* missile[MISSILE_COUNT],Moving* moving,Wall* createwall,Checkai* result,CModel* model,float time);
+	Monai(Monster* monster,Ball* charecter,Missile* missile[MISSILE_COUNT],Moving* moving,Wall* createwall,Checkai* result,CModel* model,SettingUI* ui,float time);
 	~Monai();
 
 	void Pase0();
@@ -85,7 +95,7 @@ public:
 	void NormalAttMode();
 
 	void DefenceModeStart();
-	void MissileModeStart(float time);
+	void MissileModeStart(float time,Pattern* pat);
 	void WallModeStart();
 	void HealingModeStart(float time);
 	void LaserModeStart();
@@ -98,7 +108,7 @@ public:
 	void JumpMove(float time);
 	void DodgeMove(float time);
 	void Type(int type,float time);
-	void Case(Pattern* pattern,float time);
+	bool Case(Pattern* pattern,float time);
 	inline void RandPositionMon(){pMon->SetOriginType(rand()%20);};
 	inline void SetPositionMon(int type){pMon->SetOriginType(type);};
 	inline int GetRandType(){return rand()%5;};
@@ -115,5 +125,7 @@ public:
 //	inline BOOL GetWallOn(){return bWallon;};
 	inline INT OnWall(){return nWallPos;};
 	inline INT OnWallPosition(){return g_nWallPosition;};
+	inline bool NowLaserMode(){return bLaseron;};
+	inline int GetMissileCount(){return g_nMissileCount;};
 };
 #endif
